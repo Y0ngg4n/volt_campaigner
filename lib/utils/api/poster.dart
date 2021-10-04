@@ -10,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../http_utils.dart';
 
 class PosterApiUtils {
-  static Future<PosterModels?> getPointsInDistance(LatLng location, double distance, bool hanging) async {
+  static Future<PosterModels?> getPointsInDistance(LatLng location, double distance, int hanging) async {
 
     try {
       http.Response response = await http.get(

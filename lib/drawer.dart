@@ -99,7 +99,7 @@ class _DrawerViewState extends State<DrawerView> {
   _refresh() async {
     print("Refreshing");
     PosterModels posterModels = await PosterApiUtils.getPointsInDistance(
-        currentPosition, 1000000000, true) ??
+        currentPosition, 1000000000, 0) ??
         PosterModels.empty();
     setState(() {
       posterInDistance = posterModels;

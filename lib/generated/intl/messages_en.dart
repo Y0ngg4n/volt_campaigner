@@ -25,17 +25,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
         "errorAddPoster":
             MessageLookupByLibrary.simpleMessage("Cound not add Poster"),
+        "errorEditPoster":
+            MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht ändern"),
         "errorFetchingPosterLocations":
-            MessageLookupByLibrary.simpleMessage("Konnte Plakate Nicht laden"),
+            MessageLookupByLibrary.simpleMessage("Could not load Posters"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "poster": MessageLookupByLibrary.simpleMessage("Poster"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Add Poster"),
+        "posterEdit": MessageLookupByLibrary.simpleMessage("Edit Poster"),
         "posterEnvironment":
             MessageLookupByLibrary.simpleMessage("Environment"),
         "posterMotive": MessageLookupByLibrary.simpleMessage("Motive"),
         "posterOther": MessageLookupByLibrary.simpleMessage("Other"),
+        "posterRecycle": MessageLookupByLibrary.simpleMessage("Recycle Poster"),
         "posterTargetGroups":
             MessageLookupByLibrary.simpleMessage("Target-Groups"),
-        "posterType": MessageLookupByLibrary.simpleMessage("Poster-Type")
+        "posterType": MessageLookupByLibrary.simpleMessage("Poster-Type"),
+        "posterUnhang": MessageLookupByLibrary.simpleMessage("Unhang Poster")
       };
 }

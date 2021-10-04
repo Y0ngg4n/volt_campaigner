@@ -6,7 +6,7 @@ import 'package:volt_campaigner/map/poster/poster_tags.dart';
 class PosterModel {
   String id;
   LatLng location;
-  bool hanging;
+  int hanging;
   List<PosterTag> posterType;
   List<PosterTag> posterMotive;
   List<PosterTag> posterTargetGroups;
@@ -42,7 +42,7 @@ class PosterModel {
       : id = json['id'],
         location =
             LatLng(json['latitude'].toDouble(), json['longitude'].toDouble()),
-        hanging = json['hanging'],
+        hanging = int.parse(json['hanging']),
         posterType = PosterTags.fromJson(json['poster_type']).posterTags,
         posterMotive = PosterTags.fromJson(json['motive']).posterTags,
         posterTargetGroups =

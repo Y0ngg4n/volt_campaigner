@@ -8,6 +8,11 @@
   "posterTargetGroups": "Zielgruppe",
   "posterEnvironment": "Umgebung",
   "posterOther": "Sonstige",
-  "posterAdd": "Poster hinzufügen",
-  "errorAddPoster": "Konnte Poster nicht hinzufügen"
+  "posterAdd": "Plakat hinzufügen",
+  "errorAddPoster": "Konnte Plakat nicht hinzufügen",
+  "posterUnhang": "Plakat abhängen",
+  "posterRecycle": "Plakat recycle",
+  "posterEdit": "Plakat bearbeiten",
+  "errorEditPoster": "Konnte Plakat nicht ändern",
+  "errorFetchingPosterLocations": "Konnte Plakat nicht laden"
 }

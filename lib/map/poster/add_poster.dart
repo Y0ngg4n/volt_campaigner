@@ -6,26 +6,23 @@ import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/http_utils.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
 
-class AddPoster extends StatefulWidget {
-  List<PosterTag> posterTypes;
-  List<PosterTag> motiveTypes;
-  List<PosterTag> targetGroupTypes;
-  List<PosterTag> environmentTypes;
-  List<PosterTag> otherTypes;
-  LatLng location;
+typedef OnAddPoster = Function(PosterModel);
 
-  AddPoster(
-      {Key? key,
-      required this.posterTypes,
-      required this.motiveTypes,
-      required this.targetGroupTypes,
-      required this.environmentTypes,
-      required this.otherTypes,
-      required this.location})
+class AddPoster extends StatefulWidget {
+  PosterTagsLists posterTagsLists;
+  LatLng location;
+  OnAddPoster onAddPoster;
+
+  AddPoster({Key? key,
+    required this.posterTagsLists,
+    required this.location,
+    required this.onAddPoster
+  })
       : super(key: key);
 
   @override
@@ -54,19 +51,19 @@ class _AddPosterState extends State<AddPoster> {
               SingleChildScrollView(
                 child: Column(children: [
                   _getHeading(AppLocalizations.of(context)!.posterType),
-                  _getTags(widget.posterTypes, selectedPosterTypes),
+                  _getTags(widget.posterTagsLists.posterTypes, selectedPosterTypes),
                   Divider(),
                   _getHeading(AppLocalizations.of(context)!.posterMotive),
-                  _getTags(widget.motiveTypes, selectedMotiveTypes),
+                  _getTags(widget.posterTagsLists.posterTypes, selectedMotiveTypes),
                   Divider(),
                   _getHeading(AppLocalizations.of(context)!.posterTargetGroups),
-                  _getTags(widget.targetGroupTypes, selectedTargetGroupTypes),
+                  _getTags(widget.posterTagsLists.posterTypes, selectedTargetGroupTypes),
                   Divider(),
                   _getHeading(AppLocalizations.of(context)!.posterEnvironment),
-                  _getTags(widget.environmentTypes, selectedEnvironmentTypes),
+                  _getTags(widget.posterTagsLists.posterTypes, selectedEnvironmentTypes),
                   Divider(),
                   _getHeading(AppLocalizations.of(context)!.posterOther),
-                  _getTags(widget.otherTypes, selectedOtherTypes),
+                  _getTags(widget.posterTagsLists.posterTypes, selectedOtherTypes),
                 ]),
               ),
               Positioned(
@@ -111,8 +108,8 @@ class _AddPosterState extends State<AddPoster> {
     );
   }
 
-  Widget _getTags(
-      List<PosterTag> posterTags, List<PosterTag> selectedPosterTags) {
+  Widget _getTags(List<PosterTag> posterTags,
+      List<PosterTag> selectedPosterTags) {
     return Wrap(children: [
       for (PosterTag p in posterTags)
         Padding(
@@ -149,6 +146,7 @@ class _AddPosterState extends State<AddPoster> {
             'other': selectedOtherTypes.map((e) => e.id).toList()
           }));
       if (response.statusCode == 201) {
+        widget.onAddPoster(PosterModel.fromJson(jsonDecode(response.body)));
         Navigator.pop(context);
       } else {
         Messenger.showError(

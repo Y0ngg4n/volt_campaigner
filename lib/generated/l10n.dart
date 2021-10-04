@@ -160,10 +160,50 @@ class S {
     );
   }
 
-  /// `Konnte Plakate Nicht laden`
+  /// `Unhang Poster`
+  String get posterUnhang {
+    return Intl.message(
+      'Unhang Poster',
+      name: 'posterUnhang',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Poster`
+  String get posterEdit {
+    return Intl.message(
+      'Edit Poster',
+      name: 'posterEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recycle Poster`
+  String get posterRecycle {
+    return Intl.message(
+      'Recycle Poster',
+      name: 'posterRecycle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Konnte Plakat nicht ändern`
+  String get errorEditPoster {
+    return Intl.message(
+      'Konnte Plakat nicht ändern',
+      name: 'errorEditPoster',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load Posters`
   String get errorFetchingPosterLocations {
     return Intl.message(
-      'Konnte Plakate Nicht laden',
+      'Could not load Posters',
       name: 'errorFetchingPosterLocations',
       desc: '',
       args: [],

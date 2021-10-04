@@ -10,5 +10,9 @@
   "posterOther": "Other",
   "posterAdd": "Add Poster",
   "errorAddPoster": "Cound not add Poster",
-  "errorFetchingPosterLocations": "Konnte Plakate Nicht laden"
+  "posterUnhang": "Unhang Poster",
+  "posterEdit": "Edit Poster",
+  "posterRecycle": "Recycle Poster",
+  "errorEditPoster": "Konnte Plakat nicht ändern",
+  "errorFetchingPosterLocations": "Could not load Posters"
 }
