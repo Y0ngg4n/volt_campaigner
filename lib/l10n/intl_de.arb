@@ -1,0 +1,13 @@
+{
+  "appTitle": "Volt Campaigner",
+  "addPoster": "Plakat hinzufügen",
+  "poster": "Plakate",
+  "flyer": "Flyer",
+  "posterType": "Plakat-Typ",
+  "posterMotive": "Motiv",
+  "posterTargetGroups": "Zielgruppe",
+  "posterEnvironment": "Umgebung",
+  "posterOther": "Sonstige",
+  "posterAdd": "Poster hinzufügen",
+  "errorAddPoster": "Konnte Poster nicht hinzufügen"
+}
