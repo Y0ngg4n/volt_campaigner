@@ -5,4 +5,5 @@ class SharedPrefsSlugs {
   static const posterCustomDateSwitch = "poster-custom-date-switch";
   static const posterCustomDate = "poster-custom-date";
   static const drawNearestPosterLine = "draw-nearest-poster-line";
+  static const placeMarkerByHand = "place-marker-by-hand";
 }

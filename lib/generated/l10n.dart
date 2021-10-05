@@ -320,11 +320,21 @@ class S {
     );
   }
 
-  /// `Draw Line to nearest Poster`
+  /// `Draw line to nearest Poster`
   String get drawNearestPosterLine {
     return Intl.message(
-      'Draw Line to nearest Poster',
+      'Draw line to nearest Poster',
       name: 'drawNearestPosterLine',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Place marker by hand`
+  String get placeMarkerByHand {
+    return Intl.message(
+      'Place marker by hand',
+      name: 'placeMarkerByHand',
       desc: '',
       args: [],
     );

@@ -26,5 +26,6 @@
   "posterUpdateAfterDateSelection": "Load Posters changed after:",
   "date": "Date",
   "time": "Time",
-  "drawNearestPosterLine": "Draw Line to nearest Poster"
+  "drawNearestPosterLine": "Draw line to nearest Poster",
+  "placeMarkerByHand": "Place marker by hand"
 }

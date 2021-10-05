@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "drawNearestPosterLine":
-            MessageLookupByLibrary.simpleMessage("Draw Line to nearest Poster"),
+            MessageLookupByLibrary.simpleMessage("Draw line to nearest Poster"),
         "errorAddPoster":
             MessageLookupByLibrary.simpleMessage("Could not add Poster"),
         "errorEditPoster":
@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Could not load Posters"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "placeMarkerByHand":
+            MessageLookupByLibrary.simpleMessage("Place marker by hand"),
         "poster": MessageLookupByLibrary.simpleMessage("Poster"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Add Poster"),
         "posterCustomDate": MessageLookupByLibrary.simpleMessage("Custom Date"),

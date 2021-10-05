@@ -45,27 +45,26 @@ class PosterTagsLists {
   List<PosterTag> posterOther;
 
   PosterTagsLists.fromJson(Map<String, dynamic> json)
-      : this.posterCampaign =
-      PosterTags
-          .fromJson(json['poster_campaign'])
+      : this.posterCampaign = PosterTags
+          .fromJson(json['campaign'])
           .posterTags,
         this.posterType = PosterTags
             .fromJson(json['poster_type'])
             .posterTags,
         this.posterMotive =
             PosterTags
-                .fromJson(json['poster_motive'])
+                .fromJson(json['motive'])
                 .posterTags,
         this.posterTargetGroups =
             PosterTags
-                .fromJson(json['poster_target_groups'])
+                .fromJson(json['target_groups'])
                 .posterTags,
         this.posterEnvironment =
             PosterTags
-                .fromJson(json['poster_environment'])
+                .fromJson(json['environment'])
                 .posterTags,
         this.posterOther = PosterTags
-            .fromJson(json['poster_other'])
+            .fromJson(json['other'])
             .posterTags;
 
   PosterTagsLists(this.posterCampaign, this.posterType, this.posterMotive,

@@ -40,7 +40,7 @@ class PosterModel {
             LatLng(json['latitude'].toDouble(), json['longitude'].toDouble()),
         hanging = int.parse(json['hanging']),
         posterTagsLists = PosterTagsLists.fromJson(json),
-        account = json['account'];
+        account = json['account'] ?? "";
 }
 
 class PosterModels {

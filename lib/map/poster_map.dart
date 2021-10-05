@@ -1,7 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/flutter_map.dart'
+    show
+        Anchor,
+        AnchorPos,
+        FitBoundsOptions,
+        FlutterMap,
+        MapController,
+        MapOptions,
+        MapPosition,
+        Marker,
+        Polyline,
+        PolylineLayerOptions,
+        TileLayerOptions,
+        TileLayerWidget;
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -48,6 +61,7 @@ class _PosterMapViewState extends State<PosterMapView> {
   late StreamSubscription<Position> _currentPositionStreamSubscription;
   late SharedPreferences prefs;
   bool drawNearestPosterLine = false;
+  MapController mapController = new MapController();
 
   @override
   void initState() {
@@ -73,6 +87,7 @@ class _PosterMapViewState extends State<PosterMapView> {
     _addPolylines();
     return Stack(children: [
       FlutterMap(
+        mapController: mapController,
         children: [
           TileLayerWidget(
             options: TileLayerOptions(
@@ -96,7 +111,14 @@ class _PosterMapViewState extends State<PosterMapView> {
         nonRotatedLayers: [],
       ),
       Positioned(right: 20, top: 20, child: _getRefreshFab()),
-      Positioned(right: 20, bottom: 20, child: _getAddPosterFab())
+      Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
+      Positioned(
+          top: 5,
+          left: 25,
+          right: 0,
+          bottom: 0,
+          child:
+          Icon(Icons.location_pin))
     ]);
   }
 
@@ -137,7 +159,10 @@ class _PosterMapViewState extends State<PosterMapView> {
         if (nearest != null) {
           points.add(nearest.location);
           polylines[Polyline(
-              points: points, strokeWidth: 4.0, color: Colors.purple, isDotted: true)] = points;
+              points: points,
+              strokeWidth: 4.0,
+              color: Colors.purple,
+              isDotted: true)] = points;
         }
       }
     });
@@ -204,6 +229,9 @@ class _PosterMapViewState extends State<PosterMapView> {
 
   _getMapOptions() {
     return MapOptions(
+        onTap: (tapPosition, point) {
+          print(mapController.center.toString());
+        },
         center: widget.currentPosition,
         zoom: 13.0,
         plugins: [

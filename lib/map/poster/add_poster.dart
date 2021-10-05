@@ -115,6 +115,7 @@ class _AddPosterState extends State<AddPoster> {
           body: jsonEncode({
             'latitude': widget.location.latitude,
             'longitude': widget.location.longitude,
+            'campaign': [],
             'poster_type': selectedPosterTypes.map((e) => e.id).toList(),
             'motive': selectedMotiveTypes.map((e) => e.id).toList(),
             'target_groups': selectedTargetGroupTypes.map((e) => e.id).toList(),

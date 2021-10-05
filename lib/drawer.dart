@@ -118,7 +118,7 @@ class _DrawerViewState extends State<DrawerView> {
 
   _refresh() async {
     print("Refreshing");
-    await _refreshPosterTags();
+    // await _refreshPosterTags();
     await _refreshPoster();
   }
 
@@ -132,6 +132,7 @@ class _DrawerViewState extends State<DrawerView> {
     String customDate = (prefs.get(SharedPrefsSlugs.posterCustomDate) ??
         DateTime.fromMicrosecondsSinceEpoch(0).toString()) as String;
     PosterModels posterModels;
+
     if (loadAll) {
       posterModels = await PosterApiUtils.getAllPosters(radius, hanging) ??
           PosterModels.empty();
@@ -150,9 +151,9 @@ class _DrawerViewState extends State<DrawerView> {
       }
     }
 
-    setState(() {
-      posterInDistance = posterModels;
-    });
+    // setState(() {
+    //   posterInDistance = posterModels;
+    // });
   }
 
   _refreshPosterTags() async {

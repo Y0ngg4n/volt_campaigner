@@ -26,5 +26,6 @@
   "posterUpdateAfterDateSelection": "Lade Plakate die geändert wurden nach:",
   "date": "Datum",
   "time": "Zeit",
-  "drawNearestPosterLine": "Zeichne Linie zum nächsten Plakat"
+  "drawNearestPosterLine": "Zeichne Linie zum nächsten Plakat",
+  "placeMarkerByHand": "Ermöglicht es Plakate von Hand zu plazieren"
 }

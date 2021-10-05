@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht laden"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "placeMarkerByHand": MessageLookupByLibrary.simpleMessage(
+            "Ermöglicht es Plakate von Hand zu plazieren"),
         "poster": MessageLookupByLibrary.simpleMessage("Plakate"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "posterCustomDate":

@@ -20,6 +20,7 @@ class _SettingsViewState extends State<SettingsView> {
   bool customDateSwitch = false;
   String customDate = DateTime.fromMicrosecondsSinceEpoch(0).toString();
   bool drawNearestPosterLine = false;
+  bool placeMarkerByHand = false;
   late SharedPreferences prefs;
   late List<bool> hangingSelected = [true, false, false];
 
@@ -42,6 +43,9 @@ class _SettingsViewState extends State<SettingsView> {
           drawNearestPosterLine =
               (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ?? customDate)
                   as bool;
+          placeMarkerByHand =
+          (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ?? customDate)
+          as bool;
 
           hangingSelected =
               List.generate(3, (i) => i == hanging ? true : false);
@@ -190,6 +194,21 @@ class _SettingsViewState extends State<SettingsView> {
                 setState(() {
                   drawNearestPosterLine = value;
                   prefs.setBool(SharedPrefsSlugs.drawNearestPosterLine, value);
+                });
+              },
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(AppLocalizations.of(context)!.placeMarkerByHand),
+            Switch(
+              value: placeMarkerByHand,
+              onChanged: (value) {
+                setState(() {
+                  placeMarkerByHand = value;
+                  prefs.setBool(SharedPrefsSlugs.placeMarkerByHand, value);
                 });
               },
             ),
