@@ -10,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../http_utils.dart';
 
 class PosterApiUtils {
-  static Future<PosterModels?> getPointsInDistance(LatLng location, double distance, int hanging) async {
+  static Future<PosterModels?> getPostersInDistance(LatLng location, double distance, int hanging, String last_update) async {
 
     try {
       http.Response response = await http.get(
@@ -20,7 +20,8 @@ class PosterApiUtils {
             "latitude": location.latitude.toString(),
             "longitude": location.longitude.toString(),
             "distance": distance.toString(),
-            "hanging": hanging.toString()
+            "hanging": hanging.toString(),
+            "last_update": last_update
           });
       if (response.statusCode == 200) {
         return PosterModels.fromJson(jsonDecode(response.body));
@@ -34,5 +35,25 @@ class PosterApiUtils {
     }
   }
 
+  static Future<PosterModels?> getAllPosters(double distance, int hanging) async {
+
+    try {
+      http.Response response = await http.get(
+          Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/all"),
+          headers: {
+            "accept": "application/json",
+            "hanging": hanging.toString()
+          });
+      if (response.statusCode == 200) {
+        return PosterModels.fromJson(jsonDecode(response.body));
+      } else {
+        print("Could not refresh Poster");
+        // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+      }
+    } catch (e) {
+      print(e);
+      // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+    }
+  }
 
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:volt_campaigner/map/poster/poster_settings.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -50,20 +51,20 @@ class _AddPosterState extends State<AddPoster> {
             children: [
               SingleChildScrollView(
                 child: Column(children: [
-                  _getHeading(AppLocalizations.of(context)!.posterType),
-                  _getTags(widget.posterTagsLists.posterTypes, selectedPosterTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterType),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedPosterTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterMotive),
-                  _getTags(widget.posterTagsLists.posterTypes, selectedMotiveTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterMotive),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedMotiveTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterTargetGroups),
-                  _getTags(widget.posterTagsLists.posterTypes, selectedTargetGroupTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterTargetGroups),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedTargetGroupTypes,(p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterEnvironment),
-                  _getTags(widget.posterTagsLists.posterTypes, selectedEnvironmentTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterEnvironment),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedEnvironmentTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterOther),
-                  _getTags(widget.posterTagsLists.posterTypes, selectedOtherTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterOther),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedOtherTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                 ]),
               ),
               Positioned(
@@ -96,39 +97,14 @@ class _AddPosterState extends State<AddPoster> {
         ));
   }
 
-  Widget _getHeading(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(children: [
-        Text(
-          text,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        )
-      ]),
-    );
-  }
-
-  Widget _getTags(List<PosterTag> posterTags,
-      List<PosterTag> selectedPosterTags) {
-    return Wrap(children: [
-      for (PosterTag p in posterTags)
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: ChoiceChip(
-            label: Text(p.name),
-            selected: selectedPosterTags.contains(p),
-            onSelected: (selected) {
-              setState(() {
-                if (selectedPosterTags.contains(p)) {
-                  selectedPosterTags.remove(p);
-                } else {
-                  selectedPosterTags.add(p);
-                }
-              });
-            },
-          ),
-        ),
-    ]);
+  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags){
+    setState(() {
+      if (selectedPosterTags.contains(p)) {
+        selectedPosterTags.remove(p);
+      } else {
+        selectedPosterTags.add(p);
+      }
+    });
   }
 
   _addPoster() async {

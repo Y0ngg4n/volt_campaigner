@@ -45,6 +45,10 @@ dev_dependencies:
   # Env
   flutter_dotenv: ^5.0.2
   geolocator: ^7.6.2
+  # Storage
+  shared_preferences: ^2.0.8
+  # Settings
+  date_time_picker: ^2.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -52,11 +52,9 @@ class _PosterMapViewState extends State<PosterMapView> {
 
     _currentPositionStreamSubscription =
         Geolocator.getPositionStream().listen((position) {
-          setState(() =>
-              widget
-                  .onLocationUpdate(
-                  LatLng(position.latitude, position.longitude)));
-        });
+      setState(() => widget
+          .onLocationUpdate(LatLng(position.latitude, position.longitude)));
+    });
   }
 
   Widget build(BuildContext context) {
@@ -92,7 +90,7 @@ class _PosterMapViewState extends State<PosterMapView> {
             onPositionChanged: (MapPosition position, bool hasGesture) {
               if (hasGesture) {
                 setState(() =>
-                _centerOnLocationUpdate = CenterOnLocationUpdate.never);
+                    _centerOnLocationUpdate = CenterOnLocationUpdate.never);
               }
             }),
         layers: [
@@ -101,16 +99,19 @@ class _PosterMapViewState extends State<PosterMapView> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          UpdatePoster(
+                      builder: (context) => UpdatePoster(
                             selectedPoster: markers[marker]!,
                             posterTagsLists: widget.posterTagsLists,
                             location: widget.currentPosition,
                             onUnhangPoster: (poster) => {
-                              setState(() {markers.remove(marker);})
+                              setState(() {
+                                markers.remove(marker);
+                              })
                             },
                             onUpdatePoster: (poster) => {
-                              setState((){markers[marker] = poster;})
+                              setState(() {
+                                markers[marker] = poster;
+                              })
                             },
                             selectedMarker: marker,
                           )));
@@ -145,8 +146,7 @@ class _PosterMapViewState extends State<PosterMapView> {
           onPressed: () {
             // Automatically center the location marker on the map when location updated until user interact with the map.
             setState(
-                    () =>
-                _centerOnLocationUpdate = CenterOnLocationUpdate.always);
+                () => _centerOnLocationUpdate = CenterOnLocationUpdate.always);
             // Center the location marker on the map and zoom the map to level 18.
             _userPositionStreamController.add(18);
             widget.onRefresh();
@@ -168,8 +168,7 @@ class _PosterMapViewState extends State<PosterMapView> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      AddPoster(
+                  builder: (context) => AddPoster(
                         posterTagsLists: widget.posterTagsLists,
                         location: widget.currentPosition,
                         onAddPoster: (poster) =>
@@ -194,11 +193,10 @@ class _PosterMapViewState extends State<PosterMapView> {
           height: 50,
           rotate: true,
           point: posterModel.location,
-          builder: (ctx) =>
-              Icon(
-                Icons.location_pin,
-                size: 50,
-              ),
+          builder: (ctx) => Icon(
+            Icons.location_pin,
+            size: 50,
+          ),
         );
         markers[marker] = posterModel;
       }

@@ -90,6 +90,16 @@ class S {
     );
   }
 
+  /// `Settings`
+  String get settings {
+    return Intl.message(
+      'Settings',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Poster-Type`
   String get posterType {
     return Intl.message(
@@ -150,10 +160,10 @@ class S {
     );
   }
 
-  /// `Cound not add Poster`
+  /// `Could not add Poster`
   String get errorAddPoster {
     return Intl.message(
-      'Cound not add Poster',
+      'Could not add Poster',
       name: 'errorAddPoster',
       desc: '',
       args: [],
@@ -190,10 +200,10 @@ class S {
     );
   }
 
-  /// `Konnte Plakat nicht ändern`
+  /// `Could not edit Poster`
   String get errorEditPoster {
     return Intl.message(
-      'Konnte Plakat nicht ändern',
+      'Could not edit Poster',
       name: 'errorEditPoster',
       desc: '',
       args: [],
@@ -205,6 +215,106 @@ class S {
     return Intl.message(
       'Could not load Posters',
       name: 'errorFetchingPosterLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Posters in Radius of `
+  String get posterRadius {
+    return Intl.message(
+      'Load Posters in Radius of ',
+      name: 'posterRadius',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load all Posters`
+  String get posterLoadAll {
+    return Intl.message(
+      'Load all Posters',
+      name: 'posterLoadAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Posters that are `
+  String get posterHanginDescription {
+    return Intl.message(
+      'Load Posters that are ',
+      name: 'posterHanginDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hanging`
+  String get posterHangingStatus {
+    return Intl.message(
+      'hanging',
+      name: 'posterHangingStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `unhanged`
+  String get posterUnhangStatus {
+    return Intl.message(
+      'unhanged',
+      name: 'posterUnhangStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `recycled`
+  String get posterRecycleStatus {
+    return Intl.message(
+      'recycled',
+      name: 'posterRecycleStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Date`
+  String get posterCustomDate {
+    return Intl.message(
+      'Custom Date',
+      name: 'posterCustomDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Posters changed after:`
+  String get posterUpdateAfterDateSelection {
+    return Intl.message(
+      'Load Posters changed after:',
+      name: 'posterUpdateAfterDateSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get date {
+    return Intl.message(
+      'Date',
+      name: 'date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time`
+  String get time {
+    return Intl.message(
+      'Time',
+      name: 'time',
       desc: '',
       args: [],
     );

@@ -23,24 +23,39 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "addPoster": MessageLookupByLibrary.simpleMessage("Add Poster"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
+        "date": MessageLookupByLibrary.simpleMessage("Date"),
         "errorAddPoster":
-            MessageLookupByLibrary.simpleMessage("Cound not add Poster"),
+            MessageLookupByLibrary.simpleMessage("Could not add Poster"),
         "errorEditPoster":
-            MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht ändern"),
+            MessageLookupByLibrary.simpleMessage("Could not edit Poster"),
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Could not load Posters"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "poster": MessageLookupByLibrary.simpleMessage("Poster"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Add Poster"),
+        "posterCustomDate": MessageLookupByLibrary.simpleMessage("Custom Date"),
         "posterEdit": MessageLookupByLibrary.simpleMessage("Edit Poster"),
         "posterEnvironment":
             MessageLookupByLibrary.simpleMessage("Environment"),
+        "posterHanginDescription":
+            MessageLookupByLibrary.simpleMessage("Load Posters that are "),
+        "posterHangingStatus": MessageLookupByLibrary.simpleMessage("hanging"),
+        "posterLoadAll":
+            MessageLookupByLibrary.simpleMessage("Load all Posters"),
         "posterMotive": MessageLookupByLibrary.simpleMessage("Motive"),
         "posterOther": MessageLookupByLibrary.simpleMessage("Other"),
+        "posterRadius":
+            MessageLookupByLibrary.simpleMessage("Load Posters in Radius of "),
         "posterRecycle": MessageLookupByLibrary.simpleMessage("Recycle Poster"),
+        "posterRecycleStatus": MessageLookupByLibrary.simpleMessage("recycled"),
         "posterTargetGroups":
             MessageLookupByLibrary.simpleMessage("Target-Groups"),
         "posterType": MessageLookupByLibrary.simpleMessage("Poster-Type"),
-        "posterUnhang": MessageLookupByLibrary.simpleMessage("Unhang Poster")
+        "posterUnhang": MessageLookupByLibrary.simpleMessage("Unhang Poster"),
+        "posterUnhangStatus": MessageLookupByLibrary.simpleMessage("unhanged"),
+        "posterUpdateAfterDateSelection":
+            MessageLookupByLibrary.simpleMessage("Load Posters changed after:"),
+        "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "time": MessageLookupByLibrary.simpleMessage("Time")
       };
 }

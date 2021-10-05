@@ -3,6 +3,7 @@
   "addPoster": "Plakat hinzufügen",
   "poster": "Plakate",
   "flyer": "Flyer",
+  "settings": "Einstellungen",
   "posterType": "Plakat-Typ",
   "posterMotive": "Motiv",
   "posterTargetGroups": "Zielgruppe",
@@ -14,5 +15,15 @@
   "posterRecycle": "Plakat recycle",
   "posterEdit": "Plakat bearbeiten",
   "errorEditPoster": "Konnte Plakat nicht ändern",
-  "errorFetchingPosterLocations": "Konnte Plakat nicht laden"
+  "errorFetchingPosterLocations": "Konnte Plakat nicht laden",
+  "posterRadius": "Plakate laden im Umkreis von ",
+  "posterLoadAll": "Alle Plakate laden",
+  "posterHanginDescription": "Plakate laden die ",
+  "posterHangingStatus": "hängen",
+  "posterUnhangStatus": "abgehängt wurden",
+  "posterRecycleStatus": "wiederverwendet wurden",
+  "posterCustomDate": "Bentzerdefiniertes Datum",
+  "posterUpdateAfterDateSelection": "Lade Plakate die geändert wurden nach:",
+  "date": "Datum",
+  "time": "Zeit"
 }

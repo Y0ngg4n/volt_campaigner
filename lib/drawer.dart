@@ -3,14 +3,17 @@ import 'dart:async';
 import 'package:volt_campaigner/map/poster_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:volt_campaigner/settings/settings.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
 
 import 'map/poster/add_poster.dart';
 import 'map/poster/poster_tags.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-enum DrawerSelection { POSTER, FLYER }
+enum DrawerSelection { POSTER, FLYER, SETTINGS }
 
 class DrawerView extends StatefulWidget {
   const DrawerView({Key? key}) : super(key: key);
@@ -27,13 +30,17 @@ class _DrawerViewState extends State<DrawerView> {
 
   LatLng currentPosition = LatLng(0, 0);
   PosterTagsLists posterTagsLists = new PosterTagsLists();
+  late SharedPreferences prefs;
 
   @override
   void initState() {
     super.initState();
+    SharedPreferences.getInstance().then((value) => setState(() {
+          prefs = value;
+          _refresh();
+        }));
     refreshTimer =
         Timer.periodic(Duration(seconds: 30), (Timer t) => _refresh());
-    _refresh();
   }
 
   @override
@@ -73,6 +80,15 @@ class _DrawerViewState extends State<DrawerView> {
               Navigator.pop(context);
             },
           ),
+          ListTile(
+            title: Text(AppLocalizations.of(context)!.settings),
+            onTap: () {
+              setState(() {
+                drawerSelection = DrawerSelection.SETTINGS;
+              });
+              Navigator.pop(context);
+            },
+          ),
         ]),
       ),
     );
@@ -81,7 +97,8 @@ class _DrawerViewState extends State<DrawerView> {
   Widget _getBody() {
     switch (drawerSelection) {
       case DrawerSelection.POSTER:
-        return PosterMapView(posterInDistance: posterInDistance,
+        return PosterMapView(
+          posterInDistance: posterInDistance,
           currentPosition: currentPosition,
           onLocationUpdate: (location) {
             setState(() {
@@ -93,14 +110,38 @@ class _DrawerViewState extends State<DrawerView> {
         );
       case DrawerSelection.FLYER:
         return Container();
+      case DrawerSelection.SETTINGS:
+        return SettingsView();
     }
   }
 
   _refresh() async {
     print("Refreshing");
-    PosterModels posterModels = await PosterApiUtils.getPointsInDistance(
-        currentPosition, 1000000000, 0) ??
-        PosterModels.empty();
+    int hanging = (prefs.get(SharedPrefsSlugs.posterHanging) ?? 0) as int;
+    double radius = (prefs.get(SharedPrefsSlugs.posterRadius) ?? 100.0) as double;
+    bool loadAll = (prefs.get(SharedPrefsSlugs.posterLoadAll) ?? false) as bool;
+    bool customDateSwitch =
+        (prefs.get(SharedPrefsSlugs.posterCustomDateSwitch) ?? false) as bool;
+    String customDate =
+        (prefs.get(SharedPrefsSlugs.posterCustomDate) ?? DateTime.fromMicrosecondsSinceEpoch(0).toString()) as String;
+    PosterModels posterModels;
+    if (loadAll) {
+      posterModels = await PosterApiUtils.getAllPosters(radius, hanging) ??
+          PosterModels.empty();
+    } else {
+      if (customDateSwitch) {
+        posterModels = await PosterApiUtils.getPostersInDistance(
+                currentPosition, radius, hanging, customDate) ??
+            PosterModels.empty();
+      } else {
+        posterModels = await PosterApiUtils.getPostersInDistance(
+                currentPosition,
+                radius,
+                hanging,
+                DateTime.fromMicrosecondsSinceEpoch(0).toString()) ??
+            PosterModels.empty();
+      }
+    }
     setState(() {
       posterInDistance = posterModels;
     });

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:volt_campaigner/map/poster/poster_settings.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +12,8 @@ import 'package:volt_campaigner/utils/http_utils.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
+import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef OnUnhangPoster = Function(PosterModel);
 typedef OnUpdatePoster = Function(PosterModel);
@@ -44,9 +47,18 @@ class _UpdatePosterState extends State<UpdatePoster> {
   List<PosterTag> selectedEnvironmentTypes = [];
   List<PosterTag> selectedOtherTypes = [];
 
+  late SharedPreferences prefs;
+  int hanging = 0;
+
   @override
   void initState() {
     super.initState();
+    SharedPreferences.getInstance().then((value) => setState(() {
+          prefs = value;
+          hanging =
+              (prefs.get(SharedPrefsSlugs.posterHanging) ?? hanging) as int;
+        }));
+
     for (PosterTag tag in widget.posterTagsLists.posterTypes) {
       for (PosterTag posterTag in widget.selectedPoster.posterType) {
         if (tag.id == posterTag.id) {
@@ -71,25 +83,20 @@ class _UpdatePosterState extends State<UpdatePoster> {
             children: [
               SingleChildScrollView(
                 child: Column(children: [
-                  _getHeading(AppLocalizations.of(context)!.posterType),
-                  _getTags(
-                      widget.posterTagsLists.posterTypes, selectedPosterTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterType),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedPosterTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterMotive),
-                  _getTags(
-                      widget.posterTagsLists.posterTypes, selectedMotiveTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterMotive),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedMotiveTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterTargetGroups),
-                  _getTags(widget.posterTagsLists.posterTypes,
-                      selectedTargetGroupTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterTargetGroups),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedTargetGroupTypes,(p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterEnvironment),
-                  _getTags(widget.posterTagsLists.posterTypes,
-                      selectedEnvironmentTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterEnvironment),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedEnvironmentTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  _getHeading(AppLocalizations.of(context)!.posterOther),
-                  _getTags(
-                      widget.posterTagsLists.posterTypes, selectedOtherTypes),
+                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterOther),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedOtherTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                 ]),
               ),
               Positioned(
@@ -101,13 +108,13 @@ class _UpdatePosterState extends State<UpdatePoster> {
                     children: [
                       Padding(
                         padding:
-                        EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                         child: OutlinedButton(
                             onPressed: () =>
                                 _updatePoster(widget.selectedPoster, 2),
                             child: Row(
                               children: [
-                                Icon(Icons.delete),
+                                Icon(Icons.repeat),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 16),
@@ -167,40 +174,14 @@ class _UpdatePosterState extends State<UpdatePoster> {
           ),
         ));
   }
-
-  Widget _getHeading(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(children: [
-        Text(
-          text,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        )
-      ]),
-    );
-  }
-
-  Widget _getTags(
-      List<PosterTag> posterTags, List<PosterTag> selectedPosterTags) {
-    return Wrap(children: [
-      for (PosterTag p in posterTags)
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: ChoiceChip(
-            label: Text(p.name),
-            selected: selectedPosterTags.contains(p),
-            onSelected: (selected) {
-              setState(() {
-                if (selectedPosterTags.contains(p)) {
-                  selectedPosterTags.remove(p);
-                } else {
-                  selectedPosterTags.add(p);
-                }
-              });
-            },
-          ),
-        ),
-    ]);
+  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags){
+    setState(() {
+      if (selectedPosterTags.contains(p)) {
+        selectedPosterTags.remove(p);
+      } else {
+        selectedPosterTags.add(p);
+      }
+    });
   }
 
   _updatePoster(PosterModel posterModel, int hanging) async {

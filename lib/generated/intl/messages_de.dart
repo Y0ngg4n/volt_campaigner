@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "addPoster": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
+        "date": MessageLookupByLibrary.simpleMessage("Datum"),
         "errorAddPoster": MessageLookupByLibrary.simpleMessage(
             "Konnte Plakat nicht hinzufügen"),
         "errorEditPoster":
@@ -32,14 +33,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "poster": MessageLookupByLibrary.simpleMessage("Plakate"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
+        "posterCustomDate":
+            MessageLookupByLibrary.simpleMessage("Bentzerdefiniertes Datum"),
         "posterEdit": MessageLookupByLibrary.simpleMessage("Plakat bearbeiten"),
         "posterEnvironment": MessageLookupByLibrary.simpleMessage("Umgebung"),
+        "posterHanginDescription":
+            MessageLookupByLibrary.simpleMessage("Plakate laden die "),
+        "posterHangingStatus": MessageLookupByLibrary.simpleMessage("hängen"),
+        "posterLoadAll":
+            MessageLookupByLibrary.simpleMessage("Alle Plakate laden"),
         "posterMotive": MessageLookupByLibrary.simpleMessage("Motiv"),
         "posterOther": MessageLookupByLibrary.simpleMessage("Sonstige"),
+        "posterRadius": MessageLookupByLibrary.simpleMessage(
+            "Plakate laden im Umkreis von "),
         "posterRecycle": MessageLookupByLibrary.simpleMessage("Plakat recycle"),
+        "posterRecycleStatus":
+            MessageLookupByLibrary.simpleMessage("wiederverwendet wurden"),
         "posterTargetGroups":
             MessageLookupByLibrary.simpleMessage("Zielgruppe"),
         "posterType": MessageLookupByLibrary.simpleMessage("Plakat-Typ"),
-        "posterUnhang": MessageLookupByLibrary.simpleMessage("Plakat abhängen")
+        "posterUnhang": MessageLookupByLibrary.simpleMessage("Plakat abhängen"),
+        "posterUnhangStatus":
+            MessageLookupByLibrary.simpleMessage("abgehängt wurden"),
+        "posterUpdateAfterDateSelection": MessageLookupByLibrary.simpleMessage(
+            "Lade Plakate die geändert wurden nach:"),
+        "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
+        "time": MessageLookupByLibrary.simpleMessage("Zeit")
       };
 }
