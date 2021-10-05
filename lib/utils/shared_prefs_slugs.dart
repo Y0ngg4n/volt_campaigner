@@ -4,4 +4,5 @@ class SharedPrefsSlugs {
   static const posterHanging = "poster-hanging";
   static const posterCustomDateSwitch = "poster-custom-date-switch";
   static const posterCustomDate = "poster-custom-date";
+  static const drawNearestPosterLine = "draw-nearest-poster-line";
 }

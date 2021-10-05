@@ -319,6 +319,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Draw Line to nearest Poster`
+  String get drawNearestPosterLine {
+    return Intl.message(
+      'Draw Line to nearest Poster',
+      name: 'drawNearestPosterLine',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

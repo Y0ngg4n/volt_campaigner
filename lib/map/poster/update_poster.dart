@@ -58,19 +58,18 @@ class _UpdatePosterState extends State<UpdatePoster> {
           hanging =
               (prefs.get(SharedPrefsSlugs.posterHanging) ?? hanging) as int;
         }));
+    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterType);
+    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterMotive);
+    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterTargetGroups);
+    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterEnvironment);
+    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterOther);
 
-    for (PosterTag tag in widget.posterTagsLists.posterTypes) {
-      for (PosterTag posterTag in widget.selectedPoster.posterType) {
-        if (tag.id == posterTag.id) {
-          setState(() {
-            widget.selectedPoster.posterType[
-                widget.selectedPoster.posterType.indexOf(posterTag)] = tag;
-          });
-        }
-      }
-    }
     setState(() {
-      selectedPosterTypes = widget.selectedPoster.posterType;
+      selectedPosterTypes = widget.selectedPoster.posterTagsLists.posterType;
+      selectedMotiveTypes = widget.selectedPoster.posterTagsLists.posterMotive;
+      selectedTargetGroupTypes = widget.selectedPoster.posterTagsLists.posterTargetGroups;
+      selectedEnvironmentTypes = widget.selectedPoster.posterTagsLists.posterEnvironment;
+      selectedOtherTypes = widget.selectedPoster.posterTagsLists.posterOther;
     });
   }
 
@@ -84,19 +83,19 @@ class _UpdatePosterState extends State<UpdatePoster> {
               SingleChildScrollView(
                 child: Column(children: [
                   PosterSettings.getHeading(AppLocalizations.of(context)!.posterType),
-                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedPosterTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getTags(widget.posterTagsLists.posterType, selectedPosterTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
                   PosterSettings.getHeading(AppLocalizations.of(context)!.posterMotive),
-                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedMotiveTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getTags(widget.posterTagsLists.posterMotive, selectedMotiveTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
                   PosterSettings.getHeading(AppLocalizations.of(context)!.posterTargetGroups),
-                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedTargetGroupTypes,(p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getTags(widget.posterTagsLists.posterTargetGroups, selectedTargetGroupTypes,(p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
                   PosterSettings.getHeading(AppLocalizations.of(context)!.posterEnvironment),
-                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedEnvironmentTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getTags(widget.posterTagsLists.posterEnvironment, selectedEnvironmentTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                   Divider(),
                   PosterSettings.getHeading(AppLocalizations.of(context)!.posterOther),
-                  PosterSettings.getTags(widget.posterTagsLists.posterTypes, selectedOtherTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getTags(widget.posterTagsLists.posterOther, selectedOtherTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
                 ]),
               ),
               Positioned(
@@ -174,6 +173,19 @@ class _UpdatePosterState extends State<UpdatePoster> {
           ),
         ));
   }
+
+  _fillMissingTagDetails(List<PosterTag> tagList){
+    for (PosterTag tag in tagList) {
+      for (PosterTag posterTag in tagList) {
+        if (tag.id == posterTag.id) {
+          setState(() {
+            tagList[tagList.indexOf(posterTag)] = tag;
+          });
+        }
+      }
+    }
+  }
+
   _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags){
     setState(() {
       if (selectedPosterTags.contains(p)) {

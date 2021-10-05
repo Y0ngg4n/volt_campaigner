@@ -24,6 +24,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "addPoster": MessageLookupByLibrary.simpleMessage("Add Poster"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
+        "drawNearestPosterLine":
+            MessageLookupByLibrary.simpleMessage("Draw Line to nearest Poster"),
         "errorAddPoster":
             MessageLookupByLibrary.simpleMessage("Could not add Poster"),
         "errorEditPoster":

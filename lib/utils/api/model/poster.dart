@@ -7,21 +7,15 @@ class PosterModel {
   String id;
   LatLng location;
   int hanging;
-  List<PosterTag> posterType;
-  List<PosterTag> posterMotive;
-  List<PosterTag> posterTargetGroups;
-  List<PosterTag> posterEnvironment;
-  List<PosterTag> posterOther;
+  PosterTagsLists posterTagsLists;
+  String account;
 
   PosterModel(
       this.id,
       this.location,
       this.hanging,
-      this.posterType,
-      this.posterMotive,
-      this.posterTargetGroups,
-      this.posterEnvironment,
-      this.posterOther);
+      this.posterTagsLists,
+      this.account);
 
   toJson() {
     Map<String, dynamic> m = new Map();
@@ -29,11 +23,13 @@ class PosterModel {
     m['latitude'] = location.latitude;
     m['longitude'] = location.longitude;
     m['hanging'] = hanging;
-    m['poster_type'] = posterType;
-    m['poster_motive'] = posterMotive;
-    m['poster_target_groups'] = posterTargetGroups;
-    m['poster_environment'] = posterEnvironment;
-    m['poster_other'] = posterOther;
+    m['poster_campaign'] = posterTagsLists.posterCampaign;
+    m['poster_type'] = posterTagsLists.posterType;
+    m['poster_motive'] = posterTagsLists.posterMotive;
+    m['poster_target_groups'] = posterTagsLists.posterTargetGroups;
+    m['poster_environment'] = posterTagsLists.posterEnvironment;
+    m['poster_other'] = posterTagsLists.posterOther;
+    m['account'] = account;
 
     return m;
   }
@@ -43,12 +39,8 @@ class PosterModel {
         location =
             LatLng(json['latitude'].toDouble(), json['longitude'].toDouble()),
         hanging = int.parse(json['hanging']),
-        posterType = PosterTags.fromJson(json['poster_type']).posterTags,
-        posterMotive = PosterTags.fromJson(json['motive']).posterTags,
-        posterTargetGroups =
-            PosterTags.fromJson(json['target_groups']).posterTags,
-        posterEnvironment = PosterTags.fromJson(json['environment']).posterTags,
-        posterOther = PosterTags.fromJson(json['other']).posterTags;
+        posterTagsLists = PosterTagsLists.fromJson(json),
+        account = json['account'];
 }
 
 class PosterModels {

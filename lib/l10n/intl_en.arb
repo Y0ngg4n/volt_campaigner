@@ -25,5 +25,6 @@
   "posterCustomDate": "Custom Date",
   "posterUpdateAfterDateSelection": "Load Posters changed after:",
   "date": "Date",
-  "time": "Time"
+  "time": "Time",
+  "drawNearestPosterLine": "Draw Line to nearest Poster"
 }

@@ -24,6 +24,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "addPoster": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
         "date": MessageLookupByLibrary.simpleMessage("Datum"),
+        "drawNearestPosterLine": MessageLookupByLibrary.simpleMessage(
+            "Zeichne Linie zum nächsten Plakat"),
         "errorAddPoster": MessageLookupByLibrary.simpleMessage(
             "Konnte Plakat nicht hinzufügen"),
         "errorEditPoster":

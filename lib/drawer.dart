@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/settings/settings.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
+import 'package:volt_campaigner/utils/api/poster_tags.dart';
 
 import 'map/poster/add_poster.dart';
 import 'map/poster/poster_tags.dart';
@@ -29,7 +30,7 @@ class _DrawerViewState extends State<DrawerView> {
   Timer? refreshTimer;
 
   LatLng currentPosition = LatLng(0, 0);
-  PosterTagsLists posterTagsLists = new PosterTagsLists();
+  PosterTagsLists posterTagsLists = PosterTagsLists.empty();
   late SharedPreferences prefs;
 
   @override
@@ -117,13 +118,19 @@ class _DrawerViewState extends State<DrawerView> {
 
   _refresh() async {
     print("Refreshing");
+    await _refreshPosterTags();
+    await _refreshPoster();
+  }
+
+  _refreshPoster() async {
     int hanging = (prefs.get(SharedPrefsSlugs.posterHanging) ?? 0) as int;
-    double radius = (prefs.get(SharedPrefsSlugs.posterRadius) ?? 100.0) as double;
+    double radius =
+        (prefs.get(SharedPrefsSlugs.posterRadius) ?? 100.0) as double;
     bool loadAll = (prefs.get(SharedPrefsSlugs.posterLoadAll) ?? false) as bool;
     bool customDateSwitch =
         (prefs.get(SharedPrefsSlugs.posterCustomDateSwitch) ?? false) as bool;
-    String customDate =
-        (prefs.get(SharedPrefsSlugs.posterCustomDate) ?? DateTime.fromMicrosecondsSinceEpoch(0).toString()) as String;
+    String customDate = (prefs.get(SharedPrefsSlugs.posterCustomDate) ??
+        DateTime.fromMicrosecondsSinceEpoch(0).toString()) as String;
     PosterModels posterModels;
     if (loadAll) {
       posterModels = await PosterApiUtils.getAllPosters(radius, hanging) ??
@@ -142,8 +149,35 @@ class _DrawerViewState extends State<DrawerView> {
             PosterModels.empty();
       }
     }
+
     setState(() {
       posterInDistance = posterModels;
+    });
+  }
+
+  _refreshPosterTags() async {
+    PosterTags campaign =
+        await PosterTagApiUtils.getAllPosterTags('campaign') ?? PosterTags([]);
+    PosterTags type =
+        await PosterTagApiUtils.getAllPosterTags('type') ?? PosterTags([]);
+    PosterTags motive =
+        await PosterTagApiUtils.getAllPosterTags('motive') ?? PosterTags([]);
+    PosterTags targetGroups =
+        await PosterTagApiUtils.getAllPosterTags('target-groups') ??
+            PosterTags([]);
+    PosterTags environment =
+        await PosterTagApiUtils.getAllPosterTags('environment') ??
+            PosterTags([]);
+    PosterTags other =
+        await PosterTagApiUtils.getAllPosterTags('other') ?? PosterTags([]);
+    setState(() {
+      posterTagsLists = PosterTagsLists(
+          campaign.posterTags,
+          type.posterTags,
+          motive.posterTags,
+          targetGroups.posterTags,
+          environment.posterTags,
+          other.posterTags);
     });
   }
 }

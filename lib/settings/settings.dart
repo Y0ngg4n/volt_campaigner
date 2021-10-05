@@ -19,6 +19,7 @@ class _SettingsViewState extends State<SettingsView> {
   int hanging = 0;
   bool customDateSwitch = false;
   String customDate = DateTime.fromMicrosecondsSinceEpoch(0).toString();
+  bool drawNearestPosterLine = false;
   late SharedPreferences prefs;
   late List<bool> hangingSelected = [true, false, false];
 
@@ -31,13 +32,16 @@ class _SettingsViewState extends State<SettingsView> {
               (prefs.get(SharedPrefsSlugs.posterRadius) ?? radius) as double;
           loadAll =
               (prefs.get(SharedPrefsSlugs.posterLoadAll) ?? loadAll) as bool;
-          customDateSwitch = (prefs.get(SharedPrefsSlugs.posterCustomDateSwitch) ??
-              customDateSwitch) as bool;
+          customDateSwitch =
+              (prefs.get(SharedPrefsSlugs.posterCustomDateSwitch) ??
+                  customDateSwitch) as bool;
           hanging =
               (prefs.get(SharedPrefsSlugs.posterHanging) ?? hanging) as int;
           customDate = (prefs.get(SharedPrefsSlugs.posterCustomDate) ??
               customDate) as String;
-          print(customDate);
+          drawNearestPosterLine =
+              (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ?? customDate)
+                  as bool;
 
           hangingSelected =
               List.generate(3, (i) => i == hanging ? true : false);
@@ -52,6 +56,21 @@ class _SettingsViewState extends State<SettingsView> {
           visible: !loadAll,
           child: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(AppLocalizations.of(context)!.posterLoadAll),
+                  Switch(
+                    value: loadAll,
+                    onChanged: (bool value) {
+                      setState(() {
+                        loadAll = value;
+                        prefs.setBool(SharedPrefsSlugs.posterLoadAll, value);
+                      });
+                    },
+                  ),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(AppLocalizations.of(context)!.posterRadius +
@@ -71,21 +90,6 @@ class _SettingsViewState extends State<SettingsView> {
                   label: _getRadiusText()),
             ],
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(AppLocalizations.of(context)!.posterLoadAll),
-            Switch(
-              value: loadAll,
-              onChanged: (bool value) {
-                setState(() {
-                  loadAll = value;
-                  prefs.setBool(SharedPrefsSlugs.posterLoadAll, value);
-                });
-              },
-            ),
-          ],
         ),
         Visibility(
           visible: !loadAll,
@@ -124,6 +128,7 @@ class _SettingsViewState extends State<SettingsView> {
             ],
           ),
         ),
+        Divider(),
         Visibility(
             visible: !loadAll,
             child: Column(
@@ -134,6 +139,7 @@ class _SettingsViewState extends State<SettingsView> {
                       .posterUpdateAfterDateSelection),
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(AppLocalizations.of(context)!.posterCustomDate),
                     Switch(
@@ -172,7 +178,23 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                 )
               ],
-            ))
+            )),
+        Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(AppLocalizations.of(context)!.drawNearestPosterLine),
+            Switch(
+              value: drawNearestPosterLine,
+              onChanged: (value) {
+                setState(() {
+                  drawNearestPosterLine = value;
+                  prefs.setBool(SharedPrefsSlugs.drawNearestPosterLine, value);
+                });
+              },
+            ),
+          ],
+        ),
       ],
     );
   }

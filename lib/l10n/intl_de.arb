@@ -25,5 +25,6 @@
   "posterCustomDate": "Bentzerdefiniertes Datum",
   "posterUpdateAfterDateSelection": "Lade Plakate die geändert wurden nach:",
   "date": "Datum",
-  "time": "Zeit"
+  "time": "Zeit",
+  "drawNearestPosterLine": "Zeichne Linie zum nächsten Plakat"
 }
