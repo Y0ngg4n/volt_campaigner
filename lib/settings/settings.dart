@@ -31,7 +31,7 @@ class _SettingsViewState extends State<SettingsView> {
               (prefs.get(SharedPrefsSlugs.posterRadius) ?? radius) as double;
           loadAll =
               (prefs.get(SharedPrefsSlugs.posterLoadAll) ?? loadAll) as bool;
-          customDateSwitch = (prefs.get(SharedPrefsSlugs.posterLoadAll) ??
+          customDateSwitch = (prefs.get(SharedPrefsSlugs.posterCustomDateSwitch) ??
               customDateSwitch) as bool;
           hanging =
               (prefs.get(SharedPrefsSlugs.posterHanging) ?? hanging) as int;
@@ -158,7 +158,12 @@ class _SettingsViewState extends State<SettingsView> {
                     lastDate: DateTime.now(),
                     dateLabelText: AppLocalizations.of(context)!.date,
                     timeLabelText: AppLocalizations.of(context)!.time,
-                    onChanged: (val) => print(val),
+                    onChanged: (val) => {
+                      setState(() {
+                        customDate = val;
+                        prefs.setString(SharedPrefsSlugs.posterCustomDate, val);
+                      })
+                    },
                     validator: (val) {
                       print(val);
                       return null;
