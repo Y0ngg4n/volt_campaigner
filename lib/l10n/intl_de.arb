@@ -31,5 +31,8 @@
   "drawNearestPosterLine": "Zeichne Linie zum nächsten Plakat",
   "placeMarkerByHand": "Ermöglicht es Plakate von Hand zu plazieren",
   "search": "Suche",
-  "noData": "Keine Daten"
+  "noData": "Keine Daten",
+  "export": "Export",
+  "exportAs": "Export als ",
+  "successExport": "Erfolgreich in deinen Downloads-Ordner exportiert"
 }

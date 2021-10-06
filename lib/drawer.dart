@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:volt_campaigner/export/export.dart';
 import 'package:volt_campaigner/map/poster_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/settings/settings.dart';
+import 'package:volt_campaigner/statistics/Statistics.dart';
 import 'package:volt_campaigner/statistics/pie_charts.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
@@ -16,7 +18,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum DrawerSelection { POSTER, FLYER, STATISTICS, SETTINGS }
+enum DrawerSelection { POSTER, FLYER, STATISTICS, EXPORT, SETTINGS }
 
 class DrawerView extends StatefulWidget {
   const DrawerView({Key? key}) : super(key: key);
@@ -50,6 +52,7 @@ class _DrawerViewState extends State<DrawerView> {
           });
 
           Future.delayed(Duration(seconds: 1), () => _refresh());
+          Future.delayed(Duration(seconds: 5), () => _refresh());
         }));
     refreshTimer =
         Timer.periodic(Duration(seconds: 30), (Timer t) => _refresh());
@@ -81,7 +84,9 @@ class _DrawerViewState extends State<DrawerView> {
           _getListTile(AppLocalizations.of(context)!.statistics,
               DrawerSelection.STATISTICS),
           _getListTile(
-              AppLocalizations.of(context)!.settings, DrawerSelection.SETTINGS)
+              AppLocalizations.of(context)!.settings, DrawerSelection.SETTINGS),
+          _getListTile(
+              AppLocalizations.of(context)!.export, DrawerSelection.EXPORT)
         ]),
       ),
     );
@@ -106,7 +111,7 @@ class _DrawerViewState extends State<DrawerView> {
       case DrawerSelection.FLYER:
         return Container();
       case DrawerSelection.STATISTICS:
-        return PieCharts(
+        return Statistics(
           postersInDistance: posterInDistance,
           posterTagsLists: posterTagsLists,
         );
@@ -117,6 +122,11 @@ class _DrawerViewState extends State<DrawerView> {
             onCampaignSelected: (posterTags) => setState(() {
                   this.campaignTags = posterTags;
                 }));
+      case DrawerSelection.EXPORT:
+        return ExportView(
+          posterModels: posterInDistance,
+          posterTagsLists: posterTagsLists,
+        );
     }
   }
 
@@ -130,6 +140,22 @@ class _DrawerViewState extends State<DrawerView> {
       posterMapWidgetState.currentState!.refresh();
       posterMapWidgetState.currentState!.setRefreshIcon(false);
     }
+    setState(() {
+      for (PosterModel posterModel in posterInDistance.posterModels) {
+        _fillMissingTagDetails(
+            posterModel.posterTagsLists.posterType, posterTagsLists.posterType);
+        _fillMissingTagDetails(posterModel.posterTagsLists.posterCampaign,
+            posterTagsLists.posterCampaign);
+        _fillMissingTagDetails(posterModel.posterTagsLists.posterEnvironment,
+            posterTagsLists.posterEnvironment);
+        _fillMissingTagDetails(posterModel.posterTagsLists.posterTargetGroups,
+            posterTagsLists.posterTargetGroups);
+        _fillMissingTagDetails(posterModel.posterTagsLists.posterOther,
+            posterTagsLists.posterOther);
+        _fillMissingTagDetails(posterModel.posterTagsLists.posterMotive,
+            posterTagsLists.posterMotive);
+      }
+    });
   }
 
   _refreshPoster() async {
@@ -206,5 +232,17 @@ class _DrawerViewState extends State<DrawerView> {
           environment.posterTags,
           other.posterTags);
     });
+  }
+
+  _fillMissingTagDetails(
+      List<PosterTag> posterTagList, List<PosterTag> tagList) {
+    for (PosterTag tag in tagList) {
+      for (PosterTag posterTag in posterTagList) {
+        if (tag.id == posterTag.id) {
+          if (posterTag.name.isEmpty) print("Filled missing");
+          posterTagList[posterTagList.indexOf(posterTag)] = tag;
+        }
+      }
+    }
   }
 }

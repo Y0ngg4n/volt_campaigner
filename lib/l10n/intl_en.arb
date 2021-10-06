@@ -31,5 +31,8 @@
   "drawNearestPosterLine": "Draw line to nearest Poster",
   "placeMarkerByHand": "Place marker by hand",
   "search": "Search",
-  "noData": "Keine Daten"
+  "noData": "No Data",
+  "export": "Export",
+  "exportAs": "Export as ",
+  "successExport": "Successfully exported into your Downloads Folder"
 }

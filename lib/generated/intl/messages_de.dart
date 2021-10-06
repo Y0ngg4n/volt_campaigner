@@ -32,6 +32,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht ändern"),
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht laden"),
+        "export": MessageLookupByLibrary.simpleMessage("Export"),
+        "exportAs": MessageLookupByLibrary.simpleMessage("Export als "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "noData": MessageLookupByLibrary.simpleMessage("Keine Daten"),
         "placeMarkerByHand": MessageLookupByLibrary.simpleMessage(
@@ -66,6 +68,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("Suche"),
         "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
+        "successExport": MessageLookupByLibrary.simpleMessage(
+            "Erfolgreich in deinen Downloads-Ordner exportiert"),
         "time": MessageLookupByLibrary.simpleMessage("Zeit")
       };
 }

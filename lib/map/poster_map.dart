@@ -43,15 +43,15 @@ class PosterMapView extends StatefulWidget {
   PosterTagsLists posterTagsLists;
   PosterTags campaignTags;
 
-  PosterMapView({
-    Key? key,
-    required this.posterInDistance,
-    required this.currentPosition,
-    required this.onLocationUpdate,
-    required this.onRefresh,
-    required this.posterTagsLists,
-    required this.campaignTags
-  }) : super(key: key);
+  PosterMapView(
+      {Key? key,
+      required this.posterInDistance,
+      required this.currentPosition,
+      required this.onLocationUpdate,
+      required this.onRefresh,
+      required this.posterTagsLists,
+      required this.campaignTags})
+      : super(key: key);
 
   @override
   PosterMapViewState createState() => PosterMapViewState();
@@ -194,6 +194,7 @@ class PosterMapViewState extends State<PosterMapView> {
         context,
         MaterialPageRoute(
             builder: (context) => UpdatePoster(
+                  campaignTags: widget.campaignTags,
                   selectedPoster: markers[marker]!,
                   posterTagsLists: widget.posterTagsLists,
                   location: widget.currentPosition,
@@ -244,7 +245,7 @@ class PosterMapViewState extends State<PosterMapView> {
           context,
           MaterialPageRoute(
               builder: (context) => AddPoster(
-                campaignTags: widget.campaignTags,
+                    campaignTags: widget.campaignTags,
                     posterTagsLists: widget.posterTagsLists,
                     location: widget.currentPosition,
                     centerLocation: mapController.center,
@@ -274,7 +275,7 @@ class PosterMapViewState extends State<PosterMapView> {
                     nomatimSearchLocation.longitude),
                 13);
           });
-        }catch(e){}
+        } catch (e) {}
       },
     );
   }

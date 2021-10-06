@@ -46,7 +46,7 @@ class PosterModel {
 class PosterModels {
   List<PosterModel> posterModels = [];
 
-  toJSONEncodable() {
+  toJson() {
     return posterModels.map((item) {
       return item.toJson();
     }).toList();

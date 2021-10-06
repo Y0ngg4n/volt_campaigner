@@ -82,105 +82,23 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Visibility(
-          visible: !loadAll,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(AppLocalizations.of(context)!.posterLoadAll),
-                  Switch(
-                    value: loadAll,
-                    onChanged: (bool value) {
-                      setState(() {
-                        loadAll = value;
-                        prefs.setBool(SharedPrefsSlugs.posterLoadAll, value);
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(AppLocalizations.of(context)!.posterRadius +
-                    _getRadiusText()),
-              ),
-              Slider(
-                  min: 100,
-                  value: radius,
-                  max: 10000,
-                  divisions: 100,
-                  onChanged: (double value) {
-                    setState(() {
-                      radius = value;
-                      prefs.setDouble(SharedPrefsSlugs.posterRadius, value);
-                    });
-                  },
-                  label: _getRadiusText()),
-            ],
-          ),
-        ),
-        Visibility(
-          visible: !loadAll,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(_getPosterHangingStatus()),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ToggleButtons(
-                  children: [
-                    Icon(Icons.location_pin),
-                    Icon(Icons.delete),
-                    Icon(Icons.repeat)
-                  ],
-                  isSelected: hangingSelected,
-                  onPressed: (int index) {
-                    setState(() {
-                      for (int buttonIndex = 0;
-                          buttonIndex < hangingSelected.length;
-                          buttonIndex++) {
-                        if (buttonIndex == index) {
-                          hangingSelected[buttonIndex] = true;
-                          hanging = index;
-                          prefs.setInt(SharedPrefsSlugs.posterHanging, hanging);
-                        } else {
-                          hangingSelected[buttonIndex] = false;
-                        }
-                      }
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        Divider(),
-        Visibility(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Visibility(
             visible: !loadAll,
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(AppLocalizations.of(context)!
-                      .posterUpdateAfterDateSelection),
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(AppLocalizations.of(context)!.posterCustomDate),
+                    Text(AppLocalizations.of(context)!.posterLoadAll),
                     Switch(
-                      value: customDateSwitch,
+                      value: loadAll,
                       onChanged: (bool value) {
                         setState(() {
-                          customDateSwitch = value;
-                          prefs.setBool(
-                              SharedPrefsSlugs.posterCustomDateSwitch, value);
+                          loadAll = value;
+                          prefs.setBool(SharedPrefsSlugs.posterLoadAll, value);
                         });
                       },
                     ),
@@ -188,69 +106,153 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: DateTimePicker(
-                    enabled: customDateSwitch,
-                    type: DateTimePickerType.dateTimeSeparate,
-                    initialValue: customDate,
-                    firstDate: DateTime.fromMicrosecondsSinceEpoch(0),
-                    lastDate: DateTime.now(),
-                    dateLabelText: AppLocalizations.of(context)!.date,
-                    timeLabelText: AppLocalizations.of(context)!.time,
-                    onChanged: (val) => {
+                  child: Text(AppLocalizations.of(context)!.posterRadius +
+                      _getRadiusText()),
+                ),
+                Slider(
+                    min: 100,
+                    value: radius,
+                    max: 10000,
+                    divisions: 100,
+                    onChanged: (double value) {
                       setState(() {
-                        customDate = val;
-                        prefs.setString(SharedPrefsSlugs.posterCustomDate, val);
-                      })
+                        radius = value;
+                        prefs.setDouble(SharedPrefsSlugs.posterRadius, value);
+                      });
                     },
-                    validator: (val) {
-                      print(val);
-                      return null;
-                    },
-                    onSaved: (val) => print(val),
-                  ),
-                )
+                    label: _getRadiusText()),
               ],
-            )),
-        Divider(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(AppLocalizations.of(context)!.drawNearestPosterLine),
-            Switch(
-              value: drawNearestPosterLine,
-              onChanged: (value) {
-                setState(() {
-                  drawNearestPosterLine = value;
-                  prefs.setBool(SharedPrefsSlugs.drawNearestPosterLine, value);
-                });
-              },
             ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(AppLocalizations.of(context)!.placeMarkerByHand),
-            Switch(
-              value: placeMarkerByHand,
-              onChanged: (value) {
-                setState(() {
-                  placeMarkerByHand = value;
-                  prefs.setBool(SharedPrefsSlugs.placeMarkerByHand, value);
-                });
-              },
+          ),
+          Visibility(
+            visible: !loadAll,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(_getPosterHangingStatus()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ToggleButtons(
+                    children: [
+                      Icon(Icons.location_pin),
+                      Icon(Icons.delete),
+                      Icon(Icons.repeat)
+                    ],
+                    isSelected: hangingSelected,
+                    onPressed: (int index) {
+                      setState(() {
+                        for (int buttonIndex = 0;
+                            buttonIndex < hangingSelected.length;
+                            buttonIndex++) {
+                          if (buttonIndex == index) {
+                            hangingSelected[buttonIndex] = true;
+                            hanging = index;
+                            prefs.setInt(SharedPrefsSlugs.posterHanging, hanging);
+                          } else {
+                            hangingSelected[buttonIndex] = false;
+                          }
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        Divider(),
-        PosterSettings.getHeading(AppLocalizations.of(context)!.posterCampaign),
-        PosterSettings.getTags(
-            context,
-            widget.posterTagsLists.posterCampaign,
-            selectedCampaign,
-            (p, selectedPosterTags) =>
-                _onTagSelected(p, selectedPosterTags, false)),
-      ],
+          ),
+          Divider(),
+          Visibility(
+              visible: !loadAll,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(AppLocalizations.of(context)!
+                        .posterUpdateAfterDateSelection),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(AppLocalizations.of(context)!.posterCustomDate),
+                      Switch(
+                        value: customDateSwitch,
+                        onChanged: (bool value) {
+                          setState(() {
+                            customDateSwitch = value;
+                            prefs.setBool(
+                                SharedPrefsSlugs.posterCustomDateSwitch, value);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DateTimePicker(
+                      enabled: customDateSwitch,
+                      type: DateTimePickerType.dateTimeSeparate,
+                      initialValue: customDate,
+                      firstDate: DateTime.fromMicrosecondsSinceEpoch(0),
+                      lastDate: DateTime.now(),
+                      dateLabelText: AppLocalizations.of(context)!.date,
+                      timeLabelText: AppLocalizations.of(context)!.time,
+                      onChanged: (val) => {
+                        setState(() {
+                          customDate = val;
+                          prefs.setString(SharedPrefsSlugs.posterCustomDate, val);
+                        })
+                      },
+                      validator: (val) {
+                        print(val);
+                        return null;
+                      },
+                      onSaved: (val) => print(val),
+                    ),
+                  )
+                ],
+              )),
+          Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(AppLocalizations.of(context)!.drawNearestPosterLine),
+              Switch(
+                value: drawNearestPosterLine,
+                onChanged: (value) {
+                  setState(() {
+                    drawNearestPosterLine = value;
+                    prefs.setBool(SharedPrefsSlugs.drawNearestPosterLine, value);
+                  });
+                },
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(AppLocalizations.of(context)!.placeMarkerByHand),
+              Switch(
+                value: placeMarkerByHand,
+                onChanged: (value) {
+                  setState(() {
+                    placeMarkerByHand = value;
+                    prefs.setBool(SharedPrefsSlugs.placeMarkerByHand, value);
+                  });
+                },
+              ),
+            ],
+          ),
+          Divider(),
+          PosterSettings.getHeading(AppLocalizations.of(context)!.posterCampaign),
+          PosterSettings.getTags(
+              context,
+              widget.posterTagsLists.posterCampaign,
+              selectedCampaign,
+              (p, selectedPosterTags) =>
+                  _onTagSelected(p, selectedPosterTags, false)),
+        ],
+      ),
     );
   }
 

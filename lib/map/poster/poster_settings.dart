@@ -19,6 +19,12 @@ class PosterSettings {
 
   static Widget getTags(BuildContext context, List<PosterTag> posterTags,
       List<PosterTag> selectedPosterTags, OnTagSelected onTagSelected) {
+    // Fix wrong instance. Better Options are welcome
+    for (PosterTag p in posterTags)
+      for (PosterTag posterTag in selectedPosterTags)
+        if (posterTag.id == p.id)
+          selectedPosterTags[selectedPosterTags.indexOf(posterTag)] = p;
+
     return Wrap(children: [
       IconButton(
         icon: Icon(Icons.search),

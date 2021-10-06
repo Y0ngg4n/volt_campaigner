@@ -32,8 +32,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Could not edit Poster"),
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Could not load Posters"),
+        "export": MessageLookupByLibrary.simpleMessage("Export"),
+        "exportAs": MessageLookupByLibrary.simpleMessage("Export as "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
-        "noData": MessageLookupByLibrary.simpleMessage("Keine Daten"),
+        "noData": MessageLookupByLibrary.simpleMessage("No Data"),
         "placeMarkerByHand":
             MessageLookupByLibrary.simpleMessage("Place marker by hand"),
         "poster": MessageLookupByLibrary.simpleMessage("Poster"),
@@ -64,6 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
+        "successExport": MessageLookupByLibrary.simpleMessage(
+            "Successfully exported into your Downloads Folder"),
         "time": MessageLookupByLibrary.simpleMessage("Time")
       };
 }

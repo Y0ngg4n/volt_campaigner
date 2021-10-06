@@ -40,6 +40,7 @@ dev_dependencies:
   latlong2: ^0.8.1
   flutter_map_marker_cluster: ^0.4.0
   flutter_map_location_marker: ^1.0.0
+  cached_network_image: ^3.1.0
   # Theming
   easy_dynamic_theme: ^2.2.0
   # Env
@@ -52,6 +53,11 @@ dev_dependencies:
   # Statistics
   fl_chart: ^0.40.0
   random_color: ^1.0.6-nullsafety
+  # Export
+  gpx: ^2.1.0
+  file_saver: ^0.0.10
+  csv: ^5.0.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

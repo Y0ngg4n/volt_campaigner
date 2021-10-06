@@ -370,11 +370,41 @@ class S {
     );
   }
 
-  /// `Keine Daten`
+  /// `No Data`
   String get noData {
     return Intl.message(
-      'Keine Daten',
+      'No Data',
       name: 'noData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export`
+  String get export {
+    return Intl.message(
+      'Export',
+      name: 'export',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export as `
+  String get exportAs {
+    return Intl.message(
+      'Export as ',
+      name: 'exportAs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successfully exported into your Downloads Folder`
+  String get successExport {
+    return Intl.message(
+      'Successfully exported into your Downloads Folder',
+      name: 'successExport',
       desc: '',
       args: [],
     );

@@ -25,6 +25,7 @@ class UpdatePoster extends StatefulWidget {
   OnUpdatePoster onUpdatePoster;
   Marker selectedMarker;
   PosterModel selectedPoster;
+  PosterTags campaignTags;
 
   UpdatePoster(
       {Key? key,
@@ -33,7 +34,8 @@ class UpdatePoster extends StatefulWidget {
       required this.onUnhangPoster,
       required this.onUpdatePoster,
       required this.selectedMarker,
-      required this.selectedPoster})
+      required this.selectedPoster,
+      required this.campaignTags})
       : super(key: key);
 
   @override
@@ -58,14 +60,6 @@ class _UpdatePosterState extends State<UpdatePoster> {
           hanging =
               (prefs.get(SharedPrefsSlugs.posterHanging) ?? hanging) as int;
         }));
-    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterType);
-    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterMotive);
-    _fillMissingTagDetails(
-        widget.selectedPoster.posterTagsLists.posterTargetGroups);
-    _fillMissingTagDetails(
-        widget.selectedPoster.posterTagsLists.posterEnvironment);
-    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterOther);
-
     setState(() {
       selectedPosterTypes = widget.selectedPoster.posterTagsLists.posterType;
       selectedMotiveTypes = widget.selectedPoster.posterTagsLists.posterMotive;
@@ -75,6 +69,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
           widget.selectedPoster.posterTagsLists.posterEnvironment;
       selectedOtherTypes = widget.selectedPoster.posterTagsLists.posterOther;
     });
+    print(selectedPosterTypes);
   }
 
   @override
@@ -205,18 +200,6 @@ class _UpdatePosterState extends State<UpdatePoster> {
     );
   }
 
-  _fillMissingTagDetails(List<PosterTag> tagList) {
-    for (PosterTag tag in tagList) {
-      for (PosterTag posterTag in tagList) {
-        if (tag.id == posterTag.id) {
-          setState(() {
-            tagList[tagList.indexOf(posterTag)] = tag;
-          });
-        }
-      }
-    }
-  }
-
   _onTagSelected(
       PosterTag p, List<PosterTag> selectedPosterTags, bool multiple) {
     setState(() {
@@ -231,6 +214,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
           headers: HttpUtils.createHeader(),
           body: jsonEncode({
             'id': posterModel.id,
+            'campaign': widget.campaignTags.posterTags.map((e) => e.id).toList(),
             'hanging': hanging,
             'latitude': widget.location.latitude,
             'longitude': widget.location.longitude,
@@ -257,6 +241,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
         }
         Navigator.pop(context);
       } else {
+        print(response.body);
         Messenger.showError(
             context, AppLocalizations.of(context)!.errorEditPoster);
       }
