@@ -10,7 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/http_utils.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
+import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 
 typedef OnAddPoster = Function(PosterModel);
 
@@ -18,13 +20,15 @@ class AddPoster extends StatefulWidget {
   PosterTagsLists posterTagsLists;
   LatLng location;
   OnAddPoster onAddPoster;
+  LatLng centerLocation;
 
-  AddPoster({Key? key,
+  AddPoster({
+    Key? key,
     required this.posterTagsLists,
     required this.location,
-    required this.onAddPoster
-  })
-      : super(key: key);
+    required this.onAddPoster,
+    required this.centerLocation,
+  }) : super(key: key);
 
   @override
   _AddPosterState createState() => _AddPosterState();
@@ -36,10 +40,17 @@ class _AddPosterState extends State<AddPoster> {
   List<PosterTag> selectedTargetGroupTypes = [];
   List<PosterTag> selectedEnvironmentTypes = [];
   List<PosterTag> selectedOtherTypes = [];
+  late SharedPreferences prefs;
+  bool placeMarkerByHand = false;
 
   @override
   void initState() {
     super.initState();
+    SharedPreferences.getInstance().then((value) => setState(() {
+          prefs = value;
+          placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
+              placeMarkerByHand) as bool;
+        }));
   }
 
   @override
@@ -51,20 +62,45 @@ class _AddPosterState extends State<AddPoster> {
             children: [
               SingleChildScrollView(
                 child: Column(children: [
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterType),
-                  PosterSettings.getTags(widget.posterTagsLists.posterType, selectedPosterTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterType),
+                  PosterSettings.getTags(
+                      widget.posterTagsLists.posterType,
+                      selectedPosterTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterMotive),
-                  PosterSettings.getTags(widget.posterTagsLists.posterMotive, selectedMotiveTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterMotive),
+                  PosterSettings.getTags(
+                      widget.posterTagsLists.posterMotive,
+                      selectedMotiveTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterTargetGroups),
-                  PosterSettings.getTags(widget.posterTagsLists.posterTargetGroups, selectedTargetGroupTypes,(p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterTargetGroups),
+                  PosterSettings.getTags(
+                      widget.posterTagsLists.posterTargetGroups,
+                      selectedTargetGroupTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterEnvironment),
-                  PosterSettings.getTags(widget.posterTagsLists.posterEnvironment, selectedEnvironmentTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterEnvironment),
+                  PosterSettings.getTags(
+                      widget.posterTagsLists.posterEnvironment,
+                      selectedEnvironmentTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterOther),
-                  PosterSettings.getTags(widget.posterTagsLists.posterOther, selectedOtherTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterOther),
+                  PosterSettings.getTags(
+                      widget.posterTagsLists.posterOther,
+                      selectedOtherTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                 ]),
               ),
               Positioned(
@@ -97,7 +133,7 @@ class _AddPosterState extends State<AddPoster> {
         ));
   }
 
-  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags){
+  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags) {
     setState(() {
       if (selectedPosterTags.contains(p)) {
         selectedPosterTags.remove(p);
@@ -113,8 +149,8 @@ class _AddPosterState extends State<AddPoster> {
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/create"),
           headers: HttpUtils.createHeader(),
           body: jsonEncode({
-            'latitude': widget.location.latitude,
-            'longitude': widget.location.longitude,
+            'latitude': placeMarkerByHand ? widget.centerLocation.latitude : widget.location.latitude,
+            'longitude': placeMarkerByHand ? widget.centerLocation.longitude :widget.location.longitude,
             'campaign': [],
             'poster_type': selectedPosterTypes.map((e) => e.id).toList(),
             'motive': selectedMotiveTypes.map((e) => e.id).toList(),

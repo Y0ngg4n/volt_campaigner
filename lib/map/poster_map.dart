@@ -22,10 +22,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/map/poster/add_poster.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/update_poster.dart';
+import 'package:volt_campaigner/map/search.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart'
     show PopupOptions;
+import 'package:volt_campaigner/utils/api/nomatim.dart';
+import 'package:volt_campaigner/utils/screen_utils.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,10 +52,10 @@ class PosterMapView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PosterMapViewState createState() => _PosterMapViewState();
+  PosterMapViewState createState() => PosterMapViewState();
 }
 
-class _PosterMapViewState extends State<PosterMapView> {
+class PosterMapViewState extends State<PosterMapView> {
   // Set default location to Volt Headquarter
   Map<Marker, PosterModel> markers = {};
   Map<Polyline, List<LatLng>> polylines = {};
@@ -61,7 +64,18 @@ class _PosterMapViewState extends State<PosterMapView> {
   late StreamSubscription<Position> _currentPositionStreamSubscription;
   late SharedPreferences prefs;
   bool drawNearestPosterLine = false;
+  bool placeMarkerByHand = false;
+  bool refreshing = false;
+  bool searching = false;
   MapController mapController = new MapController();
+  StreamController<NomatimSearchLocations> searchStream =
+      new StreamController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    searchStream.close();
+  }
 
   @override
   void initState() {
@@ -79,12 +93,12 @@ class _PosterMapViewState extends State<PosterMapView> {
           drawNearestPosterLine =
               (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ??
                   drawNearestPosterLine) as bool;
+          placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
+              placeMarkerByHand) as bool;
         }));
   }
 
   Widget build(BuildContext context) {
-    _addPosterMarker();
-    _addPolylines();
     return Stack(children: [
       FlutterMap(
         mapController: mapController,
@@ -93,7 +107,6 @@ class _PosterMapViewState extends State<PosterMapView> {
             options: TileLayerOptions(
               urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
               subdomains: ['a', 'b', 'c'],
-              maxZoom: 25,
             ),
           ),
           LocationMarkerLayerWidget(
@@ -112,13 +125,15 @@ class _PosterMapViewState extends State<PosterMapView> {
       ),
       Positioned(right: 20, top: 20, child: _getRefreshFab()),
       Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
-      Positioned(
-          top: 5,
-          left: 25,
-          right: 0,
-          bottom: 0,
-          child:
-          Icon(Icons.location_pin))
+      Positioned(left: 20, top: 20, child: _getSearchFab()),
+      // if (searching) Positioned(left: 20, top: 100, child: _getSearchField()),
+      if (placeMarkerByHand)
+        Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 40,
+            child: Icon(Icons.location_pin, size: 50))
     ]);
   }
 
@@ -134,7 +149,11 @@ class _PosterMapViewState extends State<PosterMapView> {
           height: 50,
           rotate: true,
           point: posterModel.location,
-          builder: (ctx) => Icon(Icons.location_pin, size: 50),
+          builder: (ctx) => Icon(
+            Icons.location_pin,
+            size: 50,
+            color: Colors.red,
+          ),
         );
         markers[marker] = posterModel;
       }
@@ -176,15 +195,17 @@ class _PosterMapViewState extends State<PosterMapView> {
                   selectedPoster: markers[marker]!,
                   posterTagsLists: widget.posterTagsLists,
                   location: widget.currentPosition,
-                  onUnhangPoster: (poster) => {
+                  onUnhangPoster: (poster) {
                     setState(() {
                       markers.remove(marker);
-                    })
+                    });
+                    refresh();
                   },
-                  onUpdatePoster: (poster) => {
+                  onUpdatePoster: (poster) {
                     setState(() {
                       markers[marker] = poster;
-                    })
+                    });
+                    refresh();
                   },
                   selectedMarker: marker,
                 )));
@@ -193,6 +214,7 @@ class _PosterMapViewState extends State<PosterMapView> {
   _getRefreshFab() {
     return FloatingActionButton(
       heroTag: "Center-FAB",
+      backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
         // Automatically center the location marker on the map when location updated until user interact with the map.
         setState(() => _centerOnLocationUpdate = CenterOnLocationUpdate.always);
@@ -200,18 +222,21 @@ class _PosterMapViewState extends State<PosterMapView> {
         _userPositionStreamController.add(18);
         widget.onRefresh();
       },
-      child: Icon(
-        Icons.my_location,
-        color: Colors.white,
-      ),
+      child: refreshing
+          ? CircularProgressIndicator()
+          : Icon(
+              Icons.my_location,
+              color: Colors.white,
+            ),
     );
   }
 
   _getAddPosterFab() {
     return FloatingActionButton(
       heroTag: "Add-Poster-FAB",
-      child: Icon(Icons.add),
+      child: Icon(Icons.add, color: Colors.white),
       tooltip: AppLocalizations.of(context)!.addPoster,
+      backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
         Navigator.push(
           context,
@@ -219,19 +244,56 @@ class _PosterMapViewState extends State<PosterMapView> {
               builder: (context) => AddPoster(
                     posterTagsLists: widget.posterTagsLists,
                     location: widget.currentPosition,
-                    onAddPoster: (poster) =>
-                        widget.posterInDistance.posterModels.add(poster),
+                    centerLocation: mapController.center,
+                    onAddPoster: (poster) {
+                      widget.posterInDistance.posterModels.add(poster);
+                      refresh();
+                    },
                   )),
         );
       },
     );
   }
 
+  _getSearchFab() {
+    return FloatingActionButton(
+      heroTag: "Search-FAB",
+      child: Icon(Icons.search, color: Colors.white),
+      tooltip: AppLocalizations.of(context)!.addPoster,
+      backgroundColor: Theme.of(context).primaryColor,
+      onPressed: () async {
+        NomatimSearchLocation nomatimSearchLocation = await showSearch(
+            context: context, delegate: MapSearchDelegate(searchStream));
+        setState(() {
+          mapController.move(LatLng(nomatimSearchLocation.latitude, nomatimSearchLocation.longitude), 13);
+        });
+      },
+    );
+  }
+
+  // _getSearchField() {
+  //   return SizedBox(
+  //     width: ScreenUtils.getScreenWidth(context) - 40,
+  //     height: 50,
+  //     child: SearchField(searchStream),
+  //   );
+  // }
+
+  refresh() {
+    Future.microtask(() {
+      _addPosterMarker();
+      _addPolylines();
+    });
+  }
+
+  setRefreshIcon(bool active) {
+    setState(() {
+      refreshing = active;
+    });
+  }
+
   _getMapOptions() {
     return MapOptions(
-        onTap: (tapPosition, point) {
-          print(mapController.center.toString());
-        },
         center: widget.currentPosition,
         zoom: 13.0,
         plugins: [

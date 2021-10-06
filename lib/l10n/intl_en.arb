@@ -27,5 +27,6 @@
   "date": "Date",
   "time": "Time",
   "drawNearestPosterLine": "Draw line to nearest Poster",
-  "placeMarkerByHand": "Place marker by hand"
+  "placeMarkerByHand": "Place marker by hand",
+  "search": "Search"
 }

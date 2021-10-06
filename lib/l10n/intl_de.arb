@@ -27,5 +27,6 @@
   "date": "Datum",
   "time": "Zeit",
   "drawNearestPosterLine": "Zeichne Linie zum nächsten Plakat",
-  "placeMarkerByHand": "Ermöglicht es Plakate von Hand zu plazieren"
+  "placeMarkerByHand": "Ermöglicht es Plakate von Hand zu plazieren",
+  "search": "Suche"
 }

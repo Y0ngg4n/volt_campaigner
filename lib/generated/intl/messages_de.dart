@@ -61,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("abgehängt wurden"),
         "posterUpdateAfterDateSelection": MessageLookupByLibrary.simpleMessage(
             "Lade Plakate die geändert wurden nach:"),
+        "search": MessageLookupByLibrary.simpleMessage("Suche"),
         "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "time": MessageLookupByLibrary.simpleMessage("Zeit")
       };

@@ -59,6 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "posterUnhangStatus": MessageLookupByLibrary.simpleMessage("unhanged"),
         "posterUpdateAfterDateSelection":
             MessageLookupByLibrary.simpleMessage("Load Posters changed after:"),
+        "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "time": MessageLookupByLibrary.simpleMessage("Time")
       };

@@ -41,10 +41,10 @@ class _SettingsViewState extends State<SettingsView> {
           customDate = (prefs.get(SharedPrefsSlugs.posterCustomDate) ??
               customDate) as String;
           drawNearestPosterLine =
-              (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ?? customDate)
+              (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ?? drawNearestPosterLine)
                   as bool;
           placeMarkerByHand =
-          (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ?? customDate)
+          (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ?? placeMarkerByHand)
           as bool;
 
           hangingSelected =

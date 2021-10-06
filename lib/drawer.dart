@@ -32,13 +32,16 @@ class _DrawerViewState extends State<DrawerView> {
   LatLng currentPosition = LatLng(0, 0);
   PosterTagsLists posterTagsLists = PosterTagsLists.empty();
   late SharedPreferences prefs;
+  final GlobalKey<PosterMapViewState> posterMapWidgetState =
+      GlobalKey<PosterMapViewState>();
 
   @override
   void initState() {
     super.initState();
+
     SharedPreferences.getInstance().then((value) => setState(() {
           prefs = value;
-          _refresh();
+          Future.delayed(Duration(seconds: 1), ()=>_refresh());
         }));
     refreshTimer =
         Timer.periodic(Duration(seconds: 30), (Timer t) => _refresh());
@@ -98,17 +101,7 @@ class _DrawerViewState extends State<DrawerView> {
   Widget _getBody() {
     switch (drawerSelection) {
       case DrawerSelection.POSTER:
-        return PosterMapView(
-          posterInDistance: posterInDistance,
-          currentPosition: currentPosition,
-          onLocationUpdate: (location) {
-            setState(() {
-              this.currentPosition = location;
-            });
-          },
-          posterTagsLists: posterTagsLists,
-          onRefresh: () => _refresh(),
-        );
+        return _getPosterMapView();
       case DrawerSelection.FLYER:
         return Container();
       case DrawerSelection.SETTINGS:
@@ -118,8 +111,14 @@ class _DrawerViewState extends State<DrawerView> {
 
   _refresh() async {
     print("Refreshing");
-    // await _refreshPosterTags();
+    if (posterMapWidgetState.currentState != null)
+      posterMapWidgetState.currentState!.setRefreshIcon(true);
+    await _refreshPosterTags();
     await _refreshPoster();
+    if (posterMapWidgetState.currentState != null){
+      posterMapWidgetState.currentState!.refresh();
+      posterMapWidgetState.currentState!.setRefreshIcon(false);
+    }
   }
 
   _refreshPoster() async {
@@ -151,9 +150,24 @@ class _DrawerViewState extends State<DrawerView> {
       }
     }
 
-    // setState(() {
-    //   posterInDistance = posterModels;
-    // });
+    setState(() {
+      posterInDistance = posterModels;
+    });
+  }
+
+  _getPosterMapView() {
+    return PosterMapView(
+      key: posterMapWidgetState,
+      posterInDistance: posterInDistance,
+      currentPosition: currentPosition,
+      onLocationUpdate: (location) {
+        setState(() {
+          this.currentPosition = location;
+        });
+      },
+      posterTagsLists: posterTagsLists,
+      onRefresh: () => _refresh(),
+    );
   }
 
   _refreshPosterTags() async {

@@ -13,10 +13,12 @@ Future main() async {
 class VoltCampaignerApp extends StatelessWidget {
   var lightThemeData = new ThemeData(
     brightness: Brightness.light,
+    primaryColor: Color.fromARGB(255, 80, 35, 121),
   );
 
   var darkThemeData = ThemeData(
     brightness: Brightness.dark,
+    primaryColor: Color.fromARGB(255, 80, 35, 121),
   );
 
   @override
