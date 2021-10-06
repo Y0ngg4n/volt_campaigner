@@ -3,12 +3,14 @@
   "addPoster": "Plakat hinzufügen",
   "poster": "Plakate",
   "flyer": "Flyer",
+  "statistics": "Statistiken",
   "settings": "Einstellungen",
   "posterType": "Plakat-Typ",
   "posterMotive": "Motiv",
   "posterTargetGroups": "Zielgruppe",
   "posterEnvironment": "Umgebung",
   "posterOther": "Sonstige",
+  "posterCampaign": "Kampagne",
   "posterAdd": "Plakat hinzufügen",
   "errorAddPoster": "Konnte Plakat nicht hinzufügen",
   "posterUnhang": "Plakat abhängen",
@@ -28,5 +30,6 @@
   "time": "Zeit",
   "drawNearestPosterLine": "Zeichne Linie zum nächsten Plakat",
   "placeMarkerByHand": "Ermöglicht es Plakate von Hand zu plazieren",
-  "search": "Suche"
+  "search": "Suche",
+  "noData": "Keine Daten"
 }

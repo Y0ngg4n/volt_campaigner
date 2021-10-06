@@ -90,6 +90,16 @@ class S {
     );
   }
 
+  /// `Statistiken`
+  String get statistics {
+    return Intl.message(
+      'Statistiken',
+      name: 'statistics',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Settings`
   String get settings {
     return Intl.message(
@@ -145,6 +155,16 @@ class S {
     return Intl.message(
       'Other',
       name: 'posterOther',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kampagne`
+  String get posterCampaign {
+    return Intl.message(
+      'Kampagne',
+      name: 'posterCampaign',
       desc: '',
       args: [],
     );
@@ -345,6 +365,16 @@ class S {
     return Intl.message(
       'Search',
       name: 'search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keine Daten`
+  String get noData {
+    return Intl.message(
+      'Keine Daten',
+      name: 'noData',
       desc: '',
       args: [],
     );

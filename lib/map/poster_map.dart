@@ -41,6 +41,7 @@ class PosterMapView extends StatefulWidget {
   OnLocationUpdate onLocationUpdate;
   OnRefresh onRefresh;
   PosterTagsLists posterTagsLists;
+  PosterTags campaignTags;
 
   PosterMapView({
     Key? key,
@@ -49,6 +50,7 @@ class PosterMapView extends StatefulWidget {
     required this.onLocationUpdate,
     required this.onRefresh,
     required this.posterTagsLists,
+    required this.campaignTags
   }) : super(key: key);
 
   @override
@@ -242,6 +244,7 @@ class PosterMapViewState extends State<PosterMapView> {
           context,
           MaterialPageRoute(
               builder: (context) => AddPoster(
+                campaignTags: widget.campaignTags,
                     posterTagsLists: widget.posterTagsLists,
                     location: widget.currentPosition,
                     centerLocation: mapController.center,
@@ -262,11 +265,16 @@ class PosterMapViewState extends State<PosterMapView> {
       tooltip: AppLocalizations.of(context)!.addPoster,
       backgroundColor: Theme.of(context).primaryColor,
       onPressed: () async {
-        NomatimSearchLocation nomatimSearchLocation = await showSearch(
-            context: context, delegate: MapSearchDelegate(searchStream));
-        setState(() {
-          mapController.move(LatLng(nomatimSearchLocation.latitude, nomatimSearchLocation.longitude), 13);
-        });
+        try {
+          NomatimSearchLocation nomatimSearchLocation = await showSearch(
+              context: context, delegate: MapSearchDelegate(searchStream));
+          setState(() {
+            mapController.move(
+                LatLng(nomatimSearchLocation.latitude,
+                    nomatimSearchLocation.longitude),
+                13);
+          });
+        }catch(e){}
       },
     );
   }

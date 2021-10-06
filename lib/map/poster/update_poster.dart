@@ -80,132 +80,129 @@ class _UpdatePosterState extends State<UpdatePoster> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(AppLocalizations.of(context)!.posterEdit)),
-        body: Container(
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(children: [
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterType),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterType,
-                      selectedPosterTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterMotive),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterMotive,
-                      selectedMotiveTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterTargetGroups),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterTargetGroups,
-                      selectedTargetGroupTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterEnvironment),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterEnvironment,
-                      selectedEnvironmentTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterOther),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterOther,
-                      selectedOtherTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                ]),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Card(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                        child: OutlinedButton(
-                            onPressed: () =>
-                                _updatePoster(widget.selectedPoster, 2),
-                            child: Row(
-                              children: [
-                                Icon(Icons.repeat),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 16),
-                                  child: Text(
-                                    AppLocalizations.of(context)!.posterRecycle,
-                                    style: TextStyle(fontSize: 25),
-                                  ),
-                                )
-                              ],
-                            )),
-                      ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                        child: OutlinedButton(
-                            onPressed: () =>
-                                _updatePoster(widget.selectedPoster, 1),
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 16),
-                                  child: Text(
-                                    AppLocalizations.of(context)!.posterUnhang,
-                                    style: TextStyle(fontSize: 25),
-                                  ),
-                                )
-                              ],
-                            )),
-                      ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                        child: ElevatedButton(
-                            onPressed: () =>
-                                _updatePoster(widget.selectedPoster, 0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.save),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 16),
-                                  child: Text(
-                                    AppLocalizations.of(context)!.posterEdit,
-                                    style: TextStyle(fontSize: 25),
-                                  ),
-                                )
-                              ],
-                            )),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.posterEdit)),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 250),
+            child: Column(children: [
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterType),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterType,
+                  selectedPosterTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, false)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterMotive),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterMotive,
+                  selectedMotiveTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterTargetGroups),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterTargetGroups,
+                  selectedTargetGroupTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterEnvironment),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterEnvironment,
+                  selectedEnvironmentTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterOther),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterOther,
+                  selectedOtherTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+            ]),
           ),
-        ));
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Card(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                    child: OutlinedButton(
+                        onPressed: () =>
+                            _updatePoster(widget.selectedPoster, 2),
+                        child: Row(
+                          children: [
+                            Icon(Icons.repeat),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 16),
+                              child: Text(
+                                AppLocalizations.of(context)!.posterRecycle,
+                                style: TextStyle(fontSize: 25),
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                    child: OutlinedButton(
+                        onPressed: () =>
+                            _updatePoster(widget.selectedPoster, 1),
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 16),
+                              child: Text(
+                                AppLocalizations.of(context)!.posterUnhang,
+                                style: TextStyle(fontSize: 25),
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                    child: ElevatedButton(
+                        onPressed: () =>
+                            _updatePoster(widget.selectedPoster, 0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.save),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 16),
+                              child: Text(
+                                AppLocalizations.of(context)!.posterEdit,
+                                style: TextStyle(fontSize: 25),
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   _fillMissingTagDetails(List<PosterTag> tagList) {
@@ -220,13 +217,10 @@ class _UpdatePosterState extends State<UpdatePoster> {
     }
   }
 
-  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags) {
+  _onTagSelected(
+      PosterTag p, List<PosterTag> selectedPosterTags, bool multiple) {
     setState(() {
-      if (selectedPosterTags.contains(p)) {
-        selectedPosterTags.remove(p);
-      } else {
-        selectedPosterTags.add(p);
-      }
+      PosterSettings.onTagSelected(p, selectedPosterTags, multiple);
     });
   }
 

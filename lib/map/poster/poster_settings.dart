@@ -20,6 +20,15 @@ class PosterSettings {
   static Widget getTags(BuildContext context, List<PosterTag> posterTags,
       List<PosterTag> selectedPosterTags, OnTagSelected onTagSelected) {
     return Wrap(children: [
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () async {
+          PosterTag? posterTag = await showSearch(
+              context: context,
+              delegate: TagSearchDelegate(posterTags)) as PosterTag?;
+          if (posterTag != null) onTagSelected(posterTag, selectedPosterTags);
+        },
+      ),
       for (PosterTag p in posterTags)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -31,11 +40,21 @@ class PosterSettings {
             },
           ),
         ),
-      IconButton(icon: Icon(Icons.search), onPressed: () async{
-        PosterTag posterTag = await showSearch(context: context, delegate: TagSearchDelegate(posterTags)) as PosterTag;
-        onTagSelected(posterTag, selectedPosterTags);
-      },)
     ]);
   }
 
+  static onTagSelected(
+      PosterTag p, List<PosterTag> selectedPosterTags, bool multiple) {
+    if (multiple) {
+      if (selectedPosterTags.contains(p)) {
+        selectedPosterTags.remove(p);
+      } else {
+        selectedPosterTags.add(p);
+      }
+    } else {
+      selectedPosterTags.clear();
+      selectedPosterTags.add(p);
+    }
+    return;
+  }
 }

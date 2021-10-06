@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:volt_campaigner/map/poster_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/settings/settings.dart';
+import 'package:volt_campaigner/statistics/pie_charts.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/api/poster_tags.dart';
@@ -14,7 +16,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum DrawerSelection { POSTER, FLYER, SETTINGS }
+enum DrawerSelection { POSTER, FLYER, STATISTICS, SETTINGS }
 
 class DrawerView extends StatefulWidget {
   const DrawerView({Key? key}) : super(key: key);
@@ -31,6 +33,7 @@ class _DrawerViewState extends State<DrawerView> {
 
   LatLng currentPosition = LatLng(0, 0);
   PosterTagsLists posterTagsLists = PosterTagsLists.empty();
+  PosterTags campaignTags = PosterTags([]);
   late SharedPreferences prefs;
   final GlobalKey<PosterMapViewState> posterMapWidgetState =
       GlobalKey<PosterMapViewState>();
@@ -40,8 +43,13 @@ class _DrawerViewState extends State<DrawerView> {
     super.initState();
 
     SharedPreferences.getInstance().then((value) => setState(() {
-          prefs = value;
-          Future.delayed(Duration(seconds: 1), ()=>_refresh());
+          setState(() {
+            prefs = value;
+            campaignTags = PosterTags.fromJsonAll(jsonDecode(
+                (prefs.getString(SharedPrefsSlugs.campaignTags) ?? "[]")));
+          });
+
+          Future.delayed(Duration(seconds: 1), () => _refresh());
         }));
     refreshTimer =
         Timer.periodic(Duration(seconds: 30), (Timer t) => _refresh());
@@ -66,36 +74,29 @@ class _DrawerViewState extends State<DrawerView> {
             ),
             child: Text('Drawer Header'),
           ),
-          ListTile(
-            title: Text(AppLocalizations.of(context)!.poster),
-            onTap: () {
-              setState(() {
-                drawerSelection = DrawerSelection.POSTER;
-              });
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: Text(AppLocalizations.of(context)!.flyer),
-            onTap: () {
-              setState(() {
-                drawerSelection = DrawerSelection.FLYER;
-              });
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: Text(AppLocalizations.of(context)!.settings),
-            onTap: () {
-              setState(() {
-                drawerSelection = DrawerSelection.SETTINGS;
-              });
-              Navigator.pop(context);
-            },
-          ),
+          _getListTile(
+              AppLocalizations.of(context)!.poster, DrawerSelection.POSTER),
+          _getListTile(
+              AppLocalizations.of(context)!.flyer, DrawerSelection.FLYER),
+          _getListTile(AppLocalizations.of(context)!.statistics,
+              DrawerSelection.STATISTICS),
+          _getListTile(
+              AppLocalizations.of(context)!.settings, DrawerSelection.SETTINGS)
         ]),
       ),
     );
+  }
+
+  Widget _getListTile(String name, DrawerSelection drawerSelection) {
+    return (ListTile(
+      title: Text(name),
+      onTap: () {
+        setState(() {
+          this.drawerSelection = drawerSelection;
+        });
+        Navigator.pop(context);
+      },
+    ));
   }
 
   Widget _getBody() {
@@ -104,8 +105,18 @@ class _DrawerViewState extends State<DrawerView> {
         return _getPosterMapView();
       case DrawerSelection.FLYER:
         return Container();
+      case DrawerSelection.STATISTICS:
+        return PieCharts(
+          postersInDistance: posterInDistance,
+          posterTagsLists: posterTagsLists,
+        );
       case DrawerSelection.SETTINGS:
-        return SettingsView();
+        return SettingsView(
+            campaignTags: campaignTags,
+            posterTagsLists: posterTagsLists,
+            onCampaignSelected: (posterTags) => setState(() {
+                  this.campaignTags = posterTags;
+                }));
     }
   }
 
@@ -115,7 +126,7 @@ class _DrawerViewState extends State<DrawerView> {
       posterMapWidgetState.currentState!.setRefreshIcon(true);
     await _refreshPosterTags();
     await _refreshPoster();
-    if (posterMapWidgetState.currentState != null){
+    if (posterMapWidgetState.currentState != null) {
       posterMapWidgetState.currentState!.refresh();
       posterMapWidgetState.currentState!.setRefreshIcon(false);
     }
@@ -167,6 +178,7 @@ class _DrawerViewState extends State<DrawerView> {
       },
       posterTagsLists: posterTagsLists,
       onRefresh: () => _refresh(),
+      campaignTags: campaignTags,
     );
   }
 

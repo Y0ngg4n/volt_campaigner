@@ -24,7 +24,7 @@ class MapSearchDelegate extends SearchDelegate {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.location_pin),
+      icon: Icon(Icons.arrow_back),
       onPressed: () {
         close(context, null);
       },

@@ -7,6 +7,15 @@ class PosterTag {
 
   PosterTag({required this.id, required this.name, required this.active});
 
+  toJson() {
+    Map<String, dynamic> m = new Map();
+    m['id'] = id;
+    m['description'] = name;
+    m['active'] = active;
+
+    return m;
+  }
+
   PosterTag.fromJson(String id)
       : id = id,
         name = "",
@@ -20,6 +29,14 @@ class PosterTag {
 
 class PosterTags {
   List<PosterTag> posterTags = [];
+
+  toJson () {
+    List<Map<String,dynamic>> list = [];
+    for (PosterTag entry in posterTags) {
+      list.add(entry.toJson());
+    }
+    return list;
+  }
 
   PosterTags.fromJson(List<dynamic> json) {
     for (dynamic entry in json) {

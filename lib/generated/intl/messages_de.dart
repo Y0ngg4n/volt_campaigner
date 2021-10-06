@@ -33,10 +33,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht laden"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "noData": MessageLookupByLibrary.simpleMessage("Keine Daten"),
         "placeMarkerByHand": MessageLookupByLibrary.simpleMessage(
             "Ermöglicht es Plakate von Hand zu plazieren"),
         "poster": MessageLookupByLibrary.simpleMessage("Plakate"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
+        "posterCampaign": MessageLookupByLibrary.simpleMessage("Kampagne"),
         "posterCustomDate":
             MessageLookupByLibrary.simpleMessage("Bentzerdefiniertes Datum"),
         "posterEdit": MessageLookupByLibrary.simpleMessage("Plakat bearbeiten"),
@@ -63,6 +65,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Lade Plakate die geändert wurden nach:"),
         "search": MessageLookupByLibrary.simpleMessage("Suche"),
         "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
+        "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
         "time": MessageLookupByLibrary.simpleMessage("Zeit")
       };
 }

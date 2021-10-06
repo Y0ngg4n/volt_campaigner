@@ -21,6 +21,7 @@ class AddPoster extends StatefulWidget {
   LatLng location;
   OnAddPoster onAddPoster;
   LatLng centerLocation;
+  PosterTags campaignTags;
 
   AddPoster({
     Key? key,
@@ -28,6 +29,7 @@ class AddPoster extends StatefulWidget {
     required this.location,
     required this.onAddPoster,
     required this.centerLocation,
+    required this.campaignTags,
   }) : super(key: key);
 
   @override
@@ -56,95 +58,92 @@ class _AddPosterState extends State<AddPoster> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(AppLocalizations.of(context)!.posterAdd)),
-        body: Container(
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(children: [
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterType),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterType,
-                      selectedPosterTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterMotive),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterMotive,
-                      selectedMotiveTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterTargetGroups),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterTargetGroups,
-                      selectedTargetGroupTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterEnvironment),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterEnvironment,
-                      selectedEnvironmentTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                  Divider(),
-                  PosterSettings.getHeading(
-                      AppLocalizations.of(context)!.posterOther),
-                  PosterSettings.getTags(
-                      context,
-                      widget.posterTagsLists.posterOther,
-                      selectedOtherTypes,
-                      (p, selectedPosterTags) =>
-                          _onTagSelected(p, selectedPosterTags)),
-                ]),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Card(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                    child: ElevatedButton(
-                        onPressed: _addPoster,
-                        child: Row(
-                          children: [
-                            Icon(Icons.save),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 16),
-                              child: Text(
-                                AppLocalizations.of(context)!.posterAdd,
-                                style: TextStyle(fontSize: 25),
-                              ),
-                            )
-                          ],
-                        )),
-                  ),
-                ),
-              )
-            ],
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.posterAdd)),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 150),
+            child: Column(children: [
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterType),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterType,
+                  selectedPosterTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, false)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterMotive),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterMotive,
+                  selectedMotiveTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterTargetGroups),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterTargetGroups,
+                  selectedTargetGroupTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterEnvironment),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterEnvironment,
+                  selectedEnvironmentTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+              Divider(),
+              PosterSettings.getHeading(
+                  AppLocalizations.of(context)!.posterOther),
+              PosterSettings.getTags(
+                  context,
+                  widget.posterTagsLists.posterOther,
+                  selectedOtherTypes,
+                  (p, selectedPosterTags) =>
+                      _onTagSelected(p, selectedPosterTags, true)),
+            ]),
           ),
-        ));
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Card(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                child: ElevatedButton(
+                    onPressed: _addPoster,
+                    child: Row(
+                      children: [
+                        Icon(Icons.save),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 16),
+                          child: Text(
+                            AppLocalizations.of(context)!.posterAdd,
+                            style: TextStyle(fontSize: 25),
+                          ),
+                        )
+                      ],
+                    )),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
-  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags) {
+  _onTagSelected(
+      PosterTag p, List<PosterTag> selectedPosterTags, bool multiple) {
     setState(() {
-      if (selectedPosterTags.contains(p)) {
-        selectedPosterTags.remove(p);
-      } else {
-        selectedPosterTags.add(p);
-      }
+      PosterSettings.onTagSelected(p, selectedPosterTags, multiple);
     });
   }
 
@@ -160,7 +159,8 @@ class _AddPosterState extends State<AddPoster> {
             'longitude': placeMarkerByHand
                 ? widget.centerLocation.longitude
                 : widget.location.longitude,
-            'campaign': [],
+            'campaign':
+                widget.campaignTags.posterTags.map((e) => e.id).toList(),
             'poster_type': selectedPosterTypes.map((e) => e.id).toList(),
             'motive': selectedMotiveTypes.map((e) => e.id).toList(),
             'target_groups': selectedTargetGroupTypes.map((e) => e.id).toList(),

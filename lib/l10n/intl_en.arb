@@ -3,12 +3,14 @@
   "addPoster": "Add Poster",
   "poster": "Poster",
   "flyer": "Flyer",
+  "statistics": "Statistiken",
   "settings": "Settings",
   "posterType": "Poster-Type",
   "posterMotive": "Motive",
   "posterTargetGroups": "Target-Groups",
   "posterEnvironment": "Environment",
   "posterOther": "Other",
+  "posterCampaign": "Kampagne",
   "posterAdd": "Add Poster",
   "errorAddPoster": "Could not add Poster",
   "posterUnhang": "Unhang Poster",
@@ -28,5 +30,6 @@
   "time": "Time",
   "drawNearestPosterLine": "Draw line to nearest Poster",
   "placeMarkerByHand": "Place marker by hand",
-  "search": "Search"
+  "search": "Search",
+  "noData": "Keine Daten"
 }

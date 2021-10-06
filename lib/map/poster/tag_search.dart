@@ -25,7 +25,7 @@ class TagSearchDelegate extends SearchDelegate {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.tag),
+      icon: Icon(Icons.arrow_back),
       onPressed: () {
         close(context, null);
       },

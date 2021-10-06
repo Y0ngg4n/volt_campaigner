@@ -49,6 +49,9 @@ dev_dependencies:
   shared_preferences: ^2.0.8
   # Settings
   date_time_picker: ^2.1.0
+  # Statistics
+  fl_chart: ^0.40.0
+  random_color: ^1.0.6-nullsafety
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

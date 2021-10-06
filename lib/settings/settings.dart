@@ -1,13 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:volt_campaigner/map/poster/poster_settings.dart';
+import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:date_time_picker/date_time_picker.dart'
     show DateTimePicker, DateTimePickerType;
 
+typedef OnCampaignSelected = Function(PosterTags);
+
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  PosterTagsLists posterTagsLists;
+  OnCampaignSelected onCampaignSelected;
+  PosterTags campaignTags;
+
+  SettingsView(
+      {Key? key,
+      required this.posterTagsLists,
+      required this.onCampaignSelected,
+      required this.campaignTags})
+      : super(key: key);
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
@@ -24,28 +39,41 @@ class _SettingsViewState extends State<SettingsView> {
   late SharedPreferences prefs;
   late List<bool> hangingSelected = [true, false, false];
 
+  List<PosterTag> selectedCampaign = [];
+
   @override
   void initState() {
     super.initState();
     SharedPreferences.getInstance().then((value) => setState(() {
           prefs = value;
-          radius =
-              (prefs.get(SharedPrefsSlugs.posterRadius) ?? radius) as double;
-          loadAll =
-              (prefs.get(SharedPrefsSlugs.posterLoadAll) ?? loadAll) as bool;
+          radius = (prefs.getDouble(SharedPrefsSlugs.posterRadius) ?? radius);
+          loadAll = (prefs.getBool(SharedPrefsSlugs.posterLoadAll) ?? loadAll);
           customDateSwitch =
-              (prefs.get(SharedPrefsSlugs.posterCustomDateSwitch) ??
-                  customDateSwitch) as bool;
-          hanging =
-              (prefs.get(SharedPrefsSlugs.posterHanging) ?? hanging) as int;
-          customDate = (prefs.get(SharedPrefsSlugs.posterCustomDate) ??
-              customDate) as String;
+              (prefs.getBool(SharedPrefsSlugs.posterCustomDateSwitch) ??
+                  customDateSwitch);
+          hanging = (prefs.getInt(SharedPrefsSlugs.posterHanging) ?? hanging);
+          customDate = (prefs.getString(SharedPrefsSlugs.posterCustomDate) ??
+              customDate);
           drawNearestPosterLine =
-              (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ?? drawNearestPosterLine)
-                  as bool;
+              (prefs.getBool(SharedPrefsSlugs.drawNearestPosterLine) ??
+                  drawNearestPosterLine);
           placeMarkerByHand =
-          (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ?? placeMarkerByHand)
-          as bool;
+              (prefs.getBool(SharedPrefsSlugs.placeMarkerByHand) ??
+                  placeMarkerByHand);
+
+          PosterTags campaigns = PosterTags.fromJsonAll(jsonDecode(
+              (prefs.getString(SharedPrefsSlugs.campaignTags) ?? "[]")));
+          widget.onCampaignSelected(campaigns);
+          for (PosterTag tag in widget.posterTagsLists.posterCampaign) {
+            for (PosterTag campaign in campaigns.posterTags) {
+              setState(() {
+                if (tag.id == campaign.id) {
+                  selectedCampaign.clear();
+                  selectedCampaign.add(tag);
+                }
+              });
+            }
+          }
 
           hangingSelected =
               List.generate(3, (i) => i == hanging ? true : false);
@@ -214,6 +242,14 @@ class _SettingsViewState extends State<SettingsView> {
             ),
           ],
         ),
+        Divider(),
+        PosterSettings.getHeading(AppLocalizations.of(context)!.posterCampaign),
+        PosterSettings.getTags(
+            context,
+            widget.posterTagsLists.posterCampaign,
+            selectedCampaign,
+            (p, selectedPosterTags) =>
+                _onTagSelected(p, selectedPosterTags, false)),
       ],
     );
   }
@@ -236,5 +272,15 @@ class _SettingsViewState extends State<SettingsView> {
         break;
     }
     return text;
+  }
+
+  _onTagSelected(
+      PosterTag p, List<PosterTag> selectedPosterTags, bool multiple) {
+    setState(() {
+      PosterSettings.onTagSelected(p, selectedPosterTags, multiple);
+      widget.onCampaignSelected(PosterTags(selectedPosterTags));
+      prefs.setString(
+          SharedPrefsSlugs.campaignTags, jsonEncode(selectedPosterTags));
+    });
   }
 }

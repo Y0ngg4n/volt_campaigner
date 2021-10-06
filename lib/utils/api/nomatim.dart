@@ -47,7 +47,6 @@ class NomatimSearchLocation {
   String icon;
 
   static List<double> fromDoubleList(List<dynamic> json) {
-    print(json);
     List<double> list = [];
     for (dynamic entry in json) {
       list.add(double.parse(entry));

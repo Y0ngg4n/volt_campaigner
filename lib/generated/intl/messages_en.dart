@@ -33,10 +33,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Could not load Posters"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "noData": MessageLookupByLibrary.simpleMessage("Keine Daten"),
         "placeMarkerByHand":
             MessageLookupByLibrary.simpleMessage("Place marker by hand"),
         "poster": MessageLookupByLibrary.simpleMessage("Poster"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Add Poster"),
+        "posterCampaign": MessageLookupByLibrary.simpleMessage("Kampagne"),
         "posterCustomDate": MessageLookupByLibrary.simpleMessage("Custom Date"),
         "posterEdit": MessageLookupByLibrary.simpleMessage("Edit Poster"),
         "posterEnvironment":
@@ -61,6 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Load Posters changed after:"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
         "time": MessageLookupByLibrary.simpleMessage("Time")
       };
 }
