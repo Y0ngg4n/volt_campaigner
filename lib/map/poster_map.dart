@@ -22,7 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/map/poster/add_poster.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/update_poster.dart';
-import 'package:volt_campaigner/map/search.dart';
+import 'package:volt_campaigner/map/map_search.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart'
@@ -270,14 +270,6 @@ class PosterMapViewState extends State<PosterMapView> {
       },
     );
   }
-
-  // _getSearchField() {
-  //   return SizedBox(
-  //     width: ScreenUtils.getScreenWidth(context) - 40,
-  //     height: 50,
-  //     child: SearchField(searchStream),
-  //   );
-  // }
 
   refresh() {
     Future.microtask(() {

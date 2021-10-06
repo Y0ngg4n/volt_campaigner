@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
+import 'package:volt_campaigner/map/poster/tag_search.dart';
 
 typedef OnTagSelected = Function(PosterTag, List<PosterTag>);
 
@@ -16,7 +17,7 @@ class PosterSettings {
     );
   }
 
-  static Widget getTags(List<PosterTag> posterTags,
+  static Widget getTags(BuildContext context, List<PosterTag> posterTags,
       List<PosterTag> selectedPosterTags, OnTagSelected onTagSelected) {
     return Wrap(children: [
       for (PosterTag p in posterTags)
@@ -30,6 +31,11 @@ class PosterSettings {
             },
           ),
         ),
+      IconButton(icon: Icon(Icons.search), onPressed: () async{
+        PosterTag posterTag = await showSearch(context: context, delegate: TagSearchDelegate(posterTags)) as PosterTag;
+        onTagSelected(posterTag, selectedPosterTags);
+      },)
     ]);
   }
+
 }

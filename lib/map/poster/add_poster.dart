@@ -65,6 +65,7 @@ class _AddPosterState extends State<AddPoster> {
                   PosterSettings.getHeading(
                       AppLocalizations.of(context)!.posterType),
                   PosterSettings.getTags(
+                      context,
                       widget.posterTagsLists.posterType,
                       selectedPosterTypes,
                       (p, selectedPosterTags) =>
@@ -73,6 +74,7 @@ class _AddPosterState extends State<AddPoster> {
                   PosterSettings.getHeading(
                       AppLocalizations.of(context)!.posterMotive),
                   PosterSettings.getTags(
+                      context,
                       widget.posterTagsLists.posterMotive,
                       selectedMotiveTypes,
                       (p, selectedPosterTags) =>
@@ -81,6 +83,7 @@ class _AddPosterState extends State<AddPoster> {
                   PosterSettings.getHeading(
                       AppLocalizations.of(context)!.posterTargetGroups),
                   PosterSettings.getTags(
+                      context,
                       widget.posterTagsLists.posterTargetGroups,
                       selectedTargetGroupTypes,
                       (p, selectedPosterTags) =>
@@ -89,6 +92,7 @@ class _AddPosterState extends State<AddPoster> {
                   PosterSettings.getHeading(
                       AppLocalizations.of(context)!.posterEnvironment),
                   PosterSettings.getTags(
+                      context,
                       widget.posterTagsLists.posterEnvironment,
                       selectedEnvironmentTypes,
                       (p, selectedPosterTags) =>
@@ -97,6 +101,7 @@ class _AddPosterState extends State<AddPoster> {
                   PosterSettings.getHeading(
                       AppLocalizations.of(context)!.posterOther),
                   PosterSettings.getTags(
+                      context,
                       widget.posterTagsLists.posterOther,
                       selectedOtherTypes,
                       (p, selectedPosterTags) =>
@@ -149,8 +154,12 @@ class _AddPosterState extends State<AddPoster> {
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/create"),
           headers: HttpUtils.createHeader(),
           body: jsonEncode({
-            'latitude': placeMarkerByHand ? widget.centerLocation.latitude : widget.location.latitude,
-            'longitude': placeMarkerByHand ? widget.centerLocation.longitude :widget.location.longitude,
+            'latitude': placeMarkerByHand
+                ? widget.centerLocation.latitude
+                : widget.location.latitude,
+            'longitude': placeMarkerByHand
+                ? widget.centerLocation.longitude
+                : widget.location.longitude,
             'campaign': [],
             'poster_type': selectedPosterTypes.map((e) => e.id).toList(),
             'motive': selectedMotiveTypes.map((e) => e.id).toList(),

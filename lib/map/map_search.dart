@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:volt_campaigner/utils/api/nomatim.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class MapSearchDelegate extends SearchDelegate {
   StreamController<NomatimSearchLocations> streamController;
+
   MapSearchDelegate(this.streamController);
 
   @override
@@ -79,7 +79,7 @@ class MapSearchDelegate extends SearchDelegate {
                   var result = results.locations[index];
                   return ListTile(
                     title: Text(result.displayName),
-                    onTap: (){
+                    onTap: () {
                       close(context, result);
                     },
                   );

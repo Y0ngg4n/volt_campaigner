@@ -60,15 +60,19 @@ class _UpdatePosterState extends State<UpdatePoster> {
         }));
     _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterType);
     _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterMotive);
-    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterTargetGroups);
-    _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterEnvironment);
+    _fillMissingTagDetails(
+        widget.selectedPoster.posterTagsLists.posterTargetGroups);
+    _fillMissingTagDetails(
+        widget.selectedPoster.posterTagsLists.posterEnvironment);
     _fillMissingTagDetails(widget.selectedPoster.posterTagsLists.posterOther);
 
     setState(() {
       selectedPosterTypes = widget.selectedPoster.posterTagsLists.posterType;
       selectedMotiveTypes = widget.selectedPoster.posterTagsLists.posterMotive;
-      selectedTargetGroupTypes = widget.selectedPoster.posterTagsLists.posterTargetGroups;
-      selectedEnvironmentTypes = widget.selectedPoster.posterTagsLists.posterEnvironment;
+      selectedTargetGroupTypes =
+          widget.selectedPoster.posterTagsLists.posterTargetGroups;
+      selectedEnvironmentTypes =
+          widget.selectedPoster.posterTagsLists.posterEnvironment;
       selectedOtherTypes = widget.selectedPoster.posterTagsLists.posterOther;
     });
   }
@@ -82,20 +86,50 @@ class _UpdatePosterState extends State<UpdatePoster> {
             children: [
               SingleChildScrollView(
                 child: Column(children: [
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterType),
-                  PosterSettings.getTags(widget.posterTagsLists.posterType, selectedPosterTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterType),
+                  PosterSettings.getTags(
+                      context,
+                      widget.posterTagsLists.posterType,
+                      selectedPosterTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterMotive),
-                  PosterSettings.getTags(widget.posterTagsLists.posterMotive, selectedMotiveTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterMotive),
+                  PosterSettings.getTags(
+                      context,
+                      widget.posterTagsLists.posterMotive,
+                      selectedMotiveTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterTargetGroups),
-                  PosterSettings.getTags(widget.posterTagsLists.posterTargetGroups, selectedTargetGroupTypes,(p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterTargetGroups),
+                  PosterSettings.getTags(
+                      context,
+                      widget.posterTagsLists.posterTargetGroups,
+                      selectedTargetGroupTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterEnvironment),
-                  PosterSettings.getTags(widget.posterTagsLists.posterEnvironment, selectedEnvironmentTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterEnvironment),
+                  PosterSettings.getTags(
+                      context,
+                      widget.posterTagsLists.posterEnvironment,
+                      selectedEnvironmentTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                   Divider(),
-                  PosterSettings.getHeading(AppLocalizations.of(context)!.posterOther),
-                  PosterSettings.getTags(widget.posterTagsLists.posterOther, selectedOtherTypes, (p, selectedPosterTags) => _onTagSelected(p, selectedPosterTags)),
+                  PosterSettings.getHeading(
+                      AppLocalizations.of(context)!.posterOther),
+                  PosterSettings.getTags(
+                      context,
+                      widget.posterTagsLists.posterOther,
+                      selectedOtherTypes,
+                      (p, selectedPosterTags) =>
+                          _onTagSelected(p, selectedPosterTags)),
                 ]),
               ),
               Positioned(
@@ -174,7 +208,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
         ));
   }
 
-  _fillMissingTagDetails(List<PosterTag> tagList){
+  _fillMissingTagDetails(List<PosterTag> tagList) {
     for (PosterTag tag in tagList) {
       for (PosterTag posterTag in tagList) {
         if (tag.id == posterTag.id) {
@@ -186,7 +220,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
     }
   }
 
-  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags){
+  _onTagSelected(PosterTag p, List<PosterTag> selectedPosterTags) {
     setState(() {
       if (selectedPosterTags.contains(p)) {
         selectedPosterTags.remove(p);
