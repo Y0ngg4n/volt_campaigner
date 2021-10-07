@@ -5,9 +5,10 @@ import 'package:volt_campaigner/utils/api/nomatim.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MapSearchDelegate extends SearchDelegate {
-  StreamController<NomatimSearchLocations> streamController;
+  StreamController<NomatimSearchLocations> searchStream =
+      new StreamController.broadcast();
 
-  MapSearchDelegate(this.streamController);
+  MapSearchDelegate();
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -26,6 +27,7 @@ class MapSearchDelegate extends SearchDelegate {
     return IconButton(
       icon: Icon(Icons.arrow_back),
       onPressed: () {
+        searchStream.close();
         close(context, null);
       },
     );
@@ -49,9 +51,8 @@ class MapSearchDelegate extends SearchDelegate {
 
     return Column(
       children: <Widget>[
-        //Build the results based on the searchResults stream in the searchBloc
         StreamBuilder(
-          stream: streamController.stream,
+          stream: searchStream.stream,
           builder: (context, AsyncSnapshot<NomatimSearchLocations> snapshot) {
             if (!snapshot.hasData) {
               return Column(
@@ -80,6 +81,7 @@ class MapSearchDelegate extends SearchDelegate {
                   return ListTile(
                     title: Text(result.displayName),
                     onTap: () {
+                      searchStream.close();
                       close(context, result);
                     },
                   );
@@ -94,7 +96,8 @@ class MapSearchDelegate extends SearchDelegate {
 
   _addSearchResults(BuildContext context) async {
     print("Adding Results");
-    streamController.sink.add(await NomatimApiUtils.search(query, context));
+    if (!searchStream.isClosed || searchStream.isPaused)
+      searchStream.sink.add(await NomatimApiUtils.search(query, context));
   }
 
   @override

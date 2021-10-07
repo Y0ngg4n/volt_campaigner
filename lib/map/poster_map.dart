@@ -68,13 +68,11 @@ class PosterMapViewState extends State<PosterMapView> {
   bool placeMarkerByHand = false;
   bool refreshing = false;
   MapController mapController = new MapController();
-  StreamController<NomatimSearchLocations> searchStream =
-      new StreamController();
+  bool searching = false;
 
   @override
   void dispose() {
     super.dispose();
-    searchStream.close();
     _currentPositionStreamSubscription.cancel();
   }
 
@@ -86,7 +84,11 @@ class PosterMapViewState extends State<PosterMapView> {
 
     _currentPositionStreamSubscription =
         Geolocator.getPositionStream().listen((position) {
-      setState(() => widget.onLocationUpdate(LatLng(position.latitude, position.longitude)));
+      setState(() {
+        if (!searching)
+          widget
+              .onLocationUpdate(LatLng(position.latitude, position.longitude));
+      });
     });
     SharedPreferences.getInstance().then((value) => setState(() {
           prefs = value;
@@ -128,6 +130,7 @@ class PosterMapViewState extends State<PosterMapView> {
           top: 20,
           child: MapSettings.getRefreshFab(context, (centerOnLocationUpdate) {
             setState(() {
+              searching = false;
               _centerOnLocationUpdate = centerOnLocationUpdate;
             });
           }, _userPositionStreamController, () => widget.onRefresh(),
@@ -251,10 +254,15 @@ class PosterMapViewState extends State<PosterMapView> {
       tooltip: AppLocalizations.of(context)!.addPoster,
       backgroundColor: Theme.of(context).primaryColor,
       onPressed: () async {
+        searching = true;
+        _centerOnLocationUpdate = CenterOnLocationUpdate.never;
         try {
-          NomatimSearchLocation nomatimSearchLocation = await showSearch(
-              context: context, delegate: MapSearchDelegate(searchStream));
+          NomatimSearchLocation nomatimSearchLocation =
+              await showSearch(context: context, delegate: MapSearchDelegate());
           setState(() {
+            widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
+                nomatimSearchLocation.longitude));
+            widget.onRefresh();
             mapController.move(
                 LatLng(nomatimSearchLocation.latitude,
                     nomatimSearchLocation.longitude),

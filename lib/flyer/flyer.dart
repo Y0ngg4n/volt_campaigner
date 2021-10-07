@@ -6,13 +6,16 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:volt_campaigner/map/map_search.dart';
 import 'package:volt_campaigner/map/map_settings.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:volt_campaigner/map/poster_map.dart' as poster_map;
 import 'package:volt_campaigner/utils/api/model/flyer.dart';
+import 'package:volt_campaigner/utils/api/nomatim.dart';
 import 'package:volt_campaigner/utils/http_utils.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
 
 class Flyer extends StatefulWidget {
@@ -47,6 +50,8 @@ class FlyerState extends State<Flyer> {
   late Timer timer;
   List<Polyline> polylines = [];
   List<Marker> userMarker = [];
+  bool searching = false;
+  MapController mapController = new MapController();
   final distance = 3;
 
   @override
@@ -68,6 +73,7 @@ class FlyerState extends State<Flyer> {
   Widget build(BuildContext context) {
     return Stack(children: [
       FlutterMap(
+        mapController: mapController,
         children: [
           MapSettings.getTileLayerWidget(),
           LocationMarkerLayerWidget(
@@ -101,6 +107,7 @@ class FlyerState extends State<Flyer> {
             });
           }, _userPositionStreamController, () => widget.onRefresh(),
               refreshing)),
+      Positioned(left: 20, top: 20, child: _getSearchFab()),
       Positioned(right: 20, bottom: 20, child: _getStartStopButton())
     ]);
   }
@@ -152,6 +159,32 @@ class FlyerState extends State<Flyer> {
           running ? _stopListener() : _startListener();
           running = !running;
         });
+      },
+    );
+  }
+
+  _getSearchFab() {
+    return FloatingActionButton(
+      heroTag: "Search-FAB",
+      child: Icon(Icons.search, color: Colors.white),
+      tooltip: AppLocalizations.of(context)!.addPoster,
+      backgroundColor: Theme.of(context).primaryColor,
+      onPressed: () async {
+        searching = true;
+        _centerOnLocationUpdate = CenterOnLocationUpdate.never;
+        try {
+          NomatimSearchLocation nomatimSearchLocation =
+          await showSearch(context: context, delegate: MapSearchDelegate());
+          setState(() {
+            widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
+                nomatimSearchLocation.longitude));
+            widget.onRefresh();
+            mapController.move(
+                LatLng(nomatimSearchLocation.latitude,
+                    nomatimSearchLocation.longitude),
+                13);
+          });
+        } catch (e) {}
       },
     );
   }

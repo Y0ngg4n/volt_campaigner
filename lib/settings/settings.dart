@@ -82,9 +82,15 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final double primaryFontSize = 20;
+    final double secondardFontSize = 15;
     return SingleChildScrollView(
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(AppLocalizations.of(context)!.poster, style: TextStyle(fontSize: primaryFontSize, fontWeight: FontWeight.bold),),
+          ),
           Visibility(
             visible: !loadAll,
             child: Column(
@@ -244,13 +250,19 @@ class _SettingsViewState extends State<SettingsView> {
             ],
           ),
           Divider(),
-          PosterSettings.getHeading(AppLocalizations.of(context)!.posterCampaign),
+          Text(AppLocalizations.of(context)!.posterCampaign, style: TextStyle(fontSize: secondardFontSize)),
           PosterSettings.getTags(
               context,
               widget.posterTagsLists.posterCampaign,
               selectedCampaign,
               (p, selectedPosterTags) =>
                   _onTagSelected(p, selectedPosterTags, false)),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(AppLocalizations.of(context)!.flyer, style: TextStyle(fontSize: primaryFontSize, fontWeight: FontWeight.bold),),
+          )
+
         ],
       ),
     );

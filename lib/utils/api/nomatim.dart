@@ -12,8 +12,9 @@ class NomatimApiUtils {
       String search, BuildContext context) async {
     try {
       http.Response response = await http.post(
-          Uri.parse(
-              "https://nominatim.openstreetmap.org/search.php?q=london&format=json"),
+          Uri.parse("https://nominatim.openstreetmap.org/search.php?q=" +
+              search +
+              "&format=json"),
           headers: HttpUtils.createHeader(),
           body: jsonEncode({'q': search, 'format': 'json'}));
       if (response.statusCode == 200) {
