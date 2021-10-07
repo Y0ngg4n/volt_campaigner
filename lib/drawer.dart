@@ -7,7 +7,7 @@ import 'package:volt_campaigner/map/poster_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/settings/settings.dart';
-import 'package:volt_campaigner/statistics/Statistics.dart';
+import 'package:volt_campaigner/statistics/statistics.dart';
 import 'package:volt_campaigner/statistics/pie_charts.dart';
 import 'package:volt_campaigner/utils/api/flyer.dart';
 import 'package:volt_campaigner/utils/api/model/flyer.dart';
