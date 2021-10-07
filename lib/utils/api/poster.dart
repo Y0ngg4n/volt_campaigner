@@ -11,7 +11,6 @@ import '../http_utils.dart';
 
 class PosterApiUtils {
   static Future<PosterModels?> getPostersInDistance(LatLng location, double distance, int hanging, String last_update) async {
-
     try {
       http.Response response = await http.get(
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/distance"),

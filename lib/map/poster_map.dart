@@ -25,12 +25,11 @@ import 'package:volt_campaigner/map/poster/update_poster.dart';
 import 'package:volt_campaigner/map/map_search.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart'
-    show PopupOptions;
 import 'package:volt_campaigner/utils/api/nomatim.dart';
-import 'package:volt_campaigner/utils/screen_utils.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'map_settings.dart';
 
 typedef OnLocationUpdate = Function(LatLng);
 typedef OnRefresh = Function();
@@ -68,7 +67,6 @@ class PosterMapViewState extends State<PosterMapView> {
   bool drawNearestPosterLine = false;
   bool placeMarkerByHand = false;
   bool refreshing = false;
-  bool searching = false;
   MapController mapController = new MapController();
   StreamController<NomatimSearchLocations> searchStream =
       new StreamController();
@@ -77,6 +75,7 @@ class PosterMapViewState extends State<PosterMapView> {
   void dispose() {
     super.dispose();
     searchStream.close();
+    _currentPositionStreamSubscription.cancel();
   }
 
   @override
@@ -87,8 +86,7 @@ class PosterMapViewState extends State<PosterMapView> {
 
     _currentPositionStreamSubscription =
         Geolocator.getPositionStream().listen((position) {
-      setState(() => widget
-          .onLocationUpdate(LatLng(position.latitude, position.longitude)));
+      setState(() => widget.onLocationUpdate(LatLng(position.latitude, position.longitude)));
     });
     SharedPreferences.getInstance().then((value) => setState(() {
           prefs = value;
@@ -105,12 +103,7 @@ class PosterMapViewState extends State<PosterMapView> {
       FlutterMap(
         mapController: mapController,
         children: [
-          TileLayerWidget(
-            options: TileLayerOptions(
-              urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              subdomains: ['a', 'b', 'c'],
-            ),
-          ),
+          MapSettings.getTileLayerWidget(),
           LocationMarkerLayerWidget(
             plugin: LocationMarkerPlugin(
               centerCurrentLocationStream: _userPositionStreamController.stream,
@@ -118,17 +111,29 @@ class PosterMapViewState extends State<PosterMapView> {
             ),
           ),
         ],
-        options: _getMapOptions(),
+        options: MapSettings.getMapOptions(
+            (centerOnLocationUpdate) => setState(() {
+                  _centerOnLocationUpdate = centerOnLocationUpdate;
+                }),
+            widget.currentPosition),
         layers: [
           _getPolyLineLayerOptions(),
-          _getMarkerClusterLayerOptions(),
+          MapSettings.getMarkerClusterLayerOptions(
+              (marker) => _onMarkerTap(marker), markers.keys.toList()),
         ],
         nonRotatedLayers: [],
       ),
-      Positioned(right: 20, top: 20, child: _getRefreshFab()),
+      Positioned(
+          right: 20,
+          top: 20,
+          child: MapSettings.getRefreshFab(context, (centerOnLocationUpdate) {
+            setState(() {
+              _centerOnLocationUpdate = centerOnLocationUpdate;
+            });
+          }, _userPositionStreamController, () => widget.onRefresh(),
+              refreshing)),
       Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
       Positioned(left: 20, top: 20, child: _getSearchFab()),
-      // if (searching) Positioned(left: 20, top: 100, child: _getSearchField()),
       if (placeMarkerByHand)
         Positioned(
             top: 0,
@@ -214,26 +219,6 @@ class PosterMapViewState extends State<PosterMapView> {
                 )));
   }
 
-  _getRefreshFab() {
-    return FloatingActionButton(
-      heroTag: "Center-FAB",
-      backgroundColor: Theme.of(context).primaryColor,
-      onPressed: () {
-        // Automatically center the location marker on the map when location updated until user interact with the map.
-        setState(() => _centerOnLocationUpdate = CenterOnLocationUpdate.always);
-        // Center the location marker on the map and zoom the map to level 18.
-        _userPositionStreamController.add(18);
-        widget.onRefresh();
-      },
-      child: refreshing
-          ? CircularProgressIndicator()
-          : Icon(
-              Icons.my_location,
-              color: Colors.white,
-            ),
-    );
-  }
-
   _getAddPosterFab() {
     return FloatingActionButton(
       heroTag: "Add-Poster-FAB",
@@ -291,42 +276,6 @@ class PosterMapViewState extends State<PosterMapView> {
     setState(() {
       refreshing = active;
     });
-  }
-
-  _getMapOptions() {
-    return MapOptions(
-        center: widget.currentPosition,
-        zoom: 13.0,
-        plugins: [
-          MarkerClusterPlugin(),
-        ],
-        onPositionChanged: (MapPosition position, bool hasGesture) {
-          if (hasGesture) {
-            setState(
-                () => _centerOnLocationUpdate = CenterOnLocationUpdate.never);
-          }
-        });
-  }
-
-  _getMarkerClusterLayerOptions() {
-    return MarkerClusterLayerOptions(
-      onMarkerTap: (marker) => _onMarkerTap(marker),
-      size: Size(40, 40),
-      fitBoundsOptions: FitBoundsOptions(
-        padding: EdgeInsets.all(50),
-      ),
-      markers: markers.keys.toList(),
-      polygonOptions: PolygonOptions(
-          borderColor: Colors.blueAccent,
-          color: Colors.black12,
-          borderStrokeWidth: 3),
-      builder: (context, markers) {
-        return FloatingActionButton(
-          child: Text(markers.length.toString()),
-          onPressed: null,
-        );
-      },
-    );
   }
 
   _getPolyLineLayerOptions() {

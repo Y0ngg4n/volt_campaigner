@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:volt_campaigner/export/export.dart';
+import 'package:volt_campaigner/flyer/flyer.dart';
 import 'package:volt_campaigner/map/poster_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/settings/settings.dart';
 import 'package:volt_campaigner/statistics/Statistics.dart';
 import 'package:volt_campaigner/statistics/pie_charts.dart';
+import 'package:volt_campaigner/utils/api/flyer.dart';
+import 'package:volt_campaigner/utils/api/model/flyer.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/api/poster_tags.dart';
@@ -36,9 +39,12 @@ class _DrawerViewState extends State<DrawerView> {
   LatLng currentPosition = LatLng(0, 0);
   PosterTagsLists posterTagsLists = PosterTagsLists.empty();
   PosterTags campaignTags = PosterTags([]);
+  FlyerRoutes flyerRoutes = FlyerRoutes([]);
   late SharedPreferences prefs;
   final GlobalKey<PosterMapViewState> posterMapWidgetState =
       GlobalKey<PosterMapViewState>();
+  final GlobalKey<FlyerState> flyerWidgetState =
+  GlobalKey<FlyerState>();
 
   @override
   void initState() {
@@ -109,7 +115,7 @@ class _DrawerViewState extends State<DrawerView> {
       case DrawerSelection.POSTER:
         return _getPosterMapView();
       case DrawerSelection.FLYER:
-        return Container();
+        return _getFlyer();
       case DrawerSelection.STATISTICS:
         return Statistics(
           postersInDistance: posterInDistance,
@@ -132,30 +138,48 @@ class _DrawerViewState extends State<DrawerView> {
 
   _refresh() async {
     print("Refreshing");
-    if (posterMapWidgetState.currentState != null)
-      posterMapWidgetState.currentState!.setRefreshIcon(true);
-    await _refreshPosterTags();
-    await _refreshPoster();
-    if (posterMapWidgetState.currentState != null) {
-      posterMapWidgetState.currentState!.refresh();
-      posterMapWidgetState.currentState!.setRefreshIcon(false);
-    }
-    setState(() {
-      for (PosterModel posterModel in posterInDistance.posterModels) {
-        _fillMissingTagDetails(
-            posterModel.posterTagsLists.posterType, posterTagsLists.posterType);
-        _fillMissingTagDetails(posterModel.posterTagsLists.posterCampaign,
-            posterTagsLists.posterCampaign);
-        _fillMissingTagDetails(posterModel.posterTagsLists.posterEnvironment,
-            posterTagsLists.posterEnvironment);
-        _fillMissingTagDetails(posterModel.posterTagsLists.posterTargetGroups,
-            posterTagsLists.posterTargetGroups);
-        _fillMissingTagDetails(posterModel.posterTagsLists.posterOther,
-            posterTagsLists.posterOther);
-        _fillMissingTagDetails(posterModel.posterTagsLists.posterMotive,
-            posterTagsLists.posterMotive);
+
+    if (drawerSelection == DrawerSelection.POSTER) {
+      if (posterMapWidgetState.currentState != null)
+        posterMapWidgetState.currentState!.setRefreshIcon(true);
+      await _refreshPosterTags();
+      await _refreshPoster();
+      if (posterMapWidgetState.currentState != null) {
+        posterMapWidgetState.currentState!.refresh();
+        posterMapWidgetState.currentState!.setRefreshIcon(false);
       }
-    });
+      setState(() {
+        for (PosterModel posterModel in posterInDistance.posterModels) {
+          _fillMissingTagDetails(posterModel.posterTagsLists.posterType,
+              posterTagsLists.posterType);
+          _fillMissingTagDetails(posterModel.posterTagsLists.posterCampaign,
+              posterTagsLists.posterCampaign);
+          _fillMissingTagDetails(posterModel.posterTagsLists.posterEnvironment,
+              posterTagsLists.posterEnvironment);
+          _fillMissingTagDetails(posterModel.posterTagsLists.posterTargetGroups,
+              posterTagsLists.posterTargetGroups);
+          _fillMissingTagDetails(posterModel.posterTagsLists.posterOther,
+              posterTagsLists.posterOther);
+          _fillMissingTagDetails(posterModel.posterTagsLists.posterMotive,
+              posterTagsLists.posterMotive);
+        }
+      });
+    } else if (drawerSelection == DrawerSelection.FLYER) {
+      if (flyerWidgetState.currentState != null) {
+        flyerWidgetState.currentState!.setRefreshIcon(true);
+      }
+      FlyerRoutes? flyerRoutes =  await FlyerApiUtils.getFlyerRoutesInDistance(currentPosition, 1000000000000,
+          DateTime.fromMicrosecondsSinceEpoch(0).toString());
+      if(flyerRoutes != null) {
+        setState(() {
+          this.flyerRoutes = flyerRoutes;
+        });
+      }
+      if (flyerWidgetState.currentState != null) {
+        flyerWidgetState.currentState!.refresh();
+        flyerWidgetState.currentState!.setRefreshIcon(false);
+      }
+    }
   }
 
   _refreshPoster() async {
@@ -205,6 +229,20 @@ class _DrawerViewState extends State<DrawerView> {
       posterTagsLists: posterTagsLists,
       onRefresh: () => _refresh(),
       campaignTags: campaignTags,
+    );
+  }
+
+  _getFlyer() {
+    return Flyer(
+      key: flyerWidgetState,
+      flyerRoutes: flyerRoutes,
+      currentPosition: currentPosition,
+      onLocationUpdate: (location) {
+        setState(() {
+          this.currentPosition = location;
+        });
+      },
+      onRefresh: () => _refresh(),
     );
   }
 
