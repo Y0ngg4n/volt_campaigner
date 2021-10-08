@@ -41,6 +41,7 @@ class PosterMapView extends StatefulWidget {
   OnRefresh onRefresh;
   PosterTagsLists posterTagsLists;
   PosterTags campaignTags;
+  String apiToken;
 
   PosterMapView(
       {Key? key,
@@ -49,7 +50,8 @@ class PosterMapView extends StatefulWidget {
       required this.onLocationUpdate,
       required this.onRefresh,
       required this.posterTagsLists,
-      required this.campaignTags})
+      required this.campaignTags,
+      required this.apiToken})
       : super(key: key);
 
   @override
@@ -212,6 +214,7 @@ class PosterMapViewState extends State<PosterMapView> {
                     });
                     refresh();
                   },
+              apiToken:  widget.apiToken,
                   onUpdatePoster: (poster) {
                     setState(() {
                       markers[marker] = poster;
@@ -233,6 +236,7 @@ class PosterMapViewState extends State<PosterMapView> {
           context,
           MaterialPageRoute(
               builder: (context) => AddPoster(
+                apiToken:  widget.apiToken,
                     campaignTags: widget.campaignTags,
                     posterTagsLists: widget.posterTagsLists,
                     location: widget.currentPosition,
@@ -258,7 +262,7 @@ class PosterMapViewState extends State<PosterMapView> {
         _centerOnLocationUpdate = CenterOnLocationUpdate.never;
         try {
           NomatimSearchLocation nomatimSearchLocation =
-              await showSearch(context: context, delegate: MapSearchDelegate());
+              await showSearch(context: context, delegate: MapSearchDelegate(widget.apiToken));
           setState(() {
             widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
                 nomatimSearchLocation.longitude));

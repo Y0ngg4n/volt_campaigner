@@ -5,10 +5,11 @@ import 'package:volt_campaigner/utils/api/nomatim.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MapSearchDelegate extends SearchDelegate {
+  String apiToken;
   StreamController<NomatimSearchLocations> searchStream =
       new StreamController.broadcast();
 
-  MapSearchDelegate();
+  MapSearchDelegate(this.apiToken);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -97,7 +98,7 @@ class MapSearchDelegate extends SearchDelegate {
   _addSearchResults(BuildContext context) async {
     print("Adding Results");
     if (!searchStream.isClosed || searchStream.isPaused)
-      searchStream.sink.add(await NomatimApiUtils.search(query, context));
+      searchStream.sink.add(await NomatimApiUtils.search(query, context, apiToken));
   }
 
   @override

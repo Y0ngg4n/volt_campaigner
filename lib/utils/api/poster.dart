@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'package:volt_campaigner/utils/api/auth.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../http_utils.dart';
 
 class PosterApiUtils {
-  static Future<PosterModels?> getPostersInDistance(LatLng location, double distance, int hanging, String last_update) async {
+  static Future<PosterModels?> getPostersInDistance(LatLng location, double distance, int hanging, String last_update, String apiToken) async {
     try {
       http.Response response = await http.get(
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/distance"),
@@ -20,7 +21,8 @@ class PosterApiUtils {
             "longitude": location.longitude.toString(),
             "distance": distance.toString(),
             "hanging": hanging.toString(),
-            "last_update": last_update
+            "last_update": last_update,
+            "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {
         return PosterModels.fromJson(jsonDecode(response.body));
@@ -34,14 +36,15 @@ class PosterApiUtils {
     }
   }
 
-  static Future<PosterModels?> getAllPosters(double distance, int hanging) async {
+  static Future<PosterModels?> getAllPosters(double distance, int hanging, String apiToken) async {
 
     try {
       http.Response response = await http.get(
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/all"),
           headers: {
             "accept": "application/json",
-            "hanging": hanging.toString()
+            "hanging": hanging.toString(),
+            "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {
         return PosterModels.fromJson(jsonDecode(response.body));

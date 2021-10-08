@@ -32,6 +32,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Could not edit Poster"),
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Could not load Posters"),
+        "errorLogin":
+            MessageLookupByLibrary.simpleMessage("Could not Login into API"),
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export as "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),

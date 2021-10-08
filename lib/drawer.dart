@@ -24,7 +24,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum DrawerSelection { POSTER, FLYER, STATISTICS, EXPORT, SETTINGS }
 
 class DrawerView extends StatefulWidget {
-  const DrawerView({Key? key}) : super(key: key);
+  String apiToken;
+  DrawerView({Key? key, required this.apiToken}) : super(key: key);
 
   @override
   _DrawerViewState createState() => _DrawerViewState();
@@ -43,8 +44,7 @@ class _DrawerViewState extends State<DrawerView> {
   late SharedPreferences prefs;
   final GlobalKey<PosterMapViewState> posterMapWidgetState =
       GlobalKey<PosterMapViewState>();
-  final GlobalKey<FlyerState> flyerWidgetState =
-  GlobalKey<FlyerState>();
+  final GlobalKey<FlyerState> flyerWidgetState = GlobalKey<FlyerState>();
 
   @override
   void initState() {
@@ -55,6 +55,7 @@ class _DrawerViewState extends State<DrawerView> {
             prefs = value;
             campaignTags = PosterTags.fromJsonAll(jsonDecode(
                 (prefs.getString(SharedPrefsSlugs.campaignTags) ?? "[]")));
+            widget.apiToken = prefs.getString(SharedPrefsSlugs.restApiToken) ?? "";
           });
 
           Future.delayed(Duration(seconds: 1), () => _refresh());
@@ -168,9 +169,11 @@ class _DrawerViewState extends State<DrawerView> {
       if (flyerWidgetState.currentState != null) {
         flyerWidgetState.currentState!.setRefreshIcon(true);
       }
-      FlyerRoutes? flyerRoutes =  await FlyerApiUtils.getFlyerRoutesInDistance(currentPosition, 1000000000000,
-          DateTime.fromMicrosecondsSinceEpoch(0).toString());
-      if(flyerRoutes != null) {
+      FlyerRoutes? flyerRoutes = await FlyerApiUtils.getFlyerRoutesInDistance(
+          currentPosition,
+          1000000000000,
+          DateTime.fromMicrosecondsSinceEpoch(0).toString(), widget.apiToken);
+      if (flyerRoutes != null) {
         setState(() {
           this.flyerRoutes = flyerRoutes;
         });
@@ -194,19 +197,19 @@ class _DrawerViewState extends State<DrawerView> {
     PosterModels posterModels;
 
     if (loadAll) {
-      posterModels = await PosterApiUtils.getAllPosters(radius, hanging) ??
+      posterModels = await PosterApiUtils.getAllPosters(radius, hanging, widget.apiToken) ??
           PosterModels.empty();
     } else {
       if (customDateSwitch) {
         posterModels = await PosterApiUtils.getPostersInDistance(
-                currentPosition, radius, hanging, customDate) ??
+                currentPosition, radius, hanging, customDate, widget.apiToken) ??
             PosterModels.empty();
       } else {
         posterModels = await PosterApiUtils.getPostersInDistance(
                 currentPosition,
                 radius,
                 hanging,
-                DateTime.fromMicrosecondsSinceEpoch(0).toString()) ??
+                DateTime.fromMicrosecondsSinceEpoch(0).toString(), widget.apiToken) ??
             PosterModels.empty();
       }
     }
@@ -218,6 +221,7 @@ class _DrawerViewState extends State<DrawerView> {
 
   _getPosterMapView() {
     return PosterMapView(
+      apiToken: widget.apiToken,
       key: posterMapWidgetState,
       posterInDistance: posterInDistance,
       currentPosition: currentPosition,
@@ -234,6 +238,7 @@ class _DrawerViewState extends State<DrawerView> {
 
   _getFlyer() {
     return Flyer(
+      apiToken: widget.apiToken,
       key: flyerWidgetState,
       flyerRoutes: flyerRoutes,
       currentPosition: currentPosition,
@@ -248,19 +253,19 @@ class _DrawerViewState extends State<DrawerView> {
 
   _refreshPosterTags() async {
     PosterTags campaign =
-        await PosterTagApiUtils.getAllPosterTags('campaign') ?? PosterTags([]);
+        await PosterTagApiUtils.getAllPosterTags('campaign', widget.apiToken) ?? PosterTags([]);
     PosterTags type =
-        await PosterTagApiUtils.getAllPosterTags('type') ?? PosterTags([]);
+        await PosterTagApiUtils.getAllPosterTags('type', widget.apiToken) ?? PosterTags([]);
     PosterTags motive =
-        await PosterTagApiUtils.getAllPosterTags('motive') ?? PosterTags([]);
+        await PosterTagApiUtils.getAllPosterTags('motive', widget.apiToken) ?? PosterTags([]);
     PosterTags targetGroups =
-        await PosterTagApiUtils.getAllPosterTags('target-groups') ??
+        await PosterTagApiUtils.getAllPosterTags('target-groups', widget.apiToken) ??
             PosterTags([]);
     PosterTags environment =
-        await PosterTagApiUtils.getAllPosterTags('environment') ??
+        await PosterTagApiUtils.getAllPosterTags('environment', widget.apiToken) ??
             PosterTags([]);
     PosterTags other =
-        await PosterTagApiUtils.getAllPosterTags('other') ?? PosterTags([]);
+        await PosterTagApiUtils.getAllPosterTags('other', widget.apiToken) ?? PosterTags([]);
     setState(() {
       posterTagsLists = PosterTagsLists(
           campaign.posterTags,

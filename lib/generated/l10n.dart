@@ -409,6 +409,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Could not Login into API`
+  String get errorLogin {
+    return Intl.message(
+      'Could not Login into API',
+      name: 'errorLogin',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

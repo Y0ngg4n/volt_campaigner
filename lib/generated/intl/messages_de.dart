@@ -32,6 +32,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht ändern"),
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht laden"),
+        "errorLogin":
+            MessageLookupByLibrary.simpleMessage("Could not Login into API"),
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export als "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),

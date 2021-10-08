@@ -26,6 +26,7 @@ class UpdatePoster extends StatefulWidget {
   Marker selectedMarker;
   PosterModel selectedPoster;
   PosterTags campaignTags;
+  String apiToken;
 
   UpdatePoster(
       {Key? key,
@@ -35,7 +36,8 @@ class UpdatePoster extends StatefulWidget {
       required this.onUpdatePoster,
       required this.selectedMarker,
       required this.selectedPoster,
-      required this.campaignTags})
+      required this.campaignTags,
+      required this.apiToken})
       : super(key: key);
 
   @override
@@ -211,10 +213,11 @@ class _UpdatePosterState extends State<UpdatePoster> {
     try {
       http.Response response = await http.post(
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/update"),
-          headers: HttpUtils.createHeader(),
+          headers: HttpUtils.createHeader(widget.apiToken),
           body: jsonEncode({
             'id': posterModel.id,
-            'campaign': widget.campaignTags.posterTags.map((e) => e.id).toList(),
+            'campaign':
+                widget.campaignTags.posterTags.map((e) => e.id).toList(),
             'hanging': hanging,
             'latitude': widget.location.latitude,
             'longitude': widget.location.longitude,

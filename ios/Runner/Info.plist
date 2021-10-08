@@ -63,5 +63,10 @@
     	<string>workmanager.background.task</string>
     </array>
     </plist>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>https</string>
+      <string>http</string>
+    </array>
 </dict>
 </plist>

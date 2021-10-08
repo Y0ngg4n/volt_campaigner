@@ -22,6 +22,7 @@ class AddPoster extends StatefulWidget {
   OnAddPoster onAddPoster;
   LatLng centerLocation;
   PosterTags campaignTags;
+  String apiToken;
 
   AddPoster({
     Key? key,
@@ -30,6 +31,7 @@ class AddPoster extends StatefulWidget {
     required this.onAddPoster,
     required this.centerLocation,
     required this.campaignTags,
+    required this.apiToken
   }) : super(key: key);
 
   @override
@@ -151,7 +153,7 @@ class _AddPosterState extends State<AddPoster> {
     try {
       http.Response response = await http.post(
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/create"),
-          headers: HttpUtils.createHeader(),
+          headers: HttpUtils.createHeader(widget.apiToken),
           body: jsonEncode({
             'latitude': placeMarkerByHand
                 ? widget.centerLocation.latitude

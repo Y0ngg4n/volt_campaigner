@@ -34,5 +34,6 @@
   "noData": "Keine Daten",
   "export": "Export",
   "exportAs": "Export als ",
-  "successExport": "Erfolgreich in deinen Downloads-Ordner exportiert"
+  "successExport": "Erfolgreich in deinen Downloads-Ordner exportiert",
+  "errorLogin": "Could not Login into API"
 }

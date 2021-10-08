@@ -9,13 +9,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NomatimApiUtils {
   static Future<NomatimSearchLocations> search(
-      String search, BuildContext context) async {
+      String search, BuildContext context, String apiToken) async {
     try {
       http.Response response = await http.post(
           Uri.parse("https://nominatim.openstreetmap.org/search.php?q=" +
               search +
               "&format=json"),
-          headers: HttpUtils.createHeader(),
+          headers: HttpUtils.createHeader(apiToken),
           body: jsonEncode({'q': search, 'format': 'json'}));
       if (response.statusCode == 200) {
         return NomatimSearchLocations.fromJson(jsonDecode(response.body));

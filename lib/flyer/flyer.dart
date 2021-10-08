@@ -23,14 +23,16 @@ class Flyer extends StatefulWidget {
   poster_map.OnLocationUpdate onLocationUpdate;
   poster_map.OnRefresh onRefresh;
   FlyerRoutes flyerRoutes;
+  String apiToken;
 
-  Flyer(
-      {Key? key,
-      required this.currentPosition,
-      required this.onLocationUpdate,
-      required this.onRefresh,
-      required this.flyerRoutes})
-      : super(key: key);
+  Flyer({
+    Key? key,
+    required this.currentPosition,
+    required this.onLocationUpdate,
+    required this.onRefresh,
+    required this.flyerRoutes,
+    required this.apiToken,
+  }) : super(key: key);
 
   @override
   FlyerState createState() => FlyerState();
@@ -92,9 +94,7 @@ class FlyerState extends State<Flyer> {
           PolylineLayerOptions(
             polylines: polylines,
           ),
-          MarkerLayerOptions(
-            markers: userMarker
-          ),
+          MarkerLayerOptions(markers: userMarker),
         ],
         nonRotatedLayers: [],
       ),
@@ -174,7 +174,7 @@ class FlyerState extends State<Flyer> {
         _centerOnLocationUpdate = CenterOnLocationUpdate.never;
         try {
           NomatimSearchLocation nomatimSearchLocation =
-          await showSearch(context: context, delegate: MapSearchDelegate());
+              await showSearch(context: context, delegate: MapSearchDelegate(widget.apiToken));
           setState(() {
             widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
                 nomatimSearchLocation.longitude));
@@ -197,7 +197,7 @@ class FlyerState extends State<Flyer> {
     try {
       http.Response response = await http.post(
           Uri.parse((dotenv.env['REST_API_URL']!) + "/flyer/route/upsert"),
-          headers: HttpUtils.createHeader(),
+          headers: HttpUtils.createHeader(widget.apiToken),
           body: jsonEncode({"id": ownUUID, "polyline": points}));
       if (response.statusCode == 201) {
         print("Upserted Route");
@@ -217,9 +217,11 @@ class FlyerState extends State<Flyer> {
     setState(() {
       polylines.clear();
       for (FlyerRoute flyerRoute in widget.flyerRoutes.flyerRoutes) {
-        if(flyerRoute.id == ownUUID) continue;
+        if (flyerRoute.id == ownUUID) continue;
         polylines.add(flyerRoute.polyline);
-        userMarker.add(new Marker(point: flyerRoute.polyline.points.last, anchorPos: AnchorPos.exactly(Anchor(25, 5)),
+        userMarker.add(new Marker(
+          point: flyerRoute.polyline.points.last,
+          anchorPos: AnchorPos.exactly(Anchor(25, 5)),
           // Offset by experimentation, (0,25) should work as well
           rotateOrigin: Offset(0, 20),
           width: 50,
