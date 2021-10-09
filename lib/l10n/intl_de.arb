@@ -3,6 +3,8 @@
   "addPoster": "Plakat hinzufügen",
   "poster": "Plakate",
   "flyer": "Flyer",
+  "volunteer": "Volunteer einladen",
+  "logout": "Ausloggen",
   "statistics": "Statistiken",
   "settings": "Einstellungen",
   "posterType": "Plakat-Typ",
@@ -35,5 +37,15 @@
   "export": "Export",
   "exportAs": "Export als ",
   "successExport": "Erfolgreich in deinen Downloads-Ordner exportiert",
-  "errorLogin": "Could not Login into API"
+  "errorLogin": "Konnte mich nicht mit der API verbinden",
+  "letDisplayEnabled": "Bitte lass dein Display an! Wir können sonst nicht deine Route aufzeichnen! Du kannst deinen Bildschirm aber abdunkeln um Energie zu sparen",
+  "scanThisVolunteer": "Lass diesen QR Code von einem Volunteer scannen, sodass dieser sich auch für 24 Stunden anmelden kann.",
+  "volunteerCopy": "Oder kopiere das und sende es an den Volunteer",
+  "copySuccess": "Text wurde kopiert",
+  "pasteSuccess": "Text wurde eingefügt",
+  "scanCodeVolunteer": "Scanne einen Einladungs-Code von einem Mietglied",
+  "orEnterCode": "oder füge hier einen Code ein",
+  "invalidToken": "Ungültiger oder abgelaufener Code",
+  "loginVoltEuropa": "Melde dich mit deinem Volt Europa Konto an",
+  "loginAsVolunteer":  "Melde dich als Volunteer an"
 }

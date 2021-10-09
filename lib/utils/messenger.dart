@@ -12,4 +12,10 @@ class Messenger {
         content: Text(message),
         backgroundColor: Colors.green));
   }
+
+  static showWarning(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: Duration(seconds: 10),
+        content: Text(message),
+        backgroundColor: Colors.yellow));
+  }
 }

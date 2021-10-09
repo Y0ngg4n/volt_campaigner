@@ -14,4 +14,7 @@ class SharedPrefsSlugs {
   static const googleScopes = "google-scopes";
   static const googleExpiry = "google-expiry";
   static const restApiToken = "rest-api-token";
+  static const googleDisplayName = "google-display-name";
+  static const googlePhotoUrl = "google-photo-url";
+  static const googleEmailAddress = "google-email-address";
 }

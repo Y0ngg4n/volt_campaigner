@@ -23,6 +23,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "addPoster": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
+        "copySuccess":
+            MessageLookupByLibrary.simpleMessage("Text wurde kopiert"),
         "date": MessageLookupByLibrary.simpleMessage("Datum"),
         "drawNearestPosterLine": MessageLookupByLibrary.simpleMessage(
             "Zeichne Linie zum nächsten Plakat"),
@@ -32,12 +34,25 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht ändern"),
         "errorFetchingPosterLocations":
             MessageLookupByLibrary.simpleMessage("Konnte Plakat nicht laden"),
-        "errorLogin":
-            MessageLookupByLibrary.simpleMessage("Could not Login into API"),
+        "errorLogin": MessageLookupByLibrary.simpleMessage(
+            "Konnte mich nicht mit der API verbinden"),
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export als "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "invalidToken": MessageLookupByLibrary.simpleMessage(
+            "Ungültiger oder abgelaufener Code"),
+        "letDisplayEnabled": MessageLookupByLibrary.simpleMessage(
+            "Bitte lass dein Display an! Wir können sonst nicht deine Route aufzeichnen! Du kannst deinen Bildschirm aber abdunkeln um Energie zu sparen"),
+        "loginAsVolunteer":
+            MessageLookupByLibrary.simpleMessage("Melde dich als Volunteer an"),
+        "loginVoltEuropa": MessageLookupByLibrary.simpleMessage(
+            "Melde dich mit deinem Volt Europa Konto an"),
+        "logout": MessageLookupByLibrary.simpleMessage("Ausloggen"),
         "noData": MessageLookupByLibrary.simpleMessage("Keine Daten"),
+        "orEnterCode": MessageLookupByLibrary.simpleMessage(
+            "oder füge hier einen Code ein"),
+        "pasteSuccess":
+            MessageLookupByLibrary.simpleMessage("Text wurde eingefügt"),
         "placeMarkerByHand": MessageLookupByLibrary.simpleMessage(
             "Ermöglicht es Plakate von Hand zu plazieren"),
         "poster": MessageLookupByLibrary.simpleMessage("Plakate"),
@@ -67,11 +82,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("abgehängt wurden"),
         "posterUpdateAfterDateSelection": MessageLookupByLibrary.simpleMessage(
             "Lade Plakate die geändert wurden nach:"),
+        "scanCodeVolunteer": MessageLookupByLibrary.simpleMessage(
+            "Scanne einen Einladungs-Code von einem Mietglied"),
+        "scanThisVolunteer": MessageLookupByLibrary.simpleMessage(
+            "Lass diesen QR Code von einem Volunteer scannen, sodass dieser sich auch für 24 Stunden anmelden kann."),
         "search": MessageLookupByLibrary.simpleMessage("Suche"),
         "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
         "successExport": MessageLookupByLibrary.simpleMessage(
             "Erfolgreich in deinen Downloads-Ordner exportiert"),
-        "time": MessageLookupByLibrary.simpleMessage("Zeit")
+        "time": MessageLookupByLibrary.simpleMessage("Zeit"),
+        "volunteer": MessageLookupByLibrary.simpleMessage("Volunteer einladen"),
+        "volunteerCopy": MessageLookupByLibrary.simpleMessage(
+            "Oder kopiere das und sende es an den Volunteer")
       };
 }

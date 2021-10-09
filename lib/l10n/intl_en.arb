@@ -3,7 +3,9 @@
   "addPoster": "Add Poster",
   "poster": "Poster",
   "flyer": "Flyer",
-  "statistics": "Statistiken",
+  "volunteer": "Volunteer invite",
+  "logout": "Logout",
+  "statistics": "Statistics",
   "settings": "Settings",
   "posterType": "Poster-Type",
   "posterMotive": "Motive",
@@ -35,5 +37,15 @@
   "export": "Export",
   "exportAs": "Export as ",
   "successExport": "Successfully exported into your Downloads Folder",
-  "errorLogin": "Could not Login into API"
+  "errorLogin": "Could not Login into API",
+  "letDisplayEnabled": "Please let your Display on! If not we cannot collect your route! You can darken your Display to save Energy",
+  "scanThisVolunteer": "Give this QR Code to a Volunteer, so he can scan it and login too.",
+  "volunteerCopy": "Or copy this and send it to the Volunteer",
+  "copySuccess": "Copied text",
+  "pasteSuccess": "Pasted text",
+  "scanCodeVolunteer": "Scan an invite code from a member",
+  "orEnterCode": "or enter Code here",
+  "invalidToken": "Invalid oder retired Code",
+  "loginVoltEuropa": "Login with your Volt Europa Account",
+  "loginAsVolunteer":  "Login as Volunteer"
 }

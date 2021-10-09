@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import "package:http/http.dart" as http;
+import 'package:volt_campaigner/auth/volunteer.dart';
 import 'package:volt_campaigner/utils/api/auth.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
@@ -11,19 +15,21 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import "package:googleapis_auth/auth_io.dart"
     show
+        AccessCredentials,
+        AccessToken,
         AuthClient,
         ClientId,
         PromptUserForConsent,
         ServiceAccountCredentials,
+        authenticatedClient,
+        autoRefreshingClient,
         clientViaUserConsent,
         obtainAccessCredentialsViaUserConsent,
-        refreshCredentials,
-        autoRefreshingClient,
-        AccessCredentials,
-        AccessToken;
+        refreshCredentials;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import '../drawer.dart';
+import 'package:googleapis/people/v1.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -34,14 +40,16 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool isLoading = false;
-  static final GoogleSignIn googleSignIn = GoogleSignIn();
   late SharedPreferences prefs;
   String? accessTokenData, accessTokenType, refreshToken, idToken, restApiToken;
+  String? displayName, photoUrl, emailAddress;
   int? expiry;
-
   final clientId =
       ClientId((dotenv.env['CLIENT_ID']!), (dotenv.env['CLIENT_SECRET']!));
-  final scopes = <String>['https://www.googleapis.com/auth/userinfo.email'];
+  final scopes = <String>[
+    'https://www.googleapis.com/auth/userinfo.email',
+    "https://www.googleapis.com/auth/userinfo.profile"
+  ];
 
   @override
   void initState() {
@@ -56,6 +64,9 @@ class _LoginViewState extends State<LoginView> {
           idToken = prefs.getString(SharedPrefsSlugs.googleIdToken);
           expiry = prefs.getInt(SharedPrefsSlugs.googleExpiry);
           restApiToken = prefs.getString(SharedPrefsSlugs.restApiToken);
+          displayName = prefs.getString(SharedPrefsSlugs.googleDisplayName);
+          photoUrl = prefs.getString(SharedPrefsSlugs.googlePhotoUrl);
+          emailAddress = prefs.getString(SharedPrefsSlugs.googleEmailAddress);
           print("Calling Sign in");
           _signIn(false);
         }));
@@ -64,23 +75,39 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            child: Column(
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      _signIn(true);
-                    },
-                    child: Text("Login with your Volt Europa Account"))
-              ],
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.network("https://play-lh.googleusercontent.com/91sCbYPZw3tYXc9n2Gjn3mwXlY_oSuJpDWxnVsPtUWUxf8y709Nc1gqRGPO6NOrQSg=s180"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    _signIn(true);
+                  },
+                  child: Text(AppLocalizations.of(context)!.loginVoltEuropa)),
             ),
-          ),
+          ],
         ),
-      ),
-    );
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => VolunteerLogin()));
+                  },
+                  child: Text(AppLocalizations.of(context)!.loginAsVolunteer)),
+            ),
+          ],
+        ),
+      ],
+    ));
   }
 
   Future<GoogleSignInAccount?> _signIn(bool button) async {
@@ -113,6 +140,7 @@ class _LoginViewState extends State<LoginView> {
                   idToken: idToken),
               client);
           await _saveCredentials(refreshedCredentials);
+          await _checkUserData(client);
         } catch (e) {
           print(e);
           Messenger.showError(
@@ -127,16 +155,39 @@ class _LoginViewState extends State<LoginView> {
       }
       if (!now.isAfter(restExpiryDate) && !now.isAfter(expiryDate)) {
         print("Allready logged in");
+        await _checkUserData(client);
         _goToDrawer();
       }
     }
   }
 
+  _checkUserData(http.Client client) async {
+    AccessCredentials accessCredentials = AccessCredentials(
+        AccessToken(accessTokenType!, accessTokenData!,
+            DateTime.fromMillisecondsSinceEpoch(expiry!).toUtc()),
+        refreshToken,
+        scopes,
+        idToken: idToken);
+    if (photoUrl == null || displayName == null || emailAddress == null) {
+      print("Getting User Data");
+      await _getUserData(client, accessCredentials);
+    }
+  }
+
   _goToDrawer() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => DrawerView(
-              apiToken: restApiToken!,
-            )));
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      Future.delayed(Duration.zero, () {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) => DrawerView(
+                      apiToken: restApiToken!,
+                      displayName: displayName,
+                      emailAddress: emailAddress,
+                      photoUrl: photoUrl,
+                    )),
+            (route) => false);
+      });
+    });
   }
 
   void getCredentials(http.Client client) {
@@ -146,11 +197,37 @@ class _LoginViewState extends State<LoginView> {
           .then((AccessCredentials credentials) async {
         await _saveCredentials(credentials);
         await _getJWT(credentials.accessToken.data);
+        await _getUserData(client, credentials);
         client.close();
       });
     } catch (e) {
       print(e);
       Messenger.showError(context, AppLocalizations.of(context)!.errorLogin);
+    }
+  }
+
+  _getUserData(http.Client client, AccessCredentials credentials) async {
+    AuthClient authClient = authenticatedClient(client, credentials);
+    http.Response response = await authClient.get(Uri.parse(
+        "https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos"));
+    if (response.statusCode == 200) {
+      Map<String, dynamic> json = jsonDecode(response.body);
+      String? displayName = json['names'][0]['displayName'];
+      if (displayName != null)
+        await prefs.setString(SharedPrefsSlugs.googleDisplayName, displayName);
+      String? photoUrl = json['photos'][0]['url'];
+      if (photoUrl != null)
+        await prefs.setString(SharedPrefsSlugs.googlePhotoUrl, photoUrl);
+      String? emailAddresses = json['emailAddresses'][0]['value'];
+      if (emailAddresses != null)
+        await prefs.setString(
+            SharedPrefsSlugs.googleEmailAddress, emailAddresses);
+
+      setState(() {
+        this.displayName = displayName;
+        this.photoUrl = photoUrl;
+        this.emailAddress = emailAddress;
+      });
     }
   }
 
@@ -163,14 +240,15 @@ class _LoginViewState extends State<LoginView> {
         setState(() {
           restApiToken = jwt;
         });
+        _goToDrawer();
       } else {
         throw new Exception("Wrong API Secret");
       }
     } catch (e) {
       print("Could not login into API");
+      print(e);
       Messenger.showError(context, AppLocalizations.of(context)!.errorLogin);
     }
-    _goToDrawer();
   }
 
   void prompt(String url) {
@@ -185,6 +263,7 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Future _saveCredentials(AccessCredentials accessCredentials) async {
+    print("Saving credentials");
     await prefs.setString(SharedPrefsSlugs.googleAccessTokenData,
         accessCredentials.accessToken.data);
     await prefs.setString(SharedPrefsSlugs.googleAccessTokenType,
@@ -197,5 +276,12 @@ class _LoginViewState extends State<LoginView> {
           SharedPrefsSlugs.googleIdToken, accessCredentials.idToken!);
     await prefs.setInt(SharedPrefsSlugs.googleExpiry,
         accessCredentials.accessToken.expiry.millisecondsSinceEpoch);
+    setState(() {
+      accessTokenData = accessCredentials.accessToken.data;
+      accessTokenType = accessCredentials.accessToken.type;
+      refreshToken = accessCredentials.refreshToken;
+      idToken = accessCredentials.idToken;
+      expiry = accessCredentials.accessToken.expiry.millisecondsSinceEpoch;
+    });
   }
 }

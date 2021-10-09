@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "addPoster": MessageLookupByLibrary.simpleMessage("Add Poster"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
+        "copySuccess": MessageLookupByLibrary.simpleMessage("Copied text"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "drawNearestPosterLine":
             MessageLookupByLibrary.simpleMessage("Draw line to nearest Poster"),
@@ -37,7 +38,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export as "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "invalidToken":
+            MessageLookupByLibrary.simpleMessage("Invalid oder retired Code"),
+        "letDisplayEnabled": MessageLookupByLibrary.simpleMessage(
+            "Please let your Display on! If not we cannot collect your route! You can darken your Display to save Energy"),
+        "loginAsVolunteer":
+            MessageLookupByLibrary.simpleMessage("Login as Volunteer"),
+        "loginVoltEuropa": MessageLookupByLibrary.simpleMessage(
+            "Login with your Volt Europa Account"),
+        "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "noData": MessageLookupByLibrary.simpleMessage("No Data"),
+        "orEnterCode":
+            MessageLookupByLibrary.simpleMessage("or enter Code here"),
+        "pasteSuccess": MessageLookupByLibrary.simpleMessage("Pasted text"),
         "placeMarkerByHand":
             MessageLookupByLibrary.simpleMessage("Place marker by hand"),
         "poster": MessageLookupByLibrary.simpleMessage("Poster"),
@@ -65,11 +78,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "posterUnhangStatus": MessageLookupByLibrary.simpleMessage("unhanged"),
         "posterUpdateAfterDateSelection":
             MessageLookupByLibrary.simpleMessage("Load Posters changed after:"),
+        "scanCodeVolunteer": MessageLookupByLibrary.simpleMessage(
+            "Scan an invite code from a member"),
+        "scanThisVolunteer": MessageLookupByLibrary.simpleMessage(
+            "Give this QR Code to a Volunteer, so he can scan it and login too."),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
-        "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
+        "statistics": MessageLookupByLibrary.simpleMessage("Statistics"),
         "successExport": MessageLookupByLibrary.simpleMessage(
             "Successfully exported into your Downloads Folder"),
-        "time": MessageLookupByLibrary.simpleMessage("Time")
+        "time": MessageLookupByLibrary.simpleMessage("Time"),
+        "volunteer": MessageLookupByLibrary.simpleMessage("Volunteer invite"),
+        "volunteerCopy": MessageLookupByLibrary.simpleMessage(
+            "Or copy this and send it to the Volunteer")
       };
 }

@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:volt_campaigner/drawer.dart';
 import 'package:volt_campaigner/map/map_search.dart';
 import 'package:volt_campaigner/map/map_settings.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ import 'package:volt_campaigner/utils/http_utils.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
+import 'package:wakelock/wakelock.dart';
 
 class Flyer extends StatefulWidget {
   LatLng currentPosition;
@@ -24,15 +26,19 @@ class Flyer extends StatefulWidget {
   poster_map.OnRefresh onRefresh;
   FlyerRoutes flyerRoutes;
   String apiToken;
+  String? photoUrl;
+  OnDrawerOpen onDrawerOpen;
 
-  Flyer({
-    Key? key,
-    required this.currentPosition,
-    required this.onLocationUpdate,
-    required this.onRefresh,
-    required this.flyerRoutes,
-    required this.apiToken,
-  }) : super(key: key);
+  Flyer(
+      {Key? key,
+      required this.currentPosition,
+      required this.onLocationUpdate,
+      required this.onRefresh,
+      required this.flyerRoutes,
+      required this.apiToken,
+      required this.photoUrl,
+      required this.onDrawerOpen})
+      : super(key: key);
 
   @override
   FlyerState createState() => FlyerState();
@@ -47,6 +53,7 @@ class FlyerState extends State<Flyer> {
   Position? lastPosition;
   bool refreshing = false;
   bool running = false;
+  bool freeze = false;
   var uuid = Uuid();
   late String ownUUID;
   late Timer timer;
@@ -74,29 +81,33 @@ class FlyerState extends State<Flyer> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      FlutterMap(
-        mapController: mapController,
-        children: [
-          MapSettings.getTileLayerWidget(),
-          LocationMarkerLayerWidget(
-            plugin: LocationMarkerPlugin(
-              centerCurrentLocationStream: _userPositionStreamController.stream,
-              centerOnLocationUpdate: _centerOnLocationUpdate,
+      AbsorbPointer(
+        absorbing: freeze,
+        child: FlutterMap(
+          mapController: mapController,
+          children: [
+            MapSettings.getTileLayerWidget(),
+            LocationMarkerLayerWidget(
+              plugin: LocationMarkerPlugin(
+                centerCurrentLocationStream:
+                    _userPositionStreamController.stream,
+                centerOnLocationUpdate: _centerOnLocationUpdate,
+              ),
             ),
-          ),
-        ],
-        options: MapSettings.getMapOptions(
-            (centerOnLocationUpdate) => setState(() {
-                  _centerOnLocationUpdate = centerOnLocationUpdate;
-                }),
-            widget.currentPosition),
-        layers: [
-          PolylineLayerOptions(
-            polylines: polylines,
-          ),
-          MarkerLayerOptions(markers: userMarker),
-        ],
-        nonRotatedLayers: [],
+          ],
+          options: MapSettings.getMapOptions(
+              (centerOnLocationUpdate) => setState(() {
+                    _centerOnLocationUpdate = centerOnLocationUpdate;
+                  }),
+              widget.currentPosition),
+          layers: [
+            PolylineLayerOptions(
+              polylines: polylines,
+            ),
+            MarkerLayerOptions(markers: userMarker),
+          ],
+          nonRotatedLayers: [],
+        ),
       ),
       Positioned(
           right: 20,
@@ -107,8 +118,16 @@ class FlyerState extends State<Flyer> {
             });
           }, _userPositionStreamController, () => widget.onRefresh(),
               refreshing)),
-      Positioned(left: 20, top: 20, child: _getSearchFab()),
-      Positioned(right: 20, bottom: 20, child: _getStartStopButton())
+      Positioned(
+          left: 10,
+          top: 10,
+          child: MapSettings.getDrawerFab(
+              context, widget.photoUrl, () => widget.onDrawerOpen())),
+      Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [_getSearchFab()]),
+      Positioned(right: 20, bottom: 20, child: _getStartStopButton()),
+      if (running) Positioned(left: 20, bottom: 20, child: _getFreezeButton())
     ]);
   }
 
@@ -118,6 +137,9 @@ class FlyerState extends State<Flyer> {
           Geolocator.getPositionStream().listen((position) {
         _onPositionChanged(position);
       });
+      Wakelock.enable();
+      Messenger.showWarning(
+          context, AppLocalizations.of(context)!.letDisplayEnabled);
       timer = Timer.periodic(Duration(seconds: 30), (timer) {
         _upsert();
       });
@@ -144,48 +166,71 @@ class FlyerState extends State<Flyer> {
     }
   }
 
-  _stopListener() {
-    _currentPositionStreamSubscription.cancel();
-  }
-
-  _getStartStopButton() {
+  _getFreezeButton() {
     return FloatingActionButton(
-      heroTag: "Start-Stop-FAB",
-      child:
-          Icon(running ? Icons.pause : Icons.play_arrow, color: Colors.white),
+      heroTag: "Freeze-FAB",
+      child: Icon(freeze ? Icons.lock_open : Icons.lock, color: Colors.white),
       backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
         setState(() {
-          running ? _stopListener() : _startListener();
-          running = !running;
+          freeze = !freeze;
         });
       },
     );
   }
 
-  _getSearchFab() {
-    return FloatingActionButton(
-      heroTag: "Search-FAB",
-      child: Icon(Icons.search, color: Colors.white),
-      tooltip: AppLocalizations.of(context)!.addPoster,
-      backgroundColor: Theme.of(context).primaryColor,
-      onPressed: () async {
-        searching = true;
-        _centerOnLocationUpdate = CenterOnLocationUpdate.never;
-        try {
-          NomatimSearchLocation nomatimSearchLocation =
-              await showSearch(context: context, delegate: MapSearchDelegate(widget.apiToken));
+  _stopListener() {
+    _currentPositionStreamSubscription.cancel();
+    Wakelock.disable();
+  }
+
+  _getStartStopButton() {
+    return AbsorbPointer(
+      absorbing: freeze,
+      child: FloatingActionButton(
+        heroTag: "Start-Stop-FAB",
+        child:
+            Icon(running ? Icons.pause : Icons.play_arrow, color: Colors.white),
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () {
           setState(() {
-            widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
-                nomatimSearchLocation.longitude));
-            widget.onRefresh();
-            mapController.move(
-                LatLng(nomatimSearchLocation.latitude,
-                    nomatimSearchLocation.longitude),
-                13);
+            running ? _stopListener() : _startListener();
+            running = !running;
           });
-        } catch (e) {}
-      },
+        },
+      ),
+    );
+  }
+
+  _getSearchFab() {
+    return AbsorbPointer(
+      absorbing: freeze,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: FloatingActionButton(
+          heroTag: "Search-FAB",
+          child: Icon(Icons.search, color: Colors.white),
+          tooltip: AppLocalizations.of(context)!.addPoster,
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () async {
+            searching = true;
+            _centerOnLocationUpdate = CenterOnLocationUpdate.never;
+            try {
+              NomatimSearchLocation nomatimSearchLocation = await showSearch(
+                  context: context, delegate: MapSearchDelegate(widget.apiToken));
+              setState(() {
+                widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
+                    nomatimSearchLocation.longitude));
+                widget.onRefresh();
+                mapController.move(
+                    LatLng(nomatimSearchLocation.latitude,
+                        nomatimSearchLocation.longitude),
+                    13);
+              });
+            } catch (e) {}
+          },
+        ),
+      ),
     );
   }
 

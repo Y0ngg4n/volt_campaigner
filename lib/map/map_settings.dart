@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:volt_campaigner/drawer.dart';
 
 typedef OnPositionChanged = Function(CenterOnLocationUpdate);
 typedef OnRefresh = Function();
@@ -24,7 +25,7 @@ class MapSettings {
         });
   }
 
-  static getTileLayerWidget(){
+  static getTileLayerWidget() {
     return TileLayerWidget(
       options: TileLayerOptions(
         urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -33,7 +34,12 @@ class MapSettings {
     );
   }
 
-  static getRefreshFab(BuildContext context, OnPositionChanged onPositionChanged, StreamController<double> _userPositionStreamController, OnRefresh onRefresh, bool refreshing){
+  static getRefreshFab(
+      BuildContext context,
+      OnPositionChanged onPositionChanged,
+      StreamController<double> _userPositionStreamController,
+      OnRefresh onRefresh,
+      bool refreshing) {
     return FloatingActionButton(
       heroTag: "Center-FAB",
       backgroundColor: Theme.of(context).primaryColor,
@@ -47,13 +53,14 @@ class MapSettings {
       child: refreshing
           ? CircularProgressIndicator()
           : Icon(
-        Icons.my_location,
-        color: Colors.white,
-      ),
+              Icons.my_location,
+              color: Colors.white,
+            ),
     );
   }
 
-  static getMarkerClusterLayerOptions(OnMarkerTap onMarkerTap, List<Marker> markers) {
+  static getMarkerClusterLayerOptions(
+      OnMarkerTap onMarkerTap, List<Marker> markers) {
     return MarkerClusterLayerOptions(
       onMarkerTap: (marker) => onMarkerTap(marker),
       size: Size(40, 40),
@@ -71,6 +78,26 @@ class MapSettings {
           onPressed: null,
         );
       },
+    );
+  }
+
+  static getDrawerFab(
+      BuildContext context, String? photoUrl, OnDrawerOpen onDrawerOpen) {
+    return SizedBox(
+      height: 75,
+      width: 75,
+      child: FloatingActionButton(
+          heroTag: "Drawer-FAB",
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () {
+            onDrawerOpen();
+          },
+          child: Container(
+              child: photoUrl == null
+                  ? CircleAvatar(radius: 33, child: Icon(Icons.menu))
+                  : CircleAvatar(radius: 33,
+                      backgroundImage: Image.network(photoUrl).image,
+                    ))),
     );
   }
 }

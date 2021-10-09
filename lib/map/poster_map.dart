@@ -19,6 +19,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:volt_campaigner/drawer.dart';
 import 'package:volt_campaigner/map/poster/add_poster.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/update_poster.dart';
@@ -42,6 +43,8 @@ class PosterMapView extends StatefulWidget {
   PosterTagsLists posterTagsLists;
   PosterTags campaignTags;
   String apiToken;
+  String? photoUrl;
+  OnDrawerOpen onDrawerOpen;
 
   PosterMapView(
       {Key? key,
@@ -51,7 +54,9 @@ class PosterMapView extends StatefulWidget {
       required this.onRefresh,
       required this.posterTagsLists,
       required this.campaignTags,
-      required this.apiToken})
+      required this.apiToken,
+      required this.photoUrl,
+      required this.onDrawerOpen})
       : super(key: key);
 
   @override
@@ -138,7 +143,12 @@ class PosterMapViewState extends State<PosterMapView> {
           }, _userPositionStreamController, () => widget.onRefresh(),
               refreshing)),
       Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
-      Positioned(left: 20, top: 20, child: _getSearchFab()),
+      Positioned(
+          left: 10,
+          top: 10,
+          child: MapSettings.getDrawerFab(
+              context, widget.photoUrl, () => widget.onDrawerOpen())),
+      Row(mainAxisAlignment: MainAxisAlignment.center,children: [_getSearchFab()]),
       if (placeMarkerByHand)
         Positioned(
             top: 0,
@@ -214,7 +224,7 @@ class PosterMapViewState extends State<PosterMapView> {
                     });
                     refresh();
                   },
-              apiToken:  widget.apiToken,
+                  apiToken: widget.apiToken,
                   onUpdatePoster: (poster) {
                     setState(() {
                       markers[marker] = poster;
@@ -236,7 +246,7 @@ class PosterMapViewState extends State<PosterMapView> {
           context,
           MaterialPageRoute(
               builder: (context) => AddPoster(
-                apiToken:  widget.apiToken,
+                    apiToken: widget.apiToken,
                     campaignTags: widget.campaignTags,
                     posterTagsLists: widget.posterTagsLists,
                     location: widget.currentPosition,
@@ -252,28 +262,31 @@ class PosterMapViewState extends State<PosterMapView> {
   }
 
   _getSearchFab() {
-    return FloatingActionButton(
-      heroTag: "Search-FAB",
-      child: Icon(Icons.search, color: Colors.white),
-      tooltip: AppLocalizations.of(context)!.addPoster,
-      backgroundColor: Theme.of(context).primaryColor,
-      onPressed: () async {
-        searching = true;
-        _centerOnLocationUpdate = CenterOnLocationUpdate.never;
-        try {
-          NomatimSearchLocation nomatimSearchLocation =
-              await showSearch(context: context, delegate: MapSearchDelegate(widget.apiToken));
-          setState(() {
-            widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
-                nomatimSearchLocation.longitude));
-            widget.onRefresh();
-            mapController.move(
-                LatLng(nomatimSearchLocation.latitude,
-                    nomatimSearchLocation.longitude),
-                13);
-          });
-        } catch (e) {}
-      },
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: FloatingActionButton(
+        heroTag: "Search-FAB",
+        child: Icon(Icons.search, color: Colors.white),
+        tooltip: AppLocalizations.of(context)!.addPoster,
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () async {
+          searching = true;
+          _centerOnLocationUpdate = CenterOnLocationUpdate.never;
+          try {
+            NomatimSearchLocation nomatimSearchLocation = await showSearch(
+                context: context, delegate: MapSearchDelegate(widget.apiToken));
+            setState(() {
+              widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
+                  nomatimSearchLocation.longitude));
+              widget.onRefresh();
+              mapController.move(
+                  LatLng(nomatimSearchLocation.latitude,
+                      nomatimSearchLocation.longitude),
+                  13);
+            });
+          } catch (e) {}
+        },
+      ),
     );
   }
 

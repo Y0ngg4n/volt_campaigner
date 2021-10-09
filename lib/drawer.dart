@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/scheduler.dart';
+import 'package:volt_campaigner/auth/login.dart';
 import 'package:volt_campaigner/export/export.dart';
 import 'package:volt_campaigner/flyer/flyer.dart';
 import 'package:volt_campaigner/map/poster_map.dart';
@@ -14,6 +16,7 @@ import 'package:volt_campaigner/utils/api/model/flyer.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/api/poster_tags.dart';
+import 'package:volt_campaigner/volunteer/volunteer.dart';
 
 import 'map/poster/add_poster.dart';
 import 'map/poster/poster_tags.dart';
@@ -21,11 +24,29 @@ import 'package:latlong2/latlong.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum DrawerSelection { POSTER, FLYER, STATISTICS, EXPORT, SETTINGS }
+typedef OnDrawerOpen = Function();
+
+enum DrawerSelection {
+  POSTER,
+  FLYER,
+  STATISTICS,
+  VOLUNTEER,
+  EXPORT,
+  SETTINGS,
+  LOGOUT
+}
 
 class DrawerView extends StatefulWidget {
   String apiToken;
-  DrawerView({Key? key, required this.apiToken}) : super(key: key);
+  String? displayName, photoUrl, emailAddress;
+
+  DrawerView(
+      {Key? key,
+      required this.apiToken,
+      required this.displayName,
+      required this.photoUrl,
+      required this.emailAddress})
+      : super(key: key);
 
   @override
   _DrawerViewState createState() => _DrawerViewState();
@@ -45,6 +66,7 @@ class _DrawerViewState extends State<DrawerView> {
   final GlobalKey<PosterMapViewState> posterMapWidgetState =
       GlobalKey<PosterMapViewState>();
   final GlobalKey<FlyerState> flyerWidgetState = GlobalKey<FlyerState>();
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -55,7 +77,8 @@ class _DrawerViewState extends State<DrawerView> {
             prefs = value;
             campaignTags = PosterTags.fromJsonAll(jsonDecode(
                 (prefs.getString(SharedPrefsSlugs.campaignTags) ?? "[]")));
-            widget.apiToken = prefs.getString(SharedPrefsSlugs.restApiToken) ?? "";
+            widget.apiToken =
+                prefs.getString(SharedPrefsSlugs.restApiToken) ?? "";
           });
 
           Future.delayed(Duration(seconds: 1), () => _refresh());
@@ -73,29 +96,70 @@ class _DrawerViewState extends State<DrawerView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(title: Text(AppLocalizations.of(context)!.appTitle)),
-      body: _getBody(),
-      drawer: Drawer(
-        child: ListView(children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+    if (drawerSelection == DrawerSelection.POSTER ||
+        drawerSelection == DrawerSelection.FLYER) {
+      return Scaffold(key: scaffoldKey, body: _getBody(), drawer: _getDrawer());
+    } else {
+      return Scaffold(
+          key: scaffoldKey,
+          appBar: new AppBar(title: Text(_getAppbarString())),
+          body: _getBody(),
+          drawer: _getDrawer());
+    }
+  }
+
+  _getDrawer() {
+    BoxDecoration drawerHeaderDecoration = widget.photoUrl != null
+        ? BoxDecoration(
+            color: Colors.blue,
+            image: DecorationImage(
+              image: NetworkImage(widget.photoUrl!),
+              fit: BoxFit.fill,
+            ))
+        : BoxDecoration(
+            color: Colors.blue,
+          );
+
+    return Drawer(
+      child: ListView(children: [
+        DrawerHeader(
+          decoration: drawerHeaderDecoration,
+          child: Center(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      widget.displayName == null
+                          ? 'Volunteer'
+                          : widget.displayName!,
+                      style: TextStyle(fontSize: 20)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      widget.emailAddress == null ? '' : widget.emailAddress!,
+                      style: TextStyle(fontSize: 15)),
+                ),
+              ],
             ),
-            child: Text('Drawer Header'),
           ),
-          _getListTile(
-              AppLocalizations.of(context)!.poster, DrawerSelection.POSTER),
-          _getListTile(
-              AppLocalizations.of(context)!.flyer, DrawerSelection.FLYER),
-          _getListTile(AppLocalizations.of(context)!.statistics,
-              DrawerSelection.STATISTICS),
-          _getListTile(
-              AppLocalizations.of(context)!.settings, DrawerSelection.SETTINGS),
-          _getListTile(
-              AppLocalizations.of(context)!.export, DrawerSelection.EXPORT)
-        ]),
-      ),
+        ),
+        _getListTile(
+            AppLocalizations.of(context)!.poster, DrawerSelection.POSTER),
+        _getListTile(
+            AppLocalizations.of(context)!.flyer, DrawerSelection.FLYER),
+        _getListTile(AppLocalizations.of(context)!.statistics,
+            DrawerSelection.STATISTICS),
+        _getListTile(
+            AppLocalizations.of(context)!.volunteer, DrawerSelection.VOLUNTEER),
+        _getListTile(
+            AppLocalizations.of(context)!.settings, DrawerSelection.SETTINGS),
+        _getListTile(
+            AppLocalizations.of(context)!.export, DrawerSelection.EXPORT),
+        _getListTile(
+            AppLocalizations.of(context)!.logout, DrawerSelection.LOGOUT)
+      ]),
     );
   }
 
@@ -112,6 +176,26 @@ class _DrawerViewState extends State<DrawerView> {
   }
 
   Widget _getBody() {
+    if (drawerSelection == DrawerSelection.LOGOUT) {
+      prefs.remove(SharedPrefsSlugs.restApiToken);
+      prefs.remove(SharedPrefsSlugs.googleAccessTokenData);
+      prefs.remove(SharedPrefsSlugs.googleAccessTokenType);
+      prefs.remove(SharedPrefsSlugs.googleAccessTokenData);
+      prefs.remove(SharedPrefsSlugs.googleIdToken);
+      prefs.remove(SharedPrefsSlugs.googleRefreshToken);
+      prefs.remove(SharedPrefsSlugs.googleScopes);
+      prefs.remove(SharedPrefsSlugs.googlePhotoUrl);
+      prefs.remove(SharedPrefsSlugs.googleEmailAddress);
+      prefs.remove(SharedPrefsSlugs.googleExpiry);
+      prefs.remove(SharedPrefsSlugs.googleDisplayName);
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        Future.delayed(Duration.zero, () {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => LoginView()),
+              (route) => false);
+        });
+      });
+    }
     switch (drawerSelection) {
       case DrawerSelection.POSTER:
         return _getPosterMapView();
@@ -134,6 +218,29 @@ class _DrawerViewState extends State<DrawerView> {
           posterModels: posterInDistance,
           posterTagsLists: posterTagsLists,
         );
+      case DrawerSelection.VOLUNTEER:
+        return VolunteerView(apiToken: widget.apiToken);
+      case DrawerSelection.LOGOUT:
+        return Container();
+    }
+  }
+
+  String _getAppbarString() {
+    switch (drawerSelection) {
+      case DrawerSelection.POSTER:
+        return AppLocalizations.of(context)!.poster;
+      case DrawerSelection.FLYER:
+        return AppLocalizations.of(context)!.flyer;
+      case DrawerSelection.STATISTICS:
+        return AppLocalizations.of(context)!.statistics;
+      case DrawerSelection.SETTINGS:
+        return AppLocalizations.of(context)!.settings;
+      case DrawerSelection.EXPORT:
+        return AppLocalizations.of(context)!.export;
+      case DrawerSelection.VOLUNTEER:
+        return AppLocalizations.of(context)!.volunteer;
+      case DrawerSelection.LOGOUT:
+        return AppLocalizations.of(context)!.logout;
     }
   }
 
@@ -172,7 +279,8 @@ class _DrawerViewState extends State<DrawerView> {
       FlyerRoutes? flyerRoutes = await FlyerApiUtils.getFlyerRoutesInDistance(
           currentPosition,
           1000000000000,
-          DateTime.fromMicrosecondsSinceEpoch(0).toString(), widget.apiToken);
+          DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+          widget.apiToken);
       if (flyerRoutes != null) {
         setState(() {
           this.flyerRoutes = flyerRoutes;
@@ -197,19 +305,25 @@ class _DrawerViewState extends State<DrawerView> {
     PosterModels posterModels;
 
     if (loadAll) {
-      posterModels = await PosterApiUtils.getAllPosters(radius, hanging, widget.apiToken) ??
+      posterModels = await PosterApiUtils.getAllPosters(
+              radius, hanging, widget.apiToken) ??
           PosterModels.empty();
     } else {
       if (customDateSwitch) {
         posterModels = await PosterApiUtils.getPostersInDistance(
-                currentPosition, radius, hanging, customDate, widget.apiToken) ??
+                currentPosition,
+                radius,
+                hanging,
+                customDate,
+                widget.apiToken) ??
             PosterModels.empty();
       } else {
         posterModels = await PosterApiUtils.getPostersInDistance(
                 currentPosition,
                 radius,
                 hanging,
-                DateTime.fromMicrosecondsSinceEpoch(0).toString(), widget.apiToken) ??
+                DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+                widget.apiToken) ??
             PosterModels.empty();
       }
     }
@@ -221,6 +335,7 @@ class _DrawerViewState extends State<DrawerView> {
 
   _getPosterMapView() {
     return PosterMapView(
+      photoUrl: widget.photoUrl,
       apiToken: widget.apiToken,
       key: posterMapWidgetState,
       posterInDistance: posterInDistance,
@@ -233,6 +348,10 @@ class _DrawerViewState extends State<DrawerView> {
       posterTagsLists: posterTagsLists,
       onRefresh: () => _refresh(),
       campaignTags: campaignTags,
+      onDrawerOpen: () {
+        if (scaffoldKey.currentState != null)
+          scaffoldKey.currentState!.openDrawer();
+      },
     );
   }
 
@@ -248,24 +367,33 @@ class _DrawerViewState extends State<DrawerView> {
         });
       },
       onRefresh: () => _refresh(),
+      photoUrl: widget.photoUrl,
+      onDrawerOpen: () {
+        if (scaffoldKey.currentState != null)
+          scaffoldKey.currentState!.openDrawer();
+      },
     );
   }
 
   _refreshPosterTags() async {
     PosterTags campaign =
-        await PosterTagApiUtils.getAllPosterTags('campaign', widget.apiToken) ?? PosterTags([]);
+        await PosterTagApiUtils.getAllPosterTags('campaign', widget.apiToken) ??
+            PosterTags([]);
     PosterTags type =
-        await PosterTagApiUtils.getAllPosterTags('type', widget.apiToken) ?? PosterTags([]);
+        await PosterTagApiUtils.getAllPosterTags('type', widget.apiToken) ??
+            PosterTags([]);
     PosterTags motive =
-        await PosterTagApiUtils.getAllPosterTags('motive', widget.apiToken) ?? PosterTags([]);
-    PosterTags targetGroups =
-        await PosterTagApiUtils.getAllPosterTags('target-groups', widget.apiToken) ??
+        await PosterTagApiUtils.getAllPosterTags('motive', widget.apiToken) ??
             PosterTags([]);
-    PosterTags environment =
-        await PosterTagApiUtils.getAllPosterTags('environment', widget.apiToken) ??
-            PosterTags([]);
+    PosterTags targetGroups = await PosterTagApiUtils.getAllPosterTags(
+            'target-groups', widget.apiToken) ??
+        PosterTags([]);
+    PosterTags environment = await PosterTagApiUtils.getAllPosterTags(
+            'environment', widget.apiToken) ??
+        PosterTags([]);
     PosterTags other =
-        await PosterTagApiUtils.getAllPosterTags('other', widget.apiToken) ?? PosterTags([]);
+        await PosterTagApiUtils.getAllPosterTags('other', widget.apiToken) ??
+            PosterTags([]);
     setState(() {
       posterTagsLists = PosterTagsLists(
           campaign.posterTags,

@@ -90,10 +90,30 @@ class S {
     );
   }
 
-  /// `Statistiken`
+  /// `Volunteer invite`
+  String get volunteer {
+    return Intl.message(
+      'Volunteer invite',
+      name: 'volunteer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Statistics`
   String get statistics {
     return Intl.message(
-      'Statistiken',
+      'Statistics',
       name: 'statistics',
       desc: '',
       args: [],
@@ -415,6 +435,106 @@ class S {
     return Intl.message(
       'Could not Login into API',
       name: 'errorLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please let your Display on! If not we cannot collect your route! You can darken your Display to save Energy`
+  String get letDisplayEnabled {
+    return Intl.message(
+      'Please let your Display on! If not we cannot collect your route! You can darken your Display to save Energy',
+      name: 'letDisplayEnabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Give this QR Code to a Volunteer, so he can scan it and login too.`
+  String get scanThisVolunteer {
+    return Intl.message(
+      'Give this QR Code to a Volunteer, so he can scan it and login too.',
+      name: 'scanThisVolunteer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Or copy this and send it to the Volunteer`
+  String get volunteerCopy {
+    return Intl.message(
+      'Or copy this and send it to the Volunteer',
+      name: 'volunteerCopy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copied text`
+  String get copySuccess {
+    return Intl.message(
+      'Copied text',
+      name: 'copySuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pasted text`
+  String get pasteSuccess {
+    return Intl.message(
+      'Pasted text',
+      name: 'pasteSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan an invite code from a member`
+  String get scanCodeVolunteer {
+    return Intl.message(
+      'Scan an invite code from a member',
+      name: 'scanCodeVolunteer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `or enter Code here`
+  String get orEnterCode {
+    return Intl.message(
+      'or enter Code here',
+      name: 'orEnterCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid oder retired Code`
+  String get invalidToken {
+    return Intl.message(
+      'Invalid oder retired Code',
+      name: 'invalidToken',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login with your Volt Europa Account`
+  String get loginVoltEuropa {
+    return Intl.message(
+      'Login with your Volt Europa Account',
+      name: 'loginVoltEuropa',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login as Volunteer`
+  String get loginAsVolunteer {
+    return Intl.message(
+      'Login as Volunteer',
+      name: 'loginAsVolunteer',
       desc: '',
       args: [],
     );

@@ -60,16 +60,16 @@ dev_dependencies:
   # Flyer
   uuid: ^3.0.5
   geojson_vi: ^2.0.3
+  wakelock: ^0.5.6
   # Auth
   google_sign_in: ^5.1.1
   googleapis: ^5.0.1
   googleapis_auth: ^1.1.0
   url_launcher: ^6.0.12
   jwt_decode: ^0.3.1
-  # Background Fetch
-#  workmanager: ^0.4.0
-
-
+  #Volunteer
+  qr_flutter: ^4.0.0
+  qr_code_scanner: ^0.5.2
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
