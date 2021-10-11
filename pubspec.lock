@@ -200,6 +200,24 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.0"
+  flutter_map_dragmarker:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "11fa0f7e8840a88105faf4cf4aca709d755c70c9"
+      url: "https://github.com/Y0ngg4n/flutter_map_dragmarker.git"
+    source: git
+    version: "1.0.0+1"
+  flutter_map_line_editor:
+    dependency: "direct dev"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: efdbab796387ba961520199949398182d274dbca
+      url: "https://github.com/Y0ngg4n/flutter_map_line_editor.git"
+    source: git
+    version: "1.0.0+1"
   flutter_map_location_marker:
     dependency: "direct dev"
     description:
@@ -480,6 +498,13 @@ packages:
     dependency: transitive
     description:
       name: proj4dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  pull_to_refresh:
+    dependency: "direct dev"
+    description:
+      name: pull_to_refresh
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"

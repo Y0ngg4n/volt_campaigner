@@ -2,19 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'
-    show
-        Anchor,
-        AnchorPos,
-        FitBoundsOptions,
-        FlutterMap,
-        MapController,
-        MapOptions,
-        MapPosition,
-        Marker,
-        Polyline,
-        PolylineLayerOptions,
-        TileLayerOptions,
-        TileLayerWidget;
+    show Anchor, AnchorPos, FitBoundsOptions, FlutterMap, MapController, MapOptions, MapPosition, Marker, Polygon, PolygonLayerOptions, Polyline, PolylineLayerOptions, TileLayerOptions, TileLayerWidget;
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -24,6 +12,7 @@ import 'package:volt_campaigner/map/poster/add_poster.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/update_poster.dart';
 import 'package:volt_campaigner/map/map_search.dart';
+import 'package:volt_campaigner/utils/api/model/area.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:volt_campaigner/utils/api/nomatim.dart';
@@ -45,6 +34,7 @@ class PosterMapView extends StatefulWidget {
   String apiToken;
   String? photoUrl;
   OnDrawerOpen onDrawerOpen;
+  Areas areasCovered;
 
   PosterMapView(
       {Key? key,
@@ -56,7 +46,8 @@ class PosterMapView extends StatefulWidget {
       required this.campaignTags,
       required this.apiToken,
       required this.photoUrl,
-      required this.onDrawerOpen})
+      required this.onDrawerOpen,
+      required this.areasCovered})
       : super(key: key);
 
   @override
@@ -76,6 +67,7 @@ class PosterMapViewState extends State<PosterMapView> {
   bool refreshing = false;
   MapController mapController = new MapController();
   bool searching = false;
+
 
   @override
   void dispose() {
@@ -105,8 +97,10 @@ class PosterMapViewState extends State<PosterMapView> {
           placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
               placeMarkerByHand) as bool;
         }));
+    widget.onRefresh();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Stack(children: [
       FlutterMap(
@@ -127,6 +121,7 @@ class PosterMapViewState extends State<PosterMapView> {
             widget.currentPosition),
         layers: [
           _getPolyLineLayerOptions(),
+          _getPolygonsLayerOptions(),
           MapSettings.getMarkerClusterLayerOptions(
               (marker) => _onMarkerTap(marker), markers.keys.toList()),
         ],
@@ -306,6 +301,16 @@ class PosterMapViewState extends State<PosterMapView> {
   _getPolyLineLayerOptions() {
     return PolylineLayerOptions(
       polylines: polylines.keys.toList(),
+    );
+  }
+
+  _getPolygonsLayerOptions() {
+    List<Polygon> polygons = [];
+    for(AreaModel areaModel in widget.areasCovered.areas){
+      polygons.add(areaModel.points);
+    }
+    return PolygonLayerOptions(
+      polygons: polygons,
     );
   }
 }

@@ -90,6 +90,16 @@ class S {
     );
   }
 
+  /// `Areas`
+  String get areas {
+    return Intl.message(
+      'Areas',
+      name: 'areas',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Volunteer invite`
   String get volunteer {
     return Intl.message(
@@ -535,6 +545,76 @@ class S {
     return Intl.message(
       'Login as Volunteer',
       name: 'loginAsVolunteer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not add Area`
+  String get errorAddArea {
+    return Intl.message(
+      'Could not add Area',
+      name: 'errorAddArea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Area`
+  String get addArea {
+    return Intl.message(
+      'Save Area',
+      name: 'addArea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Max Poster Count`
+  String get maxPosterCount {
+    return Intl.message(
+      'Max Poster Count',
+      name: 'maxPosterCount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get yes {
+    return Intl.message(
+      'Yes',
+      name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message(
+      'No',
+      name: 'no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bist du dir sicher, dass du das löschen möchtest?`
+  String get sureDelete {
+    return Intl.message(
+      'Bist du dir sicher, dass du das löschen möchtest?',
+      name: 'sureDelete',
       desc: '',
       args: [],
     );

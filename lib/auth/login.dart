@@ -75,38 +75,42 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.network("https://play-lh.googleusercontent.com/91sCbYPZw3tYXc9n2Gjn3mwXlY_oSuJpDWxnVsPtUWUxf8y709Nc1gqRGPO6NOrQSg=s180"),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    _signIn(true);
-                  },
-                  child: Text(AppLocalizations.of(context)!.loginVoltEuropa)),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => VolunteerLogin()));
-                  },
-                  child: Text(AppLocalizations.of(context)!.loginAsVolunteer)),
-            ),
-          ],
-        ),
-      ],
+        body: SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.network(
+              "https://play-lh.googleusercontent.com/91sCbYPZw3tYXc9n2Gjn3mwXlY_oSuJpDWxnVsPtUWUxf8y709Nc1gqRGPO6NOrQSg=s180"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      _signIn(true);
+                    },
+                    child: Text(AppLocalizations.of(context)!.loginVoltEuropa)),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => VolunteerLogin()));
+                    },
+                    child:
+                        Text(AppLocalizations.of(context)!.loginAsVolunteer)),
+              ),
+            ],
+          ),
+        ],
+      ),
     ));
   }
 
@@ -141,6 +145,7 @@ class _LoginViewState extends State<LoginView> {
               client);
           await _saveCredentials(refreshedCredentials);
           await _checkUserData(client);
+          await _checkReady(refreshedCredentials.accessToken.expiry, restExpiryDate, now, client);
         } catch (e) {
           print(e);
           Messenger.showError(
@@ -153,11 +158,15 @@ class _LoginViewState extends State<LoginView> {
         print("Gettings JWT");
         await _getJWT(accessTokenData!);
       }
-      if (!now.isAfter(restExpiryDate) && !now.isAfter(expiryDate)) {
-        print("Allready logged in");
-        await _checkUserData(client);
-        _goToDrawer();
-      }
+      await _checkReady(expiryDate, restExpiryDate, now, client);
+    }
+  }
+
+  _checkReady(DateTime expiryDate, DateTime? restExpiryDate, DateTime now, http.Client client) async {
+    if (!now.isAfter(restExpiryDate!) && !now.isAfter(expiryDate)) {
+      print("Allready logged in");
+      await _checkUserData(client);
+      _goToDrawer();
     }
   }
 

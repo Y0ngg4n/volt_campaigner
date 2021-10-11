@@ -3,6 +3,7 @@
   "addPoster": "Add Poster",
   "poster": "Poster",
   "flyer": "Flyer",
+  "areas": "Areas",
   "volunteer": "Volunteer invite",
   "logout": "Logout",
   "statistics": "Statistics",
@@ -47,5 +48,12 @@
   "orEnterCode": "or enter Code here",
   "invalidToken": "Invalid oder retired Code",
   "loginVoltEuropa": "Login with your Volt Europa Account",
-  "loginAsVolunteer":  "Login as Volunteer"
+  "loginAsVolunteer":  "Login as Volunteer",
+  "errorAddArea": "Could not add Area",
+  "addArea": "Save Area",
+  "name": "Name",
+  "maxPosterCount": "Max Poster Count",
+  "yes": "Yes",
+  "no": "No",
+  "sureDelete": "Bist du dir sicher, dass du das löschen möchtest?"
 }

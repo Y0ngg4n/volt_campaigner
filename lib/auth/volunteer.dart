@@ -82,79 +82,82 @@ class _VolunteerLoginState extends State<VolunteerLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Column(
-          children: <Widget>[
-            Expanded(
-              flex: 5,
-              child: _buildQrView(context),
-            ),
-            Expanded(
-              flex: 1,
-              child: Center(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(AppLocalizations.of(context)!.scanCodeVolunteer),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: dataController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelText: AppLocalizations.of(context)!.orEnterCode,
-                          suffixIcon: IconButton(
-                              icon: Icon(Icons.content_copy),
-                              onPressed: () async {
-                                ClipboardData? clipboardData =
-                                    await Clipboard.getData("text/plain");
-                                if (clipboardData != null &&
-                                    clipboardData.text != null) {
-                                  setState(() {
-                                    dataController.text = clipboardData.text!;
-                                    _pasteSuccess();
-                                  });
-                                }
-                              }),
+      body: SafeArea(
+        child: Stack(children: [
+          Column(
+            children: <Widget>[
+              Expanded(
+                flex: 5,
+                child: _buildQrView(context),
+              ),
+              Expanded(
+                flex: 1,
+                child: Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(AppLocalizations.of(context)!.scanCodeVolunteer),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: dataController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            labelText:
+                                AppLocalizations.of(context)!.orEnterCode,
+                            suffixIcon: IconButton(
+                                icon: Icon(Icons.content_copy),
+                                onPressed: () async {
+                                  ClipboardData? clipboardData =
+                                      await Clipboard.getData("text/plain");
+                                  if (clipboardData != null &&
+                                      clipboardData.text != null) {
+                                    setState(() {
+                                      dataController.text = clipboardData.text!;
+                                      _pasteSuccess();
+                                    });
+                                  }
+                                }),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              )),
-            )
-          ],
-        ),
-        Positioned(
-          top: 20,
-          left: 20,
-          child: FloatingActionButton(
-            heroTag: "Flash-FAB",
-            child: Icon(Icons.flash_auto),
-            onPressed: () {
-              if (controller != null) {
-                controller!.toggleFlash();
-              }
-            },
+                    ],
+                  ),
+                )),
+              )
+            ],
           ),
-        ),
-        Positioned(
-          top: 20,
-          right: 20,
-          child: FloatingActionButton(
-            heroTag: "Flip-Camera-FAB",
-            child: Icon(Icons.flip_camera_android),
-            onPressed: () {
-              if (controller != null) {
-                controller!.flipCamera();
-              }
-            },
+          Positioned(
+            top: 20,
+            left: 20,
+            child: FloatingActionButton(
+              heroTag: "Flash-FAB",
+              child: Icon(Icons.flash_auto),
+              onPressed: () {
+                if (controller != null) {
+                  controller!.toggleFlash();
+                }
+              },
+            ),
           ),
-        )
-      ]),
+          Positioned(
+            top: 20,
+            right: 20,
+            child: FloatingActionButton(
+              heroTag: "Flip-Camera-FAB",
+              child: Icon(Icons.flip_camera_android),
+              onPressed: () {
+                if (controller != null) {
+                  controller!.flipCamera();
+                }
+              },
+            ),
+          )
+        ]),
+      ),
     );
   }
 

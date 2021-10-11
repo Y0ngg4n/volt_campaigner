@@ -41,6 +41,10 @@ dev_dependencies:
   flutter_map_marker_cluster: ^0.4.0
   flutter_map_location_marker: ^1.0.0
   cached_network_image: ^3.1.0
+  flutter_map_line_editor:
+    git:
+      url: https://github.com/Y0ngg4n/flutter_map_line_editor.git
+#      ref: nullsafety
   # Theming
   easy_dynamic_theme: ^2.2.0
   # Env
@@ -70,6 +74,8 @@ dev_dependencies:
   #Volunteer
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.5.2
+  # Refresh
+  pull_to_refresh: ^2.0.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

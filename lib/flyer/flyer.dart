@@ -76,6 +76,7 @@ class FlyerState extends State<Flyer> {
     _centerOnLocationUpdate = CenterOnLocationUpdate.always;
     _userPositionStreamController = StreamController<double>();
     ownUUID = uuid.v4();
+    widget.onRefresh();
   }
 
   @override

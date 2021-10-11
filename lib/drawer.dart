@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/scheduler.dart';
+import 'package:volt_campaigner/areas/areas_manager.dart';
 import 'package:volt_campaigner/auth/login.dart';
 import 'package:volt_campaigner/export/export.dart';
 import 'package:volt_campaigner/flyer/flyer.dart';
@@ -11,13 +12,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/settings/settings.dart';
 import 'package:volt_campaigner/statistics/statistics.dart';
 import 'package:volt_campaigner/statistics/pie_charts.dart';
+import 'package:volt_campaigner/utils/api/area.dart';
 import 'package:volt_campaigner/utils/api/flyer.dart';
+import 'package:volt_campaigner/utils/api/model/area.dart';
 import 'package:volt_campaigner/utils/api/model/flyer.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/api/poster_tags.dart';
 import 'package:volt_campaigner/volunteer/volunteer.dart';
 
+import 'areas/add_area_map.dart';
 import 'map/poster/add_poster.dart';
 import 'map/poster/poster_tags.dart';
 import 'package:latlong2/latlong.dart';
@@ -31,6 +35,7 @@ enum DrawerSelection {
   FLYER,
   STATISTICS,
   VOLUNTEER,
+  AREAS,
   EXPORT,
   SETTINGS,
   LOGOUT
@@ -67,6 +72,8 @@ class _DrawerViewState extends State<DrawerView> {
       GlobalKey<PosterMapViewState>();
   final GlobalKey<FlyerState> flyerWidgetState = GlobalKey<FlyerState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  Areas areasCovered = Areas([]);
+  Areas areasInDistance = Areas([]);
 
   @override
   void initState() {
@@ -98,12 +105,15 @@ class _DrawerViewState extends State<DrawerView> {
   Widget build(BuildContext context) {
     if (drawerSelection == DrawerSelection.POSTER ||
         drawerSelection == DrawerSelection.FLYER) {
-      return Scaffold(key: scaffoldKey, body: _getBody(), drawer: _getDrawer());
+      return Scaffold(
+          key: scaffoldKey,
+          body: SafeArea(child: _getBody()),
+          drawer: _getDrawer());
     } else {
       return Scaffold(
           key: scaffoldKey,
           appBar: new AppBar(title: Text(_getAppbarString())),
-          body: _getBody(),
+          body: SafeArea(child: _getBody()),
           drawer: _getDrawer());
     }
   }
@@ -154,11 +164,13 @@ class _DrawerViewState extends State<DrawerView> {
         _getListTile(
             AppLocalizations.of(context)!.volunteer, DrawerSelection.VOLUNTEER),
         _getListTile(
+            AppLocalizations.of(context)!.areas, DrawerSelection.AREAS),
+        _getListTile(
             AppLocalizations.of(context)!.settings, DrawerSelection.SETTINGS),
         _getListTile(
             AppLocalizations.of(context)!.export, DrawerSelection.EXPORT),
         _getListTile(
-            AppLocalizations.of(context)!.logout, DrawerSelection.LOGOUT)
+            AppLocalizations.of(context)!.logout, DrawerSelection.LOGOUT),
       ]),
     );
   }
@@ -222,6 +234,15 @@ class _DrawerViewState extends State<DrawerView> {
         return VolunteerView(apiToken: widget.apiToken);
       case DrawerSelection.LOGOUT:
         return Container();
+      case DrawerSelection.AREAS:
+        return AreasManager(
+            onRefresh: (refreshController) async {
+              await _refresh();
+              refreshController.refreshCompleted();
+            },
+            currentPosition: currentPosition,
+            apiToken: widget.apiToken,
+            areaModels: areasInDistance);
     }
   }
 
@@ -241,6 +262,8 @@ class _DrawerViewState extends State<DrawerView> {
         return AppLocalizations.of(context)!.volunteer;
       case DrawerSelection.LOGOUT:
         return AppLocalizations.of(context)!.logout;
+      case DrawerSelection.AREAS:
+        return AppLocalizations.of(context)!.areas;
     }
   }
 
@@ -290,7 +313,24 @@ class _DrawerViewState extends State<DrawerView> {
         flyerWidgetState.currentState!.refresh();
         flyerWidgetState.currentState!.setRefreshIcon(false);
       }
+    } else if (drawerSelection == DrawerSelection.AREAS) {
+      Areas? areas = await AreaApiUtils.getAreaInDistance(
+          currentPosition,
+          1000000000000,
+          DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+          widget.apiToken);
+      if (areas != null)
+        setState(() {
+          this.areasInDistance = areas;
+        });
     }
+    Areas? areas = await AreaApiUtils.getAreaContains(currentPosition,
+        DateTime.fromMicrosecondsSinceEpoch(0).toString(), widget.apiToken);
+    print(areas!.areas.length);
+    if (areas != null)
+      setState(() {
+        this.areasCovered = areas;
+      });
   }
 
   _refreshPoster() async {
@@ -340,6 +380,7 @@ class _DrawerViewState extends State<DrawerView> {
       key: posterMapWidgetState,
       posterInDistance: posterInDistance,
       currentPosition: currentPosition,
+      areasCovered: areasCovered,
       onLocationUpdate: (location) {
         setState(() {
           this.currentPosition = location;

@@ -21,13 +21,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "addArea": MessageLookupByLibrary.simpleMessage("Gegend speichern"),
         "addPoster": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
+        "areas": MessageLookupByLibrary.simpleMessage("Gegenden"),
         "copySuccess":
             MessageLookupByLibrary.simpleMessage("Text wurde kopiert"),
         "date": MessageLookupByLibrary.simpleMessage("Datum"),
         "drawNearestPosterLine": MessageLookupByLibrary.simpleMessage(
             "Zeichne Linie zum nächsten Plakat"),
+        "errorAddArea": MessageLookupByLibrary.simpleMessage(
+            "Konnte Gegend nicht hinzufügen"),
         "errorAddPoster": MessageLookupByLibrary.simpleMessage(
             "Konnte Plakat nicht hinzufügen"),
         "errorEditPoster":
@@ -48,6 +52,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginVoltEuropa": MessageLookupByLibrary.simpleMessage(
             "Melde dich mit deinem Volt Europa Konto an"),
         "logout": MessageLookupByLibrary.simpleMessage("Ausloggen"),
+        "maxPosterCount":
+            MessageLookupByLibrary.simpleMessage("Maximale Poster Anzahl"),
+        "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "no": MessageLookupByLibrary.simpleMessage("Nein"),
         "noData": MessageLookupByLibrary.simpleMessage("Keine Daten"),
         "orEnterCode": MessageLookupByLibrary.simpleMessage(
             "oder füge hier einen Code ein"),
@@ -91,9 +99,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
         "successExport": MessageLookupByLibrary.simpleMessage(
             "Erfolgreich in deinen Downloads-Ordner exportiert"),
+        "sureDelete": MessageLookupByLibrary.simpleMessage(
+            "Bist du dir sicher, dass du das löschen möchtest?"),
         "time": MessageLookupByLibrary.simpleMessage("Zeit"),
         "volunteer": MessageLookupByLibrary.simpleMessage("Volunteer einladen"),
         "volunteerCopy": MessageLookupByLibrary.simpleMessage(
-            "Oder kopiere das und sende es an den Volunteer")
+            "Oder kopiere das und sende es an den Volunteer"),
+        "yes": MessageLookupByLibrary.simpleMessage("Ja")
       };
 }
