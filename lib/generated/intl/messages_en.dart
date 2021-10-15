@@ -25,6 +25,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "addPoster": MessageLookupByLibrary.simpleMessage("Add Poster"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
         "areas": MessageLookupByLibrary.simpleMessage("Areas"),
+        "areasCustomDate": MessageLookupByLibrary.simpleMessage("Custom Date"),
+        "areasLoadAll": MessageLookupByLibrary.simpleMessage("Load all Areas"),
+        "areasRadius":
+            MessageLookupByLibrary.simpleMessage("Load Areas in Radius of "),
+        "areasUpdateAfterDateSelection":
+            MessageLookupByLibrary.simpleMessage("Load Areas changed after:"),
+        "colorMarker": MessageLookupByLibrary.simpleMessage("Color marker by"),
         "copySuccess": MessageLookupByLibrary.simpleMessage("Copied text"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "drawNearestPosterLine":
@@ -42,6 +49,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export as "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "flyerCustomDate": MessageLookupByLibrary.simpleMessage("Custom Date"),
+        "flyerLoadAll": MessageLookupByLibrary.simpleMessage("Load all Flyers"),
+        "flyerRadius":
+            MessageLookupByLibrary.simpleMessage("Load Flyers in Radius of "),
+        "flyerUpdateAfterDateSelection":
+            MessageLookupByLibrary.simpleMessage("Load Flyer changed after:"),
+        "hanging": MessageLookupByLibrary.simpleMessage("Hanging"),
         "invalidToken":
             MessageLookupByLibrary.simpleMessage("Invalid oder retired Code"),
         "letDisplayEnabled": MessageLookupByLibrary.simpleMessage(
@@ -51,6 +65,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginVoltEuropa": MessageLookupByLibrary.simpleMessage(
             "Login with your Volt Europa Account"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "max": MessageLookupByLibrary.simpleMessage("Maximum"),
         "maxPosterCount":
             MessageLookupByLibrary.simpleMessage("Max Poster Count"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
@@ -92,6 +107,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Give this QR Code to a Volunteer, so he can scan it and login too."),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "showAreasOnMap":
+            MessageLookupByLibrary.simpleMessage("Show current Areas on Map"),
         "statistics": MessageLookupByLibrary.simpleMessage("Statistics"),
         "successExport": MessageLookupByLibrary.simpleMessage(
             "Successfully exported into your Downloads Folder"),

@@ -32,4 +32,24 @@ class FlyerApiUtils {
       // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
     }
   }
+
+  static Future<FlyerRoutes?> getFlyerAll(String apiToken) async {
+    try {
+      http.Response response = await http.get(
+          Uri.parse((dotenv.env['REST_API_URL']!) + "/flyer/route/all"),
+          headers: {
+            "accept": "application/json",
+            "authorization": AuthApiUtils.getBearerToken(apiToken)
+          });
+      if (response.statusCode == 200) {
+        return await FlyerRoutes.fromJson(jsonDecode(response.body));
+      } else {
+        print("Could not refresh Poster");
+        // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+      }
+    } catch (e) {
+      print(e);
+      // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+    }
+  }
 }

@@ -280,11 +280,61 @@ class S {
     );
   }
 
+  /// `Load Flyers in Radius of `
+  String get flyerRadius {
+    return Intl.message(
+      'Load Flyers in Radius of ',
+      name: 'flyerRadius',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Areas in Radius of `
+  String get areasRadius {
+    return Intl.message(
+      'Load Areas in Radius of ',
+      name: 'areasRadius',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Load all Posters`
   String get posterLoadAll {
     return Intl.message(
       'Load all Posters',
       name: 'posterLoadAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load all Flyers`
+  String get flyerLoadAll {
+    return Intl.message(
+      'Load all Flyers',
+      name: 'flyerLoadAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load all Areas`
+  String get areasLoadAll {
+    return Intl.message(
+      'Load all Areas',
+      name: 'areasLoadAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show current Areas on Map`
+  String get showAreasOnMap {
+    return Intl.message(
+      'Show current Areas on Map',
+      name: 'showAreasOnMap',
       desc: '',
       args: [],
     );
@@ -340,11 +390,51 @@ class S {
     );
   }
 
+  /// `Custom Date`
+  String get flyerCustomDate {
+    return Intl.message(
+      'Custom Date',
+      name: 'flyerCustomDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Date`
+  String get areasCustomDate {
+    return Intl.message(
+      'Custom Date',
+      name: 'areasCustomDate',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Load Posters changed after:`
   String get posterUpdateAfterDateSelection {
     return Intl.message(
       'Load Posters changed after:',
       name: 'posterUpdateAfterDateSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Flyer changed after:`
+  String get flyerUpdateAfterDateSelection {
+    return Intl.message(
+      'Load Flyer changed after:',
+      name: 'flyerUpdateAfterDateSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Areas changed after:`
+  String get areasUpdateAfterDateSelection {
+    return Intl.message(
+      'Load Areas changed after:',
+      name: 'areasUpdateAfterDateSelection',
       desc: '',
       args: [],
     );
@@ -615,6 +705,36 @@ class S {
     return Intl.message(
       'Bist du dir sicher, dass du das löschen möchtest?',
       name: 'sureDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum`
+  String get max {
+    return Intl.message(
+      'Maximum',
+      name: 'max',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hanging`
+  String get hanging {
+    return Intl.message(
+      'Hanging',
+      name: 'hanging',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color marker by`
+  String get colorMarker {
+    return Intl.message(
+      'Color marker by',
+      name: 'colorMarker',
       desc: '',
       args: [],
     );

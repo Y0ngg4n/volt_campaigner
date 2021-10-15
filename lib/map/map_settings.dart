@@ -94,8 +94,9 @@ class MapSettings {
           },
           child: Container(
               child: photoUrl == null
-                  ? CircleAvatar(radius: 33, child: Icon(Icons.menu))
-                  : CircleAvatar(radius: 33,
+                  ? CircleAvatar(minRadius: 35, child: Icon(Icons.menu))
+                  : CircleAvatar(
+                      minRadius: 35,
                       backgroundImage: Image.network(photoUrl).image,
                     ))),
     );

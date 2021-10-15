@@ -79,8 +79,10 @@ class _LoginViewState extends State<LoginView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.network(
-              "https://play-lh.googleusercontent.com/91sCbYPZw3tYXc9n2Gjn3mwXlY_oSuJpDWxnVsPtUWUxf8y709Nc1gqRGPO6NOrQSg=s180"),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image.asset("assets/Campaigner.png"),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -145,7 +147,8 @@ class _LoginViewState extends State<LoginView> {
               client);
           await _saveCredentials(refreshedCredentials);
           await _checkUserData(client);
-          await _checkReady(refreshedCredentials.accessToken.expiry, restExpiryDate, now, client);
+          await _checkReady(refreshedCredentials.accessToken.expiry,
+              restExpiryDate, now, client);
         } catch (e) {
           print(e);
           Messenger.showError(
@@ -162,7 +165,8 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  _checkReady(DateTime expiryDate, DateTime? restExpiryDate, DateTime now, http.Client client) async {
+  _checkReady(DateTime expiryDate, DateTime? restExpiryDate, DateTime now,
+      http.Client client) async {
     if (!now.isAfter(restExpiryDate!) && !now.isAfter(expiryDate)) {
       print("Allready logged in");
       await _checkUserData(client);
@@ -185,7 +189,7 @@ class _LoginViewState extends State<LoginView> {
 
   _goToDrawer() {
     SchedulerBinding.instance!.addPostFrameCallback((_) {
-      Future.delayed(Duration.zero, () {
+      Future.delayed(Duration(seconds: 1), () {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (context) => DrawerView(
@@ -202,7 +206,8 @@ class _LoginViewState extends State<LoginView> {
   void getCredentials(http.Client client) {
     print("Getting Google Login Credentials");
     try {
-      obtainAccessCredentialsViaUserConsent(clientId, scopes, client, prompt)
+      obtainAccessCredentialsViaUserConsent(clientId, scopes, client, prompt,
+              hostedDomain: "volteuropa.org")
           .then((AccessCredentials credentials) async {
         await _saveCredentials(credentials);
         await _getJWT(credentials.accessToken.data);

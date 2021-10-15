@@ -2,7 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'
-    show Anchor, AnchorPos, FitBoundsOptions, FlutterMap, MapController, MapOptions, MapPosition, Marker, Polygon, PolygonLayerOptions, Polyline, PolylineLayerOptions, TileLayerOptions, TileLayerWidget;
+    show
+        Anchor,
+        AnchorPos,
+        FitBoundsOptions,
+        FlutterMap,
+        MapController,
+        MapOptions,
+        MapPosition,
+        Marker,
+        Polygon,
+        PolygonLayerOptions,
+        Polyline,
+        PolylineLayerOptions,
+        TileLayerOptions,
+        TileLayerWidget;
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -12,10 +26,12 @@ import 'package:volt_campaigner/map/poster/add_poster.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/update_poster.dart';
 import 'package:volt_campaigner/map/map_search.dart';
+import 'package:volt_campaigner/settings/settings.dart';
 import 'package:volt_campaigner/utils/api/model/area.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:volt_campaigner/utils/api/nomatim.dart';
+import 'package:volt_campaigner/utils/messenger.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +51,7 @@ class PosterMapView extends StatefulWidget {
   String? photoUrl;
   OnDrawerOpen onDrawerOpen;
   Areas areasCovered;
+  ContainsAreaLimits containsAreaLimits;
 
   PosterMapView(
       {Key? key,
@@ -47,7 +64,8 @@ class PosterMapView extends StatefulWidget {
       required this.apiToken,
       required this.photoUrl,
       required this.onDrawerOpen,
-      required this.areasCovered})
+      required this.areasCovered,
+      required this.containsAreaLimits})
       : super(key: key);
 
   @override
@@ -63,11 +81,14 @@ class PosterMapViewState extends State<PosterMapView> {
   late StreamSubscription<Position> _currentPositionStreamSubscription;
   late SharedPreferences prefs;
   bool drawNearestPosterLine = false;
+  bool showAreasOnMap = true;
   bool placeMarkerByHand = false;
   bool refreshing = false;
   MapController mapController = new MapController();
   bool searching = false;
-
+  bool showHangingLimit = false;
+  List<Areas> maxCountLimitedAreas = [];
+  TagType colorTagType = TagType.TYPE;
 
   @override
   void dispose() {
@@ -96,6 +117,10 @@ class PosterMapViewState extends State<PosterMapView> {
                   drawNearestPosterLine) as bool;
           placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
               placeMarkerByHand) as bool;
+          showAreasOnMap = (prefs.get(SharedPrefsSlugs.showAreasOnMap) ??
+              showAreasOnMap) as bool;
+          colorTagType = TagType
+              .values[(prefs.getInt(SharedPrefsSlugs.colorTagType) ?? 0)];
         }));
     widget.onRefresh();
   }
@@ -125,7 +150,6 @@ class PosterMapViewState extends State<PosterMapView> {
           MapSettings.getMarkerClusterLayerOptions(
               (marker) => _onMarkerTap(marker), markers.keys.toList()),
         ],
-        nonRotatedLayers: [],
       ),
       Positioned(
           right: 20,
@@ -138,12 +162,22 @@ class PosterMapViewState extends State<PosterMapView> {
           }, _userPositionStreamController, () => widget.onRefresh(),
               refreshing)),
       Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
+      Positioned(left: 20, bottom: 20, child: _getLimitFab()),
+      if (showHangingLimit)
+        Positioned(
+            left: 10,
+            bottom: 85,
+            child: Column(
+              children: [_getLimitDataTable()],
+            )),
       Positioned(
           left: 10,
           top: 10,
           child: MapSettings.getDrawerFab(
               context, widget.photoUrl, () => widget.onDrawerOpen())),
-      Row(mainAxisAlignment: MainAxisAlignment.center,children: [_getSearchFab()]),
+      Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [_getSearchFab()]),
       if (placeMarkerByHand)
         Positioned(
             top: 0,
@@ -154,10 +188,72 @@ class PosterMapViewState extends State<PosterMapView> {
     ]);
   }
 
+  _getLimitFab() {
+    bool limitReached = false;
+    for (ContainsAreaLimit containsAreaLimit
+        in widget.containsAreaLimits.areas) {
+      if (containsAreaLimit.hanging >= containsAreaLimit.maxPoster) {
+        limitReached = true;
+        break;
+      }
+    }
+    return FloatingActionButton(
+        heroTag: "Hanging-Limit-Toggle-FAB",
+        backgroundColor:
+            limitReached ? Colors.red : Theme.of(context).primaryColor,
+        onPressed: () {
+          setState(() {
+            this.showHangingLimit = !this.showHangingLimit;
+          });
+        },
+        child: showHangingLimit
+            ? Icon(Icons.arrow_circle_down, color: Colors.white)
+            : Icon(Icons.arrow_circle_up, color: Colors.white));
+  }
+
+  _getLimitDataTable() {
+    return (Card(
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DataTable(horizontalMargin: 10, columnSpacing: 10, columns: [
+        DataColumn(label: Text(AppLocalizations.of(context)!.name)),
+        DataColumn(label: Text(AppLocalizations.of(context)!.max)),
+        DataColumn(label: Text(AppLocalizations.of(context)!.hanging))
+      ], rows: [
+        for (ContainsAreaLimit limit in widget.containsAreaLimits.areas)
+          DataRow(cells: [
+            DataCell(Text(limit.name)),
+            DataCell(Text(limit.maxPoster.toString(),
+                style: limit.hanging >= limit.maxPoster
+                    ? TextStyle(color: Colors.red)
+                    : TextStyle())),
+            DataCell(Text(limit.hanging.toString(),
+                style: limit.hanging >= limit.maxPoster
+                    ? TextStyle(color: Colors.red)
+                    : TextStyle()))
+          ])
+      ]),
+    )));
+  }
+
   _addPosterMarker() {
     setState(() {
       markers.clear();
       for (PosterModel posterModel in widget.posterInDistance.posterModels) {
+        Color markerColor = Colors.purple;
+        if(colorTagType == TagType.TYPE && posterModel.posterTagsLists.posterType.length > 0)
+          markerColor = posterModel.posterTagsLists.posterType.first.color;
+        else if(colorTagType == TagType.MOTIVE && posterModel.posterTagsLists.posterMotive.length > 0)
+          markerColor = posterModel.posterTagsLists.posterMotive.first.color;
+        else if(colorTagType == TagType.TARGET_GROUP && posterModel.posterTagsLists.posterTargetGroups.length > 0)
+          markerColor = posterModel.posterTagsLists.posterTargetGroups.first.color;
+        else if(colorTagType == TagType.ENVIRONMENT && posterModel.posterTagsLists.posterEnvironment.length > 0)
+          markerColor = posterModel.posterTagsLists.posterEnvironment.first.color;
+        else if(colorTagType == TagType.OTHER && posterModel.posterTagsLists.posterOther.length > 0)
+          markerColor = posterModel.posterTagsLists.posterOther.first.color;
+        else if(colorTagType == TagType.CAMPAIGN && posterModel.posterTagsLists.posterCampaign.length > 0)
+          markerColor = posterModel.posterTagsLists.posterCampaign.first.color;
+
         Marker marker = Marker(
           anchorPos: AnchorPos.exactly(Anchor(25, 5)),
           // Offset by experimentation, (0,25) should work as well
@@ -169,7 +265,7 @@ class PosterMapViewState extends State<PosterMapView> {
           builder: (ctx) => Icon(
             Icons.location_pin,
             size: 50,
-            color: Colors.red,
+            color: markerColor,
           ),
         );
         markers[marker] = posterModel;
@@ -306,9 +402,10 @@ class PosterMapViewState extends State<PosterMapView> {
 
   _getPolygonsLayerOptions() {
     List<Polygon> polygons = [];
-    for(AreaModel areaModel in widget.areasCovered.areas){
-      polygons.add(areaModel.points);
-    }
+    if (showAreasOnMap)
+      for (AreaModel areaModel in widget.areasCovered.areas) {
+        polygons.add(areaModel.points);
+      }
     return PolygonLayerOptions(
       polygons: polygons,
     );

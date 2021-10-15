@@ -19,6 +19,7 @@ class AuthApiUtils {
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(response.body);
         return json['token'];
+      } else {
       }
     } catch (e) {
       print(e);

@@ -25,6 +25,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "addPoster": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
         "areas": MessageLookupByLibrary.simpleMessage("Gegenden"),
+        "areasCustomDate":
+            MessageLookupByLibrary.simpleMessage("Bentzerdefiniertes Datum"),
+        "areasLoadAll":
+            MessageLookupByLibrary.simpleMessage("Alle Gegenden laden"),
+        "areasRadius": MessageLookupByLibrary.simpleMessage(
+            "Gegenden laden im Umkreis von "),
+        "areasUpdateAfterDateSelection": MessageLookupByLibrary.simpleMessage(
+            "Lade Gegenden die geändert wurden nach:"),
+        "colorMarker":
+            MessageLookupByLibrary.simpleMessage("Marker einfärben nach"),
         "copySuccess":
             MessageLookupByLibrary.simpleMessage("Text wurde kopiert"),
         "date": MessageLookupByLibrary.simpleMessage("Datum"),
@@ -43,6 +53,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export als "),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
+        "flyerCustomDate":
+            MessageLookupByLibrary.simpleMessage("Bentzerdefiniertes Datum"),
+        "flyerLoadAll":
+            MessageLookupByLibrary.simpleMessage("Alle Flyer laden"),
+        "flyerRadius":
+            MessageLookupByLibrary.simpleMessage("Flyer laden im Umkreis von "),
+        "flyerUpdateAfterDateSelection": MessageLookupByLibrary.simpleMessage(
+            "Lade Flyer die geändert wurden nach:"),
+        "hanging": MessageLookupByLibrary.simpleMessage("Hängend"),
         "invalidToken": MessageLookupByLibrary.simpleMessage(
             "Ungültiger oder abgelaufener Code"),
         "letDisplayEnabled": MessageLookupByLibrary.simpleMessage(
@@ -52,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginVoltEuropa": MessageLookupByLibrary.simpleMessage(
             "Melde dich mit deinem Volt Europa Konto an"),
         "logout": MessageLookupByLibrary.simpleMessage("Ausloggen"),
+        "max": MessageLookupByLibrary.simpleMessage("Maximum"),
         "maxPosterCount":
             MessageLookupByLibrary.simpleMessage("Maximale Poster Anzahl"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
@@ -96,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Lass diesen QR Code von einem Volunteer scannen, sodass dieser sich auch für 24 Stunden anmelden kann."),
         "search": MessageLookupByLibrary.simpleMessage("Suche"),
         "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
+        "showAreasOnMap": MessageLookupByLibrary.simpleMessage(
+            "Zeige aktuelle Gegenden auf der Karte"),
         "statistics": MessageLookupByLibrary.simpleMessage("Statistiken"),
         "successExport": MessageLookupByLibrary.simpleMessage(
             "Erfolgreich in deinen Downloads-Ordner exportiert"),

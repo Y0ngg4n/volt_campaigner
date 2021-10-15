@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:volt_campaigner/areas/areas_manager.dart';
 import 'package:volt_campaigner/auth/login.dart';
@@ -72,8 +73,9 @@ class _DrawerViewState extends State<DrawerView> {
       GlobalKey<PosterMapViewState>();
   final GlobalKey<FlyerState> flyerWidgetState = GlobalKey<FlyerState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  Areas areasCovered = Areas([]);
+  Areas areasContains = Areas([]);
   Areas areasInDistance = Areas([]);
+  ContainsAreaLimits areasContainsLimits = ContainsAreaLimits([]);
 
   @override
   void initState() {
@@ -119,59 +121,44 @@ class _DrawerViewState extends State<DrawerView> {
   }
 
   _getDrawer() {
-    BoxDecoration drawerHeaderDecoration = widget.photoUrl != null
-        ? BoxDecoration(
-            color: Colors.blue,
-            image: DecorationImage(
-              image: NetworkImage(widget.photoUrl!),
-              fit: BoxFit.fill,
-            ))
-        : BoxDecoration(
-            color: Colors.blue,
-          );
-
     return Drawer(
-      child: ListView(children: [
-        DrawerHeader(
-          decoration: drawerHeaderDecoration,
-          child: Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      widget.displayName == null
-                          ? 'Volunteer'
-                          : widget.displayName!,
-                      style: TextStyle(fontSize: 20)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      widget.emailAddress == null ? '' : widget.emailAddress!,
-                      style: TextStyle(fontSize: 15)),
-                ),
-              ],
-            ),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(children: [
+              UserAccountsDrawerHeader(
+                currentAccountPicture: (CircleAvatar(
+                  foregroundImage: NetworkImage(widget.photoUrl!),
+                )),
+                accountEmail: Text(
+                    widget.emailAddress == null ? '' : widget.emailAddress!),
+                accountName: Text(widget.displayName == null
+                    ? 'Volunteer'
+                    : widget.displayName!),
+              ),
+              _getListTile(
+                  AppLocalizations.of(context)!.poster, DrawerSelection.POSTER),
+              _getListTile(
+                  AppLocalizations.of(context)!.flyer, DrawerSelection.FLYER),
+              _getListTile(AppLocalizations.of(context)!.statistics,
+                  DrawerSelection.STATISTICS),
+              _getListTile(AppLocalizations.of(context)!.volunteer,
+                  DrawerSelection.VOLUNTEER),
+              _getListTile(
+                  AppLocalizations.of(context)!.areas, DrawerSelection.AREAS),
+              _getListTile(AppLocalizations.of(context)!.settings,
+                  DrawerSelection.SETTINGS),
+              _getListTile(
+                  AppLocalizations.of(context)!.export, DrawerSelection.EXPORT),
+            ]),
           ),
-        ),
-        _getListTile(
-            AppLocalizations.of(context)!.poster, DrawerSelection.POSTER),
-        _getListTile(
-            AppLocalizations.of(context)!.flyer, DrawerSelection.FLYER),
-        _getListTile(AppLocalizations.of(context)!.statistics,
-            DrawerSelection.STATISTICS),
-        _getListTile(
-            AppLocalizations.of(context)!.volunteer, DrawerSelection.VOLUNTEER),
-        _getListTile(
-            AppLocalizations.of(context)!.areas, DrawerSelection.AREAS),
-        _getListTile(
-            AppLocalizations.of(context)!.settings, DrawerSelection.SETTINGS),
-        _getListTile(
-            AppLocalizations.of(context)!.export, DrawerSelection.EXPORT),
-        _getListTile(
-            AppLocalizations.of(context)!.logout, DrawerSelection.LOGOUT),
-      ]),
+          Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: _getListTile(
+                AppLocalizations.of(context)!.logout, DrawerSelection.LOGOUT),
+          )
+        ],
+      ),
     );
   }
 
@@ -296,40 +283,24 @@ class _DrawerViewState extends State<DrawerView> {
         }
       });
     } else if (drawerSelection == DrawerSelection.FLYER) {
-      if (flyerWidgetState.currentState != null) {
-        flyerWidgetState.currentState!.setRefreshIcon(true);
-      }
-      FlyerRoutes? flyerRoutes = await FlyerApiUtils.getFlyerRoutesInDistance(
-          currentPosition,
-          1000000000000,
-          DateTime.fromMicrosecondsSinceEpoch(0).toString(),
-          widget.apiToken);
-      if (flyerRoutes != null) {
-        setState(() {
-          this.flyerRoutes = flyerRoutes;
-        });
-      }
-      if (flyerWidgetState.currentState != null) {
-        flyerWidgetState.currentState!.refresh();
-        flyerWidgetState.currentState!.setRefreshIcon(false);
-      }
+      await _refreshFlyer();
     } else if (drawerSelection == DrawerSelection.AREAS) {
-      Areas? areas = await AreaApiUtils.getAreaInDistance(
-          currentPosition,
-          1000000000000,
-          DateTime.fromMicrosecondsSinceEpoch(0).toString(),
-          widget.apiToken);
-      if (areas != null)
-        setState(() {
-          this.areasInDistance = areas;
-        });
+      _refreshAreas();
     }
     Areas? areas = await AreaApiUtils.getAreaContains(currentPosition,
         DateTime.fromMicrosecondsSinceEpoch(0).toString(), widget.apiToken);
-    print(areas!.areas.length);
     if (areas != null)
       setState(() {
-        this.areasCovered = areas;
+        this.areasContains = areas;
+      });
+
+    ContainsAreaLimits? areasLimits = await AreaApiUtils.getAreaContainsLimits(
+        currentPosition,
+        DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+        widget.apiToken);
+    if (areasLimits != null)
+      setState(() {
+        this.areasContainsLimits = areasLimits;
       });
   }
 
@@ -373,6 +344,82 @@ class _DrawerViewState extends State<DrawerView> {
     });
   }
 
+  _refreshFlyer() async {
+    double radius =
+        (prefs.get(SharedPrefsSlugs.flyerRadius) ?? 100.0) as double;
+    bool loadAll = (prefs.get(SharedPrefsSlugs.flyerLoadAll) ?? false) as bool;
+    bool customDateSwitch =
+        (prefs.get(SharedPrefsSlugs.flyerCustomDateSwitch) ?? false) as bool;
+    String customDate = (prefs.get(SharedPrefsSlugs.flyerCustomDate) ??
+        DateTime.fromMicrosecondsSinceEpoch(0).toString()) as String;
+
+    if (flyerWidgetState.currentState != null) {
+      flyerWidgetState.currentState!.setRefreshIcon(true);
+    }
+    FlyerRoutes flyerRoutes;
+    if (loadAll) {
+      flyerRoutes =
+          await FlyerApiUtils.getFlyerAll(widget.apiToken) ?? FlyerRoutes([]);
+    } else {
+      if (customDateSwitch) {
+        flyerRoutes = await FlyerApiUtils.getFlyerRoutesInDistance(
+                currentPosition, radius, customDate, widget.apiToken) ??
+            FlyerRoutes([]);
+      } else {
+        flyerRoutes = await FlyerApiUtils.getFlyerRoutesInDistance(
+                currentPosition,
+                radius,
+                DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+                widget.apiToken) ??
+            FlyerRoutes([]);
+      }
+    }
+    setState(() {
+      this.flyerRoutes = flyerRoutes;
+    });
+    if (flyerWidgetState.currentState != null) {
+      flyerWidgetState.currentState!.refresh();
+      flyerWidgetState.currentState!.setRefreshIcon(false);
+    }
+  }
+
+  _refreshAreas() async {
+    double radius =
+        (prefs.get(SharedPrefsSlugs.areasRadius) ?? 100.0) as double;
+    bool loadAll = (prefs.get(SharedPrefsSlugs.areasLoadAll) ?? false) as bool;
+    bool customDateSwitch =
+        (prefs.get(SharedPrefsSlugs.areasCustomDateSwitch) ?? false) as bool;
+    String customDate = (prefs.get(SharedPrefsSlugs.areasCustomDate) ??
+        DateTime.fromMicrosecondsSinceEpoch(0).toString()) as String;
+    if (flyerWidgetState.currentState != null) {
+      flyerWidgetState.currentState!.setRefreshIcon(true);
+    }
+    Areas areas;
+    if (loadAll) {
+      areas = await AreaApiUtils.getAllAreas(widget.apiToken) ?? Areas([]);
+    } else {
+      if (customDateSwitch) {
+        areas = await AreaApiUtils.getAreaInDistance(
+                currentPosition, radius, customDate, widget.apiToken) ??
+            Areas([]);
+      } else {
+        areas = await AreaApiUtils.getAreaInDistance(
+                currentPosition,
+                radius,
+                DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+                widget.apiToken) ??
+            Areas([]);
+      }
+    }
+    setState(() {
+      this.flyerRoutes = flyerRoutes;
+    });
+    if (flyerWidgetState.currentState != null) {
+      flyerWidgetState.currentState!.refresh();
+      flyerWidgetState.currentState!.setRefreshIcon(false);
+    }
+  }
+
   _getPosterMapView() {
     return PosterMapView(
       photoUrl: widget.photoUrl,
@@ -380,7 +427,8 @@ class _DrawerViewState extends State<DrawerView> {
       key: posterMapWidgetState,
       posterInDistance: posterInDistance,
       currentPosition: currentPosition,
-      areasCovered: areasCovered,
+      areasCovered: areasContains,
+      containsAreaLimits: areasContainsLimits,
       onLocationUpdate: (location) {
         setState(() {
           this.currentPosition = location;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/tag_search.dart';
 
@@ -39,6 +40,7 @@ class PosterSettings {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           child: ChoiceChip(
+            shape: StadiumBorder(side: BorderSide(color: p.color)),
             label: Text(p.name),
             selected: selectedPosterTags.contains(p),
             onSelected: (selected) {

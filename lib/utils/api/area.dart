@@ -59,6 +59,51 @@ class AreaApiUtils {
     }
   }
 
+  static Future<Areas?> getAllAreas(String apiToken) async {
+    try {
+      http.Response response = await http.get(
+          Uri.parse((dotenv.env['REST_API_URL']!) + "/area/contains"),
+          headers: {
+            "accept": "application/json",
+            "authorization": AuthApiUtils.getBearerToken(apiToken)
+          });
+      if (response.statusCode == 200) {
+        return await Areas.fromJson(jsonDecode(response.body));
+      } else {
+        print(response.body);
+        // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+      }
+    } catch (e) {
+      print(e);
+      // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+    }
+  }
+
+  static Future<ContainsAreaLimits?> getAreaContainsLimits(LatLng location,
+      String last_update, String apiToken) async {
+    try {
+      http.Response response = await http.get(
+          Uri.parse((dotenv.env['REST_API_URL']!) + "/area/contains-limits"),
+          headers: {
+            "accept": "application/json",
+            "latitude": location.latitude.toString(),
+            "longitude": location.longitude.toString(),
+            "last_update": last_update,
+            "authorization": AuthApiUtils.getBearerToken(apiToken)
+          });
+      if (response.statusCode == 200) {
+        return ContainsAreaLimits.fromJson(jsonDecode(response.body));
+      } else {
+        print(response.body);
+        // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+      }
+    } catch (e) {
+      print(e);
+      // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
+    }
+  }
+
+
   static Future deleteArea(String id, String apiToken) async {
     try {
       http.Response response = await http.get(

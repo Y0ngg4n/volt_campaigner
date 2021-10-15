@@ -1,11 +1,21 @@
 class SharedPrefsSlugs {
   static const posterRadius = "poster-radius";
+  static const flyerRadius = "flyer-radius";
+  static const areasRadius = "areas-radius";
   static const posterLoadAll = "poster-load-all";
+  static const flyerLoadAll = "flyer-load-all";
+  static const areasLoadAll = "areas-load-all";
+  static const showAreasOnMap = "areas-show-on-map";
   static const posterHanging = "poster-hanging";
   static const posterCustomDateSwitch = "poster-custom-date-switch";
+  static const flyerCustomDateSwitch = "flyer-custom-date-switch";
+  static const areasCustomDateSwitch = "areas-custom-date-switch";
   static const posterCustomDate = "poster-custom-date";
+  static const flyerCustomDate = "flyer-custom-date";
+  static const areasCustomDate = "areas-custom-date";
   static const drawNearestPosterLine = "draw-nearest-poster-line";
   static const placeMarkerByHand = "place-marker-by-hand";
+  static const colorTagType = "color-tag-type";
   static const campaignTags = "campaign-tags";
   static const googleAccessTokenData = "google-access-token-data";
   static const googleAccessTokenType = "google-access-token-type";

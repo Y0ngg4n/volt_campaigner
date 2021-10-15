@@ -68,7 +68,10 @@ dev_dependencies:
   # Auth
   google_sign_in: ^5.1.1
   googleapis: ^5.0.1
-  googleapis_auth: ^1.1.0
+  googleapis_auth:
+    git:
+      url: https://github.com/google/googleapis.dart.git
+      path: googleapis_auth
   url_launcher: ^6.0.12
   jwt_decode: ^0.3.1
   #Volunteer
@@ -90,6 +93,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

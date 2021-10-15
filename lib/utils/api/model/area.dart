@@ -20,14 +20,14 @@ class AreaModel {
     String name = json['name'];
     Polygon polyline = await _geoJsonToPolyline(json['points']);
     int maxPoster = int.parse(json['max_poster']);
-    return AreaModel(id, name,  polyline, maxPoster);
+    return AreaModel(id, name, polyline, maxPoster);
   }
 
   static Future<Polygon> _geoJsonToPolyline(String geoJson) async {
     GeoJSONPolygon polygon = GeoJSONPolygon.fromJSON(geoJson);
     List<LatLng> points = [];
-    for(List<List<double>> polygonCoordinates in polygon.coordinates){
-      for(List<double> coordinate in polygonCoordinates){
+    for (List<List<double>> polygonCoordinates in polygon.coordinates) {
+      for (List<double> coordinate in polygonCoordinates) {
         points.add(LatLng(coordinate[1], coordinate[0]));
       }
     }
@@ -51,4 +51,28 @@ class Areas {
   }
 
   Areas(this.areas);
+}
+
+class ContainsAreaLimit {
+  int hanging;
+  String id;
+  String name;
+  int maxPoster;
+
+  ContainsAreaLimit.fromJson(Map<String, dynamic> json) : hanging = json['hanging'],
+  id = json['id'], name = json['name'], maxPoster = int.parse(json['max_poster']);
+
+}
+
+
+class ContainsAreaLimits {
+  List<ContainsAreaLimit> areas = [];
+
+  ContainsAreaLimits.fromJson(List<dynamic> json) {
+    for (dynamic entry in json) {
+      areas.add(ContainsAreaLimit.fromJson(entry.cast<String, dynamic>()));
+    }
+  }
+
+  ContainsAreaLimits(this.areas);
 }

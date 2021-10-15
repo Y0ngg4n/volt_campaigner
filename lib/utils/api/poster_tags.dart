@@ -14,7 +14,6 @@ import '../http_utils.dart';
 class PosterTagApiUtils {
 
   static Future<PosterTags?> getAllPosterTags(String url, String apiToken) async {
-
     try {
       http.Response response = await http.get(
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster-tags/" + url),
