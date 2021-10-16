@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:volt_campaigner/auth/login.dart';
-import 'package:volt_campaigner/drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:volt_campaigner/auth/login.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");

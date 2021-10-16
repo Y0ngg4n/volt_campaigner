@@ -10,13 +10,14 @@ import 'package:volt_campaigner/drawer.dart';
 typedef OnPositionChanged = Function(CenterOnLocationUpdate);
 typedef OnRefresh = Function();
 typedef OnMarkerTap = Function(Marker);
+typedef OnZoomChange = Function(double);
 
 class MapSettings {
-  static getMapOptions(
-      OnPositionChanged onPositionChanged, LatLng currentPosition) {
+  static getMapOptions(double zoom, OnPositionChanged onPositionChanged,
+      LatLng currentPosition) {
     return MapOptions(
         center: currentPosition,
-        zoom: 17.0,
+        zoom: zoom,
         plugins: [
           MarkerClusterPlugin(),
         ],
@@ -100,5 +101,29 @@ class MapSettings {
                       backgroundImage: Image.network(photoUrl).image,
                     ))),
     );
+  }
+
+  static getZoomPlusButton(
+      BuildContext context, double zoom, OnZoomChange onZoomChange) {
+    const double zoomFactor = 0.5;
+    return FloatingActionButton(
+        heroTag: "Zoom-Plus-FAB",
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () {
+          onZoomChange(zoom + zoomFactor);
+        },
+        child: Icon(Icons.add));
+  }
+
+  static getZoomMinusButton(
+      BuildContext context, double zoom, OnZoomChange onZoomChange) {
+    const double zoomFactor = 0.5;
+    return FloatingActionButton(
+        heroTag: "Zoom-Minus-FAB",
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () {
+          onZoomChange(zoom - zoomFactor);
+        },
+        child: Icon(Icons.remove));
   }
 }

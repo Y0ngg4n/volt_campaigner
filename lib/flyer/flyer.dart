@@ -62,6 +62,7 @@ class FlyerState extends State<Flyer> {
   bool searching = false;
   MapController mapController = new MapController();
   final distance = 3;
+  double zoom = 17;
 
   @override
   void dispose() {
@@ -97,6 +98,7 @@ class FlyerState extends State<Flyer> {
             ),
           ],
           options: MapSettings.getMapOptions(
+              zoom,
               (centerOnLocationUpdate) => setState(() {
                     _centerOnLocationUpdate = centerOnLocationUpdate;
                   }),
@@ -119,6 +121,24 @@ class FlyerState extends State<Flyer> {
             });
           }, _userPositionStreamController, () => widget.onRefresh(),
               refreshing)),
+      Positioned(
+          right: 20,
+          top: 85,
+          child: MapSettings.getZoomPlusButton(context, zoom, (zoom) {
+            setState(() {
+              this.zoom = zoom;
+              mapController.move(widget.currentPosition, zoom);
+            });
+          })),
+      Positioned(
+          right: 20,
+          top: 150,
+          child: MapSettings.getZoomMinusButton(context, zoom, (zoom) {
+            setState(() {
+              this.zoom = zoom;
+              mapController.move(widget.currentPosition, zoom);
+            });
+          })),
       Positioned(
           left: 10,
           top: 10,
@@ -218,7 +238,8 @@ class FlyerState extends State<Flyer> {
             _centerOnLocationUpdate = CenterOnLocationUpdate.never;
             try {
               NomatimSearchLocation nomatimSearchLocation = await showSearch(
-                  context: context, delegate: MapSearchDelegate(widget.apiToken));
+                  context: context,
+                  delegate: MapSearchDelegate(widget.apiToken));
               setState(() {
                 widget.onLocationUpdate(LatLng(nomatimSearchLocation.latitude,
                     nomatimSearchLocation.longitude));

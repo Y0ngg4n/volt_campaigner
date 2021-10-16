@@ -28,6 +28,7 @@ class _VolunteerLoginState extends State<VolunteerLogin> {
   QRViewController? controller;
   final TextEditingController dataController = new TextEditingController();
   late SharedPreferences prefs;
+  bool scan = false;
   String? apiToken;
 
   @override
@@ -88,7 +89,15 @@ class _VolunteerLoginState extends State<VolunteerLogin> {
             children: <Widget>[
               Expanded(
                 flex: 5,
-                child: _buildQrView(context),
+                child: scan
+                    ? _buildQrView(context)
+                    : ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            this.scan = true;
+                          });
+                        },
+                        child: Text("Start Scan")),
               ),
               Expanded(
                 flex: 1,

@@ -89,6 +89,7 @@ class PosterMapViewState extends State<PosterMapView> {
   bool showHangingLimit = false;
   List<Areas> maxCountLimitedAreas = [];
   TagType colorTagType = TagType.TYPE;
+  double zoom = 17;
 
   @override
   void dispose() {
@@ -140,6 +141,7 @@ class PosterMapViewState extends State<PosterMapView> {
           ),
         ],
         options: MapSettings.getMapOptions(
+            zoom,
             (centerOnLocationUpdate) => setState(() {
                   _centerOnLocationUpdate = centerOnLocationUpdate;
                 }),
@@ -161,6 +163,24 @@ class PosterMapViewState extends State<PosterMapView> {
             });
           }, _userPositionStreamController, () => widget.onRefresh(),
               refreshing)),
+      Positioned(
+          right: 20,
+          top: 85,
+          child: MapSettings.getZoomPlusButton(context, zoom, (zoom) {
+            setState(() {
+              this.zoom = zoom;
+              mapController.move(widget.currentPosition, zoom);
+            });
+          })),
+      Positioned(
+          right: 20,
+          top: 150,
+          child: MapSettings.getZoomMinusButton(context, zoom, (zoom) {
+            setState(() {
+              this.zoom = zoom;
+              mapController.move(widget.currentPosition, zoom);
+            });
+          })),
       Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
       Positioned(left: 20, bottom: 20, child: _getLimitFab()),
       if (showHangingLimit)
@@ -241,17 +261,25 @@ class PosterMapViewState extends State<PosterMapView> {
       markers.clear();
       for (PosterModel posterModel in widget.posterInDistance.posterModels) {
         Color markerColor = Colors.purple;
-        if(colorTagType == TagType.TYPE && posterModel.posterTagsLists.posterType.length > 0)
+        if (colorTagType == TagType.TYPE &&
+            posterModel.posterTagsLists.posterType.length > 0)
           markerColor = posterModel.posterTagsLists.posterType.first.color;
-        else if(colorTagType == TagType.MOTIVE && posterModel.posterTagsLists.posterMotive.length > 0)
+        else if (colorTagType == TagType.MOTIVE &&
+            posterModel.posterTagsLists.posterMotive.length > 0)
           markerColor = posterModel.posterTagsLists.posterMotive.first.color;
-        else if(colorTagType == TagType.TARGET_GROUP && posterModel.posterTagsLists.posterTargetGroups.length > 0)
-          markerColor = posterModel.posterTagsLists.posterTargetGroups.first.color;
-        else if(colorTagType == TagType.ENVIRONMENT && posterModel.posterTagsLists.posterEnvironment.length > 0)
-          markerColor = posterModel.posterTagsLists.posterEnvironment.first.color;
-        else if(colorTagType == TagType.OTHER && posterModel.posterTagsLists.posterOther.length > 0)
+        else if (colorTagType == TagType.TARGET_GROUP &&
+            posterModel.posterTagsLists.posterTargetGroups.length > 0)
+          markerColor =
+              posterModel.posterTagsLists.posterTargetGroups.first.color;
+        else if (colorTagType == TagType.ENVIRONMENT &&
+            posterModel.posterTagsLists.posterEnvironment.length > 0)
+          markerColor =
+              posterModel.posterTagsLists.posterEnvironment.first.color;
+        else if (colorTagType == TagType.OTHER &&
+            posterModel.posterTagsLists.posterOther.length > 0)
           markerColor = posterModel.posterTagsLists.posterOther.first.color;
-        else if(colorTagType == TagType.CAMPAIGN && posterModel.posterTagsLists.posterCampaign.length > 0)
+        else if (colorTagType == TagType.CAMPAIGN &&
+            posterModel.posterTagsLists.posterCampaign.length > 0)
           markerColor = posterModel.posterTagsLists.posterCampaign.first.color;
 
         Marker marker = Marker(

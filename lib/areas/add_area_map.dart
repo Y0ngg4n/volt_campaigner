@@ -49,6 +49,7 @@ class _AddAreaMapState extends State<AddAreaMap> {
   late PolyEditor polyEditor;
   List<Polygon> polygons = [];
   late Polygon addPolygon;
+  double zoom = 17;
 
   @override
   void initState() {
@@ -90,6 +91,24 @@ class _AddAreaMapState extends State<AddAreaMap> {
           DragMarkerPluginOptions(markers: polyEditor.edit()),
         ],
       ),
+      Positioned(
+          right: 20,
+          top: 85,
+          child: MapSettings.getZoomPlusButton(context, zoom, (zoom) {
+            setState(() {
+              this.zoom = zoom;
+              mapController.move(widget.currentPosition, zoom);
+            });
+          })),
+      Positioned(
+          right: 20,
+          top: 150,
+          child: MapSettings.getZoomMinusButton(context, zoom, (zoom) {
+            setState(() {
+              this.zoom = zoom;
+              mapController.move(widget.currentPosition, zoom);
+            });
+          })),
       if (polyEditor.points.length > 2)
         Positioned(
           bottom: 20,

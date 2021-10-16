@@ -1,35 +1,17 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import "package:http/http.dart" as http;
+import 'package:volt_campaigner/auth/google_login_manager.dart';
 import 'package:volt_campaigner/auth/volunteer.dart';
+import 'package:volt_campaigner/drawer.dart';
 import 'package:volt_campaigner/utils/api/auth.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import "package:googleapis_auth/auth_io.dart"
-    show
-        AccessCredentials,
-        AccessToken,
-        AuthClient,
-        ClientId,
-        PromptUserForConsent,
-        ServiceAccountCredentials,
-        authenticatedClient,
-        autoRefreshingClient,
-        clientViaUserConsent,
-        obtainAccessCredentialsViaUserConsent,
-        refreshCredentials;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import '../drawer.dart';
-import 'package:googleapis/people/v1.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -44,12 +26,16 @@ class _LoginViewState extends State<LoginView> {
   String? accessTokenData, accessTokenType, refreshToken, idToken, restApiToken;
   String? displayName, photoUrl, emailAddress;
   int? expiry;
-  final clientId =
-      ClientId((dotenv.env['CLIENT_ID']!), (dotenv.env['CLIENT_SECRET']!));
+  String clientId = (dotenv.env['CLIENT_ID']!);
+  String clientSecret = (dotenv.env['CLIENT_SECRET']!);
+  String webClientId = (dotenv.env['CLIENT_ID_WEB']!);
+  String webClientSecret = (dotenv.env['CLIENT_SECRET_WEB']!);
   final scopes = <String>[
     'https://www.googleapis.com/auth/userinfo.email',
     "https://www.googleapis.com/auth/userinfo.profile"
   ];
+
+  late GoogleLoginManager googleLoginManager;
 
   @override
   void initState() {
@@ -70,6 +56,7 @@ class _LoginViewState extends State<LoginView> {
           print("Calling Sign in");
           _signIn(false);
         }));
+    googleLoginManager = new GoogleLoginManager(() {});
   }
 
   @override
@@ -116,7 +103,7 @@ class _LoginViewState extends State<LoginView> {
     ));
   }
 
-  Future<GoogleSignInAccount?> _signIn(bool button) async {
+  Future _signIn(bool button) async {
     var client = http.Client();
     if (expiry == null ||
         accessTokenData == null ||
@@ -136,15 +123,19 @@ class _LoginViewState extends State<LoginView> {
       if (now.isAfter(expiryDate)) {
         try {
           print("Refreshing Credentials");
-          AccessCredentials refreshedCredentials = await refreshCredentials(
-              clientId,
-              AccessCredentials(
-                  AccessToken(
-                      accessTokenType!, accessTokenData!, expiryDate.toUtc()),
-                  refreshToken,
-                  scopes,
-                  idToken: idToken),
-              client);
+          AccessedCredentials refreshedCredentials =
+              await googleLoginManager.refresh(
+                  clientId,
+                  clientSecret,
+                  webClientId,
+                  webClientSecret,
+                  AccessedCredentials(
+                      AccessedToken(accessTokenType!, accessTokenData!,
+                          expiryDate.toUtc()),
+                      refreshToken,
+                      scopes,
+                      idToken: idToken),
+                  client);
           await _saveCredentials(refreshedCredentials);
           await _checkUserData(client);
           await _checkReady(refreshedCredentials.accessToken.expiry,
@@ -175,8 +166,8 @@ class _LoginViewState extends State<LoginView> {
   }
 
   _checkUserData(http.Client client) async {
-    AccessCredentials accessCredentials = AccessCredentials(
-        AccessToken(accessTokenType!, accessTokenData!,
+    AccessedCredentials accessCredentials = AccessedCredentials(
+        AccessedToken(accessTokenType!, accessTokenData!,
             DateTime.fromMillisecondsSinceEpoch(expiry!).toUtc()),
         refreshToken,
         scopes,
@@ -203,46 +194,44 @@ class _LoginViewState extends State<LoginView> {
     });
   }
 
-  void getCredentials(http.Client client) {
+  void getCredentials(http.Client client) async {
     print("Getting Google Login Credentials");
     try {
-      obtainAccessCredentialsViaUserConsent(clientId, scopes, client, prompt,
-              hostedDomain: "volteuropa.org")
-          .then((AccessCredentials credentials) async {
-        await _saveCredentials(credentials);
-        await _getJWT(credentials.accessToken.data);
-        await _getUserData(client, credentials);
+      AccessedCredentials? accessCredentials =
+          await googleLoginManager.getCredentials(context, client, clientId,
+              clientSecret, webClientId, webClientSecret, scopes);
+      if (accessCredentials != null) {
+        await _saveCredentials(accessCredentials);
+        await _getJWT(accessCredentials.accessToken.data);
+        await _getUserData(client, accessCredentials);
         client.close();
-      });
+      } else {
+        throw new Exception("Could not get credentials");
+      }
     } catch (e) {
       print(e);
       Messenger.showError(context, AppLocalizations.of(context)!.errorLogin);
     }
   }
 
-  _getUserData(http.Client client, AccessCredentials credentials) async {
-    AuthClient authClient = authenticatedClient(client, credentials);
-    http.Response response = await authClient.get(Uri.parse(
-        "https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos"));
-    if (response.statusCode == 200) {
-      Map<String, dynamic> json = jsonDecode(response.body);
-      String? displayName = json['names'][0]['displayName'];
-      if (displayName != null)
-        await prefs.setString(SharedPrefsSlugs.googleDisplayName, displayName);
-      String? photoUrl = json['photos'][0]['url'];
-      if (photoUrl != null)
-        await prefs.setString(SharedPrefsSlugs.googlePhotoUrl, photoUrl);
-      String? emailAddresses = json['emailAddresses'][0]['value'];
-      if (emailAddresses != null)
-        await prefs.setString(
-            SharedPrefsSlugs.googleEmailAddress, emailAddresses);
+  _getUserData(http.Client client, AccessedCredentials credentials) async {
+    UserData userData =
+        await googleLoginManager.getUserData(client, credentials);
+    if (userData.displayName != null)
+      await prefs.setString(
+          SharedPrefsSlugs.googleDisplayName, userData.displayName!);
+    if (userData.photoUrl != null)
+      await prefs.setString(
+          SharedPrefsSlugs.googlePhotoUrl, userData.photoUrl!);
+    if (userData.emailAddress != null)
+      await prefs.setString(
+          SharedPrefsSlugs.googleEmailAddress, userData.emailAddress!);
 
-      setState(() {
-        this.displayName = displayName;
-        this.photoUrl = photoUrl;
-        this.emailAddress = emailAddress;
-      });
-    }
+    setState(() {
+      this.displayName = userData.displayName;
+      this.photoUrl = userData.photoUrl;
+      this.emailAddress = userData.emailAddress;
+    });
   }
 
   _getJWT(String authToken) async {
@@ -265,18 +254,7 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  void prompt(String url) {
-    print("Please go to the following URL and grant access:");
-    print("  => $url");
-    print("");
-    launchUrl(url);
-  }
-
-  void launchUrl(String url) async {
-    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
-  }
-
-  Future _saveCredentials(AccessCredentials accessCredentials) async {
+  Future _saveCredentials(AccessedCredentials accessCredentials) async {
     print("Saving credentials");
     await prefs.setString(SharedPrefsSlugs.googleAccessTokenData,
         accessCredentials.accessToken.data);
