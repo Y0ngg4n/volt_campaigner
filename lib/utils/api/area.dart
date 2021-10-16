@@ -26,7 +26,6 @@ class AreaApiUtils {
         return await Areas.fromJson(jsonDecode(response.body));
       } else {
         print("Could not refresh Areas");
-        print(response.body);
         // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
       }
     } catch (e) {
@@ -50,7 +49,7 @@ class AreaApiUtils {
       if (response.statusCode == 200) {
         return await Areas.fromJson(jsonDecode(response.body));
       } else {
-        print(response.body);
+        print("Could not refresh Area Contains");
         // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
       }
     } catch (e) {
@@ -116,7 +115,6 @@ class AreaApiUtils {
       if (response.statusCode == 200) {
       } else {
         print("Could not delete Areas");
-        print(response.body);
         // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
       }
     } catch (e) {

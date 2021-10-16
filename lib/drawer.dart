@@ -294,7 +294,6 @@ class _DrawerViewState extends State<DrawerView> {
       setState(() {
         this.areasContains = areas;
       });
-
     ContainsAreaLimits? areasLimits = await AreaApiUtils.getAreaContainsLimits(
         currentPosition,
         DateTime.fromMicrosecondsSinceEpoch(0).toString(),

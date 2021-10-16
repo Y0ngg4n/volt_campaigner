@@ -90,6 +90,7 @@ class PosterMapViewState extends State<PosterMapView> {
   List<Areas> maxCountLimitedAreas = [];
   TagType colorTagType = TagType.TYPE;
   double zoom = 17;
+  List<Polygon> polygons = [];
 
   @override
   void dispose() {
@@ -128,6 +129,7 @@ class PosterMapViewState extends State<PosterMapView> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.areasCovered.areas.length);
     return Stack(children: [
       FlutterMap(
         mapController: mapController,
@@ -148,7 +150,9 @@ class PosterMapViewState extends State<PosterMapView> {
             widget.currentPosition),
         layers: [
           _getPolyLineLayerOptions(),
-          _getPolygonsLayerOptions(),
+          PolygonLayerOptions(
+            polygons: polygons,
+          ),
           MapSettings.getMarkerClusterLayerOptions(
               (marker) => _onMarkerTap(marker), markers.keys.toList()),
         ],
@@ -328,6 +332,17 @@ class PosterMapViewState extends State<PosterMapView> {
     });
   }
 
+  _addPolygons() {
+    if (showAreasOnMap) {
+      setState(() {
+        polygons.clear();
+        for (AreaModel areaModel in widget.areasCovered.areas) {
+          polygons.add(areaModel.points);
+        }
+      });
+    }
+  }
+
   _onMarkerTap(Marker marker) {
     Navigator.push(
         context,
@@ -413,6 +428,7 @@ class PosterMapViewState extends State<PosterMapView> {
     Future.microtask(() {
       _addPosterMarker();
       _addPolylines();
+      _addPolygons();
     });
   }
 
@@ -425,17 +441,6 @@ class PosterMapViewState extends State<PosterMapView> {
   _getPolyLineLayerOptions() {
     return PolylineLayerOptions(
       polylines: polylines.keys.toList(),
-    );
-  }
-
-  _getPolygonsLayerOptions() {
-    List<Polygon> polygons = [];
-    if (showAreasOnMap)
-      for (AreaModel areaModel in widget.areasCovered.areas) {
-        polygons.add(areaModel.points);
-      }
-    return PolygonLayerOptions(
-      polygons: polygons,
     );
   }
 }
