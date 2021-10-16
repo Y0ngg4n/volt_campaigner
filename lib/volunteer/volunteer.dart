@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:volt_campaigner/utils/api/auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 
 class VolunteerView extends StatefulWidget {
   String apiToken;
@@ -16,6 +17,7 @@ class VolunteerView extends StatefulWidget {
 class _VolunteerViewState extends State<VolunteerView> {
   String? volunterToken;
   final TextEditingController dataController = new TextEditingController();
+  bool darkMode = false;
 
   _copySuccess() {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -26,6 +28,7 @@ class _VolunteerViewState extends State<VolunteerView> {
   @override
   void initState() {
     super.initState();
+
     AuthApiUtils.getVolunteerToken(widget.apiToken).then((value) => {
           setState(() {
             this.volunterToken = value;
@@ -36,6 +39,11 @@ class _VolunteerViewState extends State<VolunteerView> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeMode? themeMode = EasyDynamicTheme.of(context).themeMode;
+    if (themeMode != null && themeMode == ThemeMode.dark)
+      setState(() {
+        darkMode = true;
+      });
     return Column(
       children: [
         Padding(
@@ -52,6 +60,7 @@ class _VolunteerViewState extends State<VolunteerView> {
               volunterToken == null
                   ? CircularProgressIndicator()
                   : QrImage(
+                      foregroundColor: darkMode ? Colors.white : Colors.black,
                       size: 300,
                       data: volunterToken!,
                       version: QrVersions.auto,

@@ -28,6 +28,7 @@ import 'map/poster/poster_tags.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 
 typedef OnDrawerOpen = Function();
 
@@ -114,7 +115,7 @@ class _DrawerViewState extends State<DrawerView> {
     } else {
       return Scaffold(
           key: scaffoldKey,
-          appBar: new AppBar(title: Text(_getAppbarString())),
+          appBar: new AppBar(title: Text(_getAppbarString()), actions: [EasyDynamicThemeBtn()],),
           body: SafeArea(child: _getBody()),
           drawer: _getDrawer());
     }
@@ -391,9 +392,6 @@ class _DrawerViewState extends State<DrawerView> {
         (prefs.get(SharedPrefsSlugs.areasCustomDateSwitch) ?? false) as bool;
     String customDate = (prefs.get(SharedPrefsSlugs.areasCustomDate) ??
         DateTime.fromMicrosecondsSinceEpoch(0).toString()) as String;
-    if (flyerWidgetState.currentState != null) {
-      flyerWidgetState.currentState!.setRefreshIcon(true);
-    }
     Areas areas;
     if (loadAll) {
       areas = await AreaApiUtils.getAllAreas(widget.apiToken) ?? Areas([]);
@@ -412,12 +410,8 @@ class _DrawerViewState extends State<DrawerView> {
       }
     }
     setState(() {
-      this.flyerRoutes = flyerRoutes;
+      this.areasInDistance = areas;
     });
-    if (flyerWidgetState.currentState != null) {
-      flyerWidgetState.currentState!.refresh();
-      flyerWidgetState.currentState!.setRefreshIcon(false);
-    }
   }
 
   _getPosterMapView() {

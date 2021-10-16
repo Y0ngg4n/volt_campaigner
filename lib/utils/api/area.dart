@@ -94,7 +94,7 @@ class AreaApiUtils {
       if (response.statusCode == 200) {
         return ContainsAreaLimits.fromJson(jsonDecode(response.body));
       } else {
-        print(response.body);
+        print("Could not get Area Contains Limits");
         // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);
       }
     } catch (e) {

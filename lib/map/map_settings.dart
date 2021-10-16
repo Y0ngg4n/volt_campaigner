@@ -112,7 +112,7 @@ class MapSettings {
         onPressed: () {
           onZoomChange(zoom + zoomFactor);
         },
-        child: Icon(Icons.add));
+        child: Icon(Icons.add, color: Colors.white));
   }
 
   static getZoomMinusButton(
@@ -124,6 +124,6 @@ class MapSettings {
         onPressed: () {
           onZoomChange(zoom - zoomFactor);
         },
-        child: Icon(Icons.remove));
+        child: Icon(Icons.remove, color: Colors.white));
   }
 }
