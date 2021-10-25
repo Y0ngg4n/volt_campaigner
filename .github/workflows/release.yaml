@@ -159,9 +159,6 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
       - name: Write Env File
         run: |
           echo "REST_API_URL=$ENV_REST_API_URL" >> .env
@@ -175,6 +172,9 @@ jobs:
           CLIENT_SECRET: ${{ secrets.ENV_CLIENT_SECRET }}
           CLIENT_ID_WEB: ${{ secrets.ENV_CLIENT_ID_WEB }}
           CLIENT_SECRET_WEB: ${{ secrets.ENV_CLIENT_SECRET_WEB }}
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
       - uses: subosito/flutter-action@v1
       - run: flutter config --enable-macos-desktop
       - run: flutter doctor -v
@@ -193,10 +193,22 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Write Env File
+        run: |
+          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
+          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+        env:
+          REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
+          CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.ENV_CLIENT_SECRET }}
+          CLIENT_ID_WEB: ${{ secrets.ENV_CLIENT_ID_WEB }}
+          CLIENT_SECRET_WEB: ${{ secrets.ENV_CLIENT_SECRET_WEB }}
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
-
       - name: Install Apple Certificate
         uses: apple-actions/import-codesign-certs@v1
         with:
@@ -213,19 +225,6 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
       - name: Install and set Flutter version
-      - name: Write Env File
-        run: |
-          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
-        env:
-          REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
-          CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.ENV_CLIENT_SECRET }}
-          CLIENT_ID_WEB: ${{ secrets.ENV_CLIENT_ID_WEB }}
-          CLIENT_SECRET_WEB: ${{ secrets.ENV_CLIENT_SECRET_WEB }}
         uses: subosito/flutter-action@v1
       - name: Restore packages
         run: flutter pub get
