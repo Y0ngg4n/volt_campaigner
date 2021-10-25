@@ -96,18 +96,18 @@ jobs:
           KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
       - name: Write Env File
-          run: |
-            echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-            echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-            echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-            echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-            echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
-          env:
-            REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
-            CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
-            CLIENT_SECRET: ${{ secrets.ENV_CLIENT_SECRET }}
-            CLIENT_ID_WEB: ${{ secrets.ENV_CLIENT_ID_WEB }}
-            CLIENT_SECRET_WEB: ${{ secrets.ENV_CLIENT_SECRET_WEB }}
+        run: |
+          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
+          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+        env:
+          REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
+          CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.ENV_CLIENT_SECRET }}
+          CLIENT_ID_WEB: ${{ secrets.ENV_CLIENT_ID_WEB }}
+          CLIENT_SECRET_WEB: ${{ secrets.ENV_CLIENT_SECRET_WEB }}
       - uses: subosito/flutter-action@v1
       - run: flutter doctor -v
       - run: flutter pub get
