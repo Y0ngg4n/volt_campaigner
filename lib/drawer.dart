@@ -106,18 +106,29 @@ class _DrawerViewState extends State<DrawerView> {
 
   @override
   Widget build(BuildContext context) {
-    if (drawerSelection == DrawerSelection.POSTER ||
-        drawerSelection == DrawerSelection.FLYER) {
+    if (drawerSelection == DrawerSelection.POSTER) {
+      return Scaffold(
+          key: scaffoldKey,
+          body: SafeArea(child: _getBody()),
+          floatingActionButton: posterMapWidgetState.currentState != null
+              ? posterMapWidgetState.currentState!.getAddPosterFab()
+              : null,
+          drawer: _getDrawer());
+    } else if (drawerSelection == DrawerSelection.FLYER) {
       return Scaffold(
           key: scaffoldKey,
           body: SafeArea(child: _getBody()),
           drawer: _getDrawer());
     } else {
       return Scaffold(
-          key: scaffoldKey,
-          appBar: new AppBar(title: Text(_getAppbarString()), actions: [EasyDynamicThemeBtn()],),
-          body: SafeArea(child: _getBody()),
-          drawer: _getDrawer());
+        key: scaffoldKey,
+        appBar: new AppBar(
+          title: Text(_getAppbarString()),
+          actions: [EasyDynamicThemeBtn()],
+        ),
+        body: SafeArea(child: _getBody()),
+        drawer: _getDrawer(),
+      );
     }
   }
 

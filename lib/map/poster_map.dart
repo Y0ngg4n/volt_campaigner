@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'
     show
@@ -32,9 +33,11 @@ import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:volt_campaigner/utils/api/nomatim.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
+import 'package:volt_campaigner/utils/screen_utils.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
+import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
 import 'map_settings.dart';
 
 typedef OnLocationUpdate = Function(LatLng);
@@ -91,6 +94,8 @@ class PosterMapViewState extends State<PosterMapView> {
   TagType colorTagType = TagType.TYPE;
   double zoom = 17;
   List<Polygon> polygons = [];
+  Set<PosterModel> lastPosterModels = Set.identity();
+  bool isShowSpeedDial = false;
 
   @override
   void dispose() {
@@ -129,7 +134,6 @@ class PosterMapViewState extends State<PosterMapView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.areasCovered.areas.length);
     return Stack(children: [
       FlutterMap(
         mapController: mapController,
@@ -185,7 +189,6 @@ class PosterMapViewState extends State<PosterMapView> {
               mapController.move(widget.currentPosition, zoom);
             });
           })),
-      Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
       Positioned(left: 20, bottom: 20, child: _getLimitFab()),
       if (showHangingLimit)
         Positioned(
@@ -369,30 +372,84 @@ class PosterMapViewState extends State<PosterMapView> {
                 )));
   }
 
-  _getAddPosterFab() {
-    return FloatingActionButton(
-      heroTag: "Add-Poster-FAB",
-      child: Icon(Icons.add, color: Colors.white),
-      tooltip: AppLocalizations.of(context)!.addPoster,
-      backgroundColor: Theme.of(context).primaryColor,
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AddPoster(
-                    apiToken: widget.apiToken,
-                    campaignTags: widget.campaignTags,
-                    posterTagsLists: widget.posterTagsLists,
-                    location: widget.currentPosition,
-                    centerLocation: mapController.center,
-                    onAddPoster: (poster) {
-                      widget.posterInDistance.posterModels.add(poster);
-                      refresh();
-                    },
-                  )),
-        );
-      },
+  getAddPosterFab() {
+    return SpeedDialMenuButton(
+      isShowSpeedDial: isShowSpeedDial,
+      floatingActionButtonWidgetChildren: [
+        // for (PosterModel posterModel in lastPosterModels)
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddPoster(
+                          apiToken: widget.apiToken,
+                          campaignTags: widget.campaignTags,
+                          posterTagsLists: widget.posterTagsLists,
+                          location: widget.currentPosition,
+                          centerLocation: mapController.center,
+                          onAddPoster: (poster) {
+                            setState(() {
+                              if (lastPosterModels.length >= 4) {
+                                lastPosterModels.remove(lastPosterModels.first);
+                              }
+                              lastPosterModels.add(poster);
+                              widget.posterInDistance.posterModels.add(poster);
+                              refresh();
+                            });
+                          },
+                        )),
+              );
+            },
+            shape: CircleBorder(),
+            child: Text("Butto"),
+          )
+      ],
+      isMainFABMini: true,
+      mainMenuFloatingActionButton: MainMenuFloatingActionButton(
+          heroTag: "Add-Poster-FAB",
+          child: Icon(Icons.add, color: Colors.white),
+          tooltip: AppLocalizations.of(context)!.addPoster,
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () {
+            setState(() {
+              isShowSpeedDial = true;
+            });
+            if (lastPosterModels.length <= 0) {
+              // _addPoster();
+            } else {
+              if (!isShowSpeedDial)
+                setState(() {
+                  isShowSpeedDial = true;
+                });
+              else
+                setState(() {
+                  isShowSpeedDial = false;
+                  // _addPoster();
+                });
+            }
+          },
+          closeMenuChild: Icon(Icons.add, color: Colors.white)),
+      isSpeedDialFABsMini: true,
     );
+  }
+
+  _addPoster() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddPoster(
+                  apiToken: widget.apiToken,
+                  campaignTags: widget.campaignTags,
+                  posterTagsLists: widget.posterTagsLists,
+                  location: widget.currentPosition,
+                  centerLocation: mapController.center,
+                  onAddPoster: (poster) {
+                    widget.posterInDistance.posterModels.add(poster);
+                    lastPosterModels.add(poster);
+                    refresh();
+                  },
+                )));
   }
 
   _getSearchFab() {
