@@ -301,4 +301,4 @@ jobs:
             web/volt_campaigner-web.zip
             mac/volt_campaigner-mac.zip
             ios/volt_campaigner-ios.zip
-            ios/volt_campaigner-android.apk
+            android/volt_campaigner-android.apk
