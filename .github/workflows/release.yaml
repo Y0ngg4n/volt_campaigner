@@ -136,11 +136,11 @@ jobs:
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
       - name: Write Env File
         run: |
-          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+          echo "REST_API_URL=$REST_API_URL" >> .env
+          echo "CLIENT_ID=$CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$CLIENT_SECRET_WEB" >> .env
           ls
           cat .env
         env:
