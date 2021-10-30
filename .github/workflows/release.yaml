@@ -25,11 +25,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Write Env File
         run: |
-          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+          echo "REST_API_URL=$REST_API_URL" >> .env
+          echo "CLIENT_ID=$CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$CLIENT_SECRET_WEB" >> .env
         env:
           REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
           CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
@@ -58,11 +58,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Write Env File
         run: |
-          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+          echo "REST_API_URL=$REST_API_URL" >> .env
+          echo "CLIENT_ID=$CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$CLIENT_SECRET_WEB" >> .env
         env:
           REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
           CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
@@ -90,11 +90,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Write Env File
         run: |
-          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+          echo "REST_API_URL=$REST_API_URL" >> .env
+          echo "CLIENT_ID=$CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$CLIENT_SECRET_WEB" >> .env
         env:
           REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
           CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
@@ -163,11 +163,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Write Env File
         run: |
-          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+          echo "REST_API_URL=$REST_API_URL" >> .env
+          echo "CLIENT_ID=$CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$CLIENT_SECRET_WEB" >> .env
         env:
           REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
           CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
@@ -197,11 +197,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Write Env File
         run: |
-          echo "REST_API_URL=$ENV_REST_API_URL" >> .env
-          echo "CLIENT_ID=$ENV_CLIENT_ID" >> .env
-          echo "CLIENT_SECRET=$ENV_CLIENT_SECRET" >> .env
-          echo "CLIENT_ID_WEB=$ENV_CLIENT_ID_WEB" >> .env
-          echo "CLIENT_SECRET_WEB=$ENV_CLIENT_SECRET_WEB" >> .env
+          echo "REST_API_URL=$REST_API_URL" >> .env
+          echo "CLIENT_ID=$CLIENT_ID" >> .env
+          echo "CLIENT_SECRET=$CLIENT_SECRET" >> .env
+          echo "CLIENT_ID_WEB=$CLIENT_ID_WEB" >> .env
+          echo "CLIENT_SECRET_WEB=$CLIENT_SECRET_WEB" >> .env
         env:
           REST_API_URL: ${{ secrets.ENV_REST_API_URL }}
           CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
