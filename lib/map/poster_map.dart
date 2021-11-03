@@ -129,7 +129,6 @@ class PosterMapViewState extends State<PosterMapView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.areasCovered.areas.length);
     return Stack(children: [
       FlutterMap(
         mapController: mapController,
@@ -173,7 +172,7 @@ class PosterMapViewState extends State<PosterMapView> {
           child: MapSettings.getZoomPlusButton(context, zoom, (zoom) {
             setState(() {
               this.zoom = zoom;
-              mapController.move(widget.currentPosition, zoom);
+              mapController.move(mapController.center, zoom);
             });
           })),
       Positioned(
@@ -182,7 +181,7 @@ class PosterMapViewState extends State<PosterMapView> {
           child: MapSettings.getZoomMinusButton(context, zoom, (zoom) {
             setState(() {
               this.zoom = zoom;
-              mapController.move(widget.currentPosition, zoom);
+              mapController.move(mapController.center, zoom);
             });
           })),
       Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
@@ -204,11 +203,11 @@ class PosterMapViewState extends State<PosterMapView> {
           children: [_getSearchFab()]),
       if (placeMarkerByHand)
         Positioned(
-            top: 0,
+            top: 40,
             left: 0,
             right: 0,
-            bottom: 40,
-            child: Icon(Icons.location_pin, size: 50))
+            bottom: 0,
+            child: Icon(Icons.location_pin, size: 50, color: Colors.deepPurple))
     ]);
   }
 
@@ -380,6 +379,7 @@ class PosterMapViewState extends State<PosterMapView> {
           context,
           MaterialPageRoute(
               builder: (context) => AddPoster(
+                    placeMarkerByHand: placeMarkerByHand,
                     apiToken: widget.apiToken,
                     campaignTags: widget.campaignTags,
                     posterTagsLists: widget.posterTagsLists,

@@ -18,13 +18,13 @@ class VoltCampaignerApp extends StatelessWidget {
     var lightThemeData = new ThemeData(
         brightness: Brightness.light,
         primaryColor: Color.fromARGB(255, 80, 35, 121),
-        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)
+        fontFamily: GoogleFonts.openSans().fontFamily
     );
 
     var darkThemeData = ThemeData(
         brightness: Brightness.dark,
         primaryColor: Color.fromARGB(255, 80, 35, 121),
-        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme));
+        fontFamily: GoogleFonts.openSans().fontFamily);
 
     return MaterialApp(
         title: "Volt Campaigner",

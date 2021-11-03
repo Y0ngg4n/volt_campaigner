@@ -23,6 +23,7 @@ class AddPoster extends StatefulWidget {
   LatLng centerLocation;
   PosterTags campaignTags;
   String apiToken;
+  bool placeMarkerByHand;
 
   AddPoster({
     Key? key,
@@ -31,7 +32,8 @@ class AddPoster extends StatefulWidget {
     required this.onAddPoster,
     required this.centerLocation,
     required this.campaignTags,
-    required this.apiToken
+    required this.apiToken,
+    required this.placeMarkerByHand
   }) : super(key: key);
 
   @override
@@ -44,17 +46,10 @@ class _AddPosterState extends State<AddPoster> {
   List<PosterTag> selectedTargetGroupTypes = [];
   List<PosterTag> selectedEnvironmentTypes = [];
   List<PosterTag> selectedOtherTypes = [];
-  late SharedPreferences prefs;
-  bool placeMarkerByHand = false;
 
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((value) => setState(() {
-          prefs = value;
-          placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
-              placeMarkerByHand) as bool;
-        }));
   }
 
   @override
@@ -155,10 +150,10 @@ class _AddPosterState extends State<AddPoster> {
           Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/create"),
           headers: HttpUtils.createHeader(widget.apiToken),
           body: jsonEncode({
-            'latitude': placeMarkerByHand
+            'latitude': widget.placeMarkerByHand
                 ? widget.centerLocation.latitude
                 : widget.location.latitude,
-            'longitude': placeMarkerByHand
+            'longitude': widget.placeMarkerByHand
                 ? widget.centerLocation.longitude
                 : widget.location.longitude,
             'campaign':

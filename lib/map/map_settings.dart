@@ -16,6 +16,8 @@ class MapSettings {
   static getMapOptions(double zoom, OnPositionChanged onPositionChanged,
       LatLng currentPosition) {
     return MapOptions(
+        maxZoom: 19,
+        minZoom: 1,
         center: currentPosition,
         zoom: zoom,
         plugins: [
@@ -105,24 +107,24 @@ class MapSettings {
 
   static getZoomPlusButton(
       BuildContext context, double zoom, OnZoomChange onZoomChange) {
-    const double zoomFactor = 0.5;
+    const double zoomFactor = 1;
     return FloatingActionButton(
         heroTag: "Zoom-Plus-FAB",
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
-          onZoomChange(zoom + zoomFactor);
+          if (zoom + zoomFactor < 19) onZoomChange(zoom + zoomFactor);
         },
         child: Icon(Icons.add, color: Colors.white));
   }
 
   static getZoomMinusButton(
       BuildContext context, double zoom, OnZoomChange onZoomChange) {
-    const double zoomFactor = 0.5;
+    const double zoomFactor = 1;
     return FloatingActionButton(
         heroTag: "Zoom-Minus-FAB",
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
-          onZoomChange(zoom - zoomFactor);
+          if (zoom - zoomFactor > 0) onZoomChange(zoom - zoomFactor);
         },
         child: Icon(Icons.remove, color: Colors.white));
   }

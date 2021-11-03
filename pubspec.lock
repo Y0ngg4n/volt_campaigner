@@ -259,7 +259,7 @@ packages:
       name: flutter_map_marker_popup
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -331,7 +331,7 @@ packages:
     description:
       path: googleapis_auth
       ref: HEAD
-      resolved-ref: "885d93b311644a95d2395bae14c20d5bd471eecd"
+      resolved-ref: ee0497940d295846ffdf4d6ed75d26944e110160
       url: "https://github.com/google/googleapis.dart.git"
     source: git
     version: "1.3.0-dev"
