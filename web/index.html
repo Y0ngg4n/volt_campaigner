@@ -47,13 +47,13 @@
       if (scriptLoaded) {
         return;
       }
+      var loading = document.getElementById("loading");
+      loading.remove();
       scriptLoaded = true;
       var scriptTag = document.createElement('script');
       scriptTag.src = 'main.dart.js';
       scriptTag.type = 'application/javascript';
       document.body.append(scriptTag);
-      var loading = document.getElementById("loading");
-      loading.remove();
     }
 
     if ('serviceWorker' in navigator) {
