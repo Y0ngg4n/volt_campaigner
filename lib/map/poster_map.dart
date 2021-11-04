@@ -103,7 +103,6 @@ class PosterMapViewState extends State<PosterMapView> {
     if (_currentPositionStreamSubscription != null) return;
     _currentPositionStreamSubscription =
         Geolocator.getPositionStream().listen((position) {
-      print("New Position: " + position.toString());
       setState(() {
         if (!searching)
           widget

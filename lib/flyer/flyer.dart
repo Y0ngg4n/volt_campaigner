@@ -47,7 +47,7 @@ class Flyer extends StatefulWidget {
 class FlyerState extends State<Flyer> {
   late CenterOnLocationUpdate _centerOnLocationUpdate;
   late StreamController<double> _userPositionStreamController;
-  late StreamSubscription<Position> _currentPositionStreamSubscription;
+  StreamSubscription<Position>? _currentPositionStreamSubscription;
   List<LatLng> path = [];
   List<Marker> markers = [];
   Position? lastPosition;
@@ -67,7 +67,8 @@ class FlyerState extends State<Flyer> {
   @override
   void dispose() {
     super.dispose();
-    _currentPositionStreamSubscription.cancel();
+    if (_currentPositionStreamSubscription != null)
+      _currentPositionStreamSubscription!.cancel();
     timer.cancel();
   }
 
@@ -201,7 +202,8 @@ class FlyerState extends State<Flyer> {
   }
 
   _stopListener() {
-    _currentPositionStreamSubscription.cancel();
+    if (_currentPositionStreamSubscription != null)
+      _currentPositionStreamSubscription!.cancel();
     Wakelock.disable();
   }
 
