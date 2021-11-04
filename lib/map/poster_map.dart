@@ -78,7 +78,7 @@ class PosterMapViewState extends State<PosterMapView> {
   Map<Polyline, List<LatLng>> polylines = {};
   late CenterOnLocationUpdate _centerOnLocationUpdate;
   late StreamController<double> _userPositionStreamController;
-  late StreamSubscription<Position>? _currentPositionStreamSubscription;
+  StreamSubscription<Position>? _currentPositionStreamSubscription;
   late SharedPreferences prefs;
   bool drawNearestPosterLine = false;
   bool showAreasOnMap = true;
