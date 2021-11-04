@@ -78,7 +78,7 @@ class PosterMapViewState extends State<PosterMapView> {
   Map<Polyline, List<LatLng>> polylines = {};
   late CenterOnLocationUpdate _centerOnLocationUpdate;
   late StreamController<double> _userPositionStreamController;
-  late StreamSubscription<Position> _currentPositionStreamSubscription;
+  late StreamSubscription<Position>? _currentPositionStreamSubscription;
   late SharedPreferences prefs;
   bool drawNearestPosterLine = false;
   bool showAreasOnMap = true;
@@ -95,7 +95,21 @@ class PosterMapViewState extends State<PosterMapView> {
   @override
   void dispose() {
     super.dispose();
-    _currentPositionStreamSubscription.cancel();
+    if (_currentPositionStreamSubscription != null)
+      _currentPositionStreamSubscription!.cancel();
+  }
+
+  _initPositionStream() {
+    if (_currentPositionStreamSubscription != null) return;
+    _currentPositionStreamSubscription =
+        Geolocator.getPositionStream().listen((position) {
+      print("New Position: " + position.toString());
+      setState(() {
+        if (!searching)
+          widget
+              .onLocationUpdate(LatLng(position.latitude, position.longitude));
+      });
+    });
   }
 
   @override
@@ -103,16 +117,7 @@ class PosterMapViewState extends State<PosterMapView> {
     super.initState();
     _centerOnLocationUpdate = CenterOnLocationUpdate.always;
     _userPositionStreamController = StreamController<double>();
-
-    _currentPositionStreamSubscription =
-        Geolocator.getPositionStream().listen((position) {
-          print("New Position: " + position.toString());
-      setState(() {
-        if (!searching)
-          widget
-              .onLocationUpdate(LatLng(position.latitude, position.longitude));
-      });
-    });
+    _initPositionStream();
     SharedPreferences.getInstance().then((value) => setState(() {
           prefs = value;
           drawNearestPosterLine =
@@ -130,6 +135,7 @@ class PosterMapViewState extends State<PosterMapView> {
 
   @override
   Widget build(BuildContext context) {
+    _initPositionStream();
     return Stack(children: [
       FlutterMap(
         mapController: mapController,
@@ -137,7 +143,8 @@ class PosterMapViewState extends State<PosterMapView> {
           MapSettings.getTileLayerWidget(),
           LocationMarkerLayerWidget(
             plugin: LocationMarkerPlugin(
-              centerCurrentLocationStream: _userPositionStreamController.stream,
+              centerCurrentLocationStream:
+                  _userPositionStreamController!.stream,
               centerOnLocationUpdate: _centerOnLocationUpdate,
             ),
           ),
