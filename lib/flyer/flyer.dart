@@ -102,7 +102,7 @@ class FlyerState extends State<Flyer> {
               (centerOnLocationUpdate) => setState(() {
                     _centerOnLocationUpdate = centerOnLocationUpdate;
                   }),
-              widget.currentPosition),
+              widget.currentPosition, null),
           layers: [
             PolylineLayerOptions(
               polylines: polylines,

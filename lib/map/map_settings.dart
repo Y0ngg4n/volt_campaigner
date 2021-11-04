@@ -11,11 +11,15 @@ typedef OnPositionChanged = Function(CenterOnLocationUpdate);
 typedef OnRefresh = Function();
 typedef OnMarkerTap = Function(Marker);
 typedef OnZoomChange = Function(double);
+typedef OnTap = Function();
 
 class MapSettings {
   static getMapOptions(double zoom, OnPositionChanged onPositionChanged,
-      LatLng currentPosition) {
+      LatLng currentPosition, OnTap? onTap) {
     return MapOptions(
+        onTap: (_, _s) {
+          if(onTap != null) onTap();
+        },
         center: currentPosition,
         zoom: zoom,
         plugins: [

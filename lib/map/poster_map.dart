@@ -4,20 +4,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'
     show
-        Anchor,
-        AnchorPos,
-        FitBoundsOptions,
-        FlutterMap,
-        MapController,
-        MapOptions,
-        MapPosition,
-        Marker,
-        Polygon,
-        PolygonLayerOptions,
-        Polyline,
-        PolylineLayerOptions,
-        TileLayerOptions,
-        TileLayerWidget;
+    Anchor,
+    AnchorPos,
+    FitBoundsOptions,
+    FlutterMap,
+    MapController,
+    MapEvent,
+    MapOptions,
+    MapPosition,
+    Marker,
+    Polygon,
+    PolygonLayerOptions,
+    Polyline,
+    PolylineLayerOptions,
+    TileLayerOptions,
+    TileLayerWidget;
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -33,11 +34,10 @@ import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:volt_campaigner/utils/api/nomatim.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
+import 'package:volt_campaigner/utils/radial_menu.dart';
 import 'package:volt_campaigner/utils/screen_utils.dart';
 import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
-import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
 import 'map_settings.dart';
 
 typedef OnLocationUpdate = Function(LatLng);
@@ -56,19 +56,18 @@ class PosterMapView extends StatefulWidget {
   Areas areasCovered;
   ContainsAreaLimits containsAreaLimits;
 
-  PosterMapView(
-      {Key? key,
-      required this.posterInDistance,
-      required this.currentPosition,
-      required this.onLocationUpdate,
-      required this.onRefresh,
-      required this.posterTagsLists,
-      required this.campaignTags,
-      required this.apiToken,
-      required this.photoUrl,
-      required this.onDrawerOpen,
-      required this.areasCovered,
-      required this.containsAreaLimits})
+  PosterMapView({Key? key,
+    required this.posterInDistance,
+    required this.currentPosition,
+    required this.onLocationUpdate,
+    required this.onRefresh,
+    required this.posterTagsLists,
+    required this.campaignTags,
+    required this.apiToken,
+    required this.photoUrl,
+    required this.onDrawerOpen,
+    required this.areasCovered,
+    required this.containsAreaLimits})
       : super(key: key);
 
   @override
@@ -96,6 +95,7 @@ class PosterMapViewState extends State<PosterMapView> {
   List<Polygon> polygons = [];
   Set<PosterModel> lastPosterModels = Set.identity();
   bool isShowSpeedDial = false;
+  final GlobalKey<RadialMenuState> radialMenuKey = GlobalKey<RadialMenuState>();
 
   @override
   void dispose() {
@@ -111,17 +111,19 @@ class PosterMapViewState extends State<PosterMapView> {
 
     _currentPositionStreamSubscription =
         Geolocator.getPositionStream().listen((position) {
-      setState(() {
-        if (!searching)
-          widget
-              .onLocationUpdate(LatLng(position.latitude, position.longitude));
-      });
-    });
-    SharedPreferences.getInstance().then((value) => setState(() {
+          setState(() {
+            if (!searching)
+              widget
+                  .onLocationUpdate(
+                  LatLng(position.latitude, position.longitude));
+          });
+        });
+    SharedPreferences.getInstance().then((value) =>
+        setState(() {
           prefs = value;
           drawNearestPosterLine =
-              (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ??
-                  drawNearestPosterLine) as bool;
+          (prefs.get(SharedPrefsSlugs.drawNearestPosterLine) ??
+              drawNearestPosterLine) as bool;
           placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
               placeMarkerByHand) as bool;
           showAreasOnMap = (prefs.get(SharedPrefsSlugs.showAreasOnMap) ??
@@ -148,17 +150,23 @@ class PosterMapViewState extends State<PosterMapView> {
         ],
         options: MapSettings.getMapOptions(
             zoom,
-            (centerOnLocationUpdate) => setState(() {
+                (centerOnLocationUpdate) =>
+                setState(() {
                   _centerOnLocationUpdate = centerOnLocationUpdate;
                 }),
-            widget.currentPosition),
+            widget.currentPosition, () {
+          if (radialMenuKey.currentState != null) {
+            print("Clossse");
+            radialMenuKey.currentState!.close();
+          }
+        }),
         layers: [
           _getPolyLineLayerOptions(),
           PolygonLayerOptions(
             polygons: polygons,
           ),
           MapSettings.getMarkerClusterLayerOptions(
-              (marker) => _onMarkerTap(marker), markers.keys.toList()),
+                  (marker) => _onMarkerTap(marker), markers.keys.toList()),
         ],
       ),
       Positioned(
@@ -190,6 +198,7 @@ class PosterMapViewState extends State<PosterMapView> {
             });
           })),
       Positioned(left: 20, bottom: 20, child: _getLimitFab()),
+      Positioned(right: 20, bottom: 20, child: _getAddPosterFab()),
       if (showHangingLimit)
         Positioned(
             left: 10,
@@ -218,7 +227,7 @@ class PosterMapViewState extends State<PosterMapView> {
   _getLimitFab() {
     bool limitReached = false;
     for (ContainsAreaLimit containsAreaLimit
-        in widget.containsAreaLimits.areas) {
+    in widget.containsAreaLimits.areas) {
       if (containsAreaLimit.hanging >= containsAreaLimit.maxPoster) {
         limitReached = true;
         break;
@@ -227,7 +236,9 @@ class PosterMapViewState extends State<PosterMapView> {
     return FloatingActionButton(
         heroTag: "Hanging-Limit-Toggle-FAB",
         backgroundColor:
-            limitReached ? Colors.red : Theme.of(context).primaryColor,
+        limitReached ? Colors.red : Theme
+            .of(context)
+            .primaryColor,
         onPressed: () {
           setState(() {
             this.showHangingLimit = !this.showHangingLimit;
@@ -241,26 +252,26 @@ class PosterMapViewState extends State<PosterMapView> {
   _getLimitDataTable() {
     return (Card(
         child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: DataTable(horizontalMargin: 10, columnSpacing: 10, columns: [
-        DataColumn(label: Text(AppLocalizations.of(context)!.name)),
-        DataColumn(label: Text(AppLocalizations.of(context)!.max)),
-        DataColumn(label: Text(AppLocalizations.of(context)!.hanging))
-      ], rows: [
-        for (ContainsAreaLimit limit in widget.containsAreaLimits.areas)
-          DataRow(cells: [
-            DataCell(Text(limit.name)),
-            DataCell(Text(limit.maxPoster.toString(),
-                style: limit.hanging >= limit.maxPoster
-                    ? TextStyle(color: Colors.red)
-                    : TextStyle())),
-            DataCell(Text(limit.hanging.toString(),
-                style: limit.hanging >= limit.maxPoster
-                    ? TextStyle(color: Colors.red)
-                    : TextStyle()))
-          ])
-      ]),
-    )));
+          padding: const EdgeInsets.all(8.0),
+          child: DataTable(horizontalMargin: 10, columnSpacing: 10, columns: [
+            DataColumn(label: Text(AppLocalizations.of(context)!.name)),
+            DataColumn(label: Text(AppLocalizations.of(context)!.max)),
+            DataColumn(label: Text(AppLocalizations.of(context)!.hanging))
+          ], rows: [
+            for (ContainsAreaLimit limit in widget.containsAreaLimits.areas)
+              DataRow(cells: [
+                DataCell(Text(limit.name)),
+                DataCell(Text(limit.maxPoster.toString(),
+                    style: limit.hanging >= limit.maxPoster
+                        ? TextStyle(color: Colors.red)
+                        : TextStyle())),
+                DataCell(Text(limit.hanging.toString(),
+                    style: limit.hanging >= limit.maxPoster
+                        ? TextStyle(color: Colors.red)
+                        : TextStyle()))
+              ])
+          ]),
+        )));
   }
 
   _addPosterMarker() {
@@ -297,11 +308,12 @@ class PosterMapViewState extends State<PosterMapView> {
           height: 50,
           rotate: true,
           point: posterModel.location,
-          builder: (ctx) => Icon(
-            Icons.location_pin,
-            size: 50,
-            color: markerColor,
-          ),
+          builder: (ctx) =>
+              Icon(
+                Icons.location_pin,
+                size: 50,
+                color: markerColor,
+              ),
         );
         markers[marker] = posterModel;
       }
@@ -318,7 +330,7 @@ class PosterMapViewState extends State<PosterMapView> {
         PosterModel? nearest;
         for (PosterModel posterModel in widget.posterInDistance.posterModels) {
           if (Distance()
-                  .distance(widget.currentPosition, posterModel.location) <
+              .distance(widget.currentPosition, posterModel.location) <
               shortestDistance) {
             nearest = posterModel;
           }
@@ -350,7 +362,8 @@ class PosterMapViewState extends State<PosterMapView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => UpdatePoster(
+            builder: (context) =>
+                UpdatePoster(
                   campaignTags: widget.campaignTags,
                   selectedPoster: markers[marker]!,
                   posterTagsLists: widget.posterTagsLists,
@@ -372,65 +385,57 @@ class PosterMapViewState extends State<PosterMapView> {
                 )));
   }
 
-  getAddPosterFab() {
-    return SpeedDialMenuButton(
-      isShowSpeedDial: isShowSpeedDial,
-      floatingActionButtonWidgetChildren: [
-        // for (PosterModel posterModel in lastPosterModels)
-          FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddPoster(
-                          apiToken: widget.apiToken,
-                          campaignTags: widget.campaignTags,
-                          posterTagsLists: widget.posterTagsLists,
-                          location: widget.currentPosition,
-                          centerLocation: mapController.center,
-                          onAddPoster: (poster) {
-                            setState(() {
-                              if (lastPosterModels.length >= 4) {
-                                lastPosterModels.remove(lastPosterModels.first);
-                              }
-                              lastPosterModels.add(poster);
-                              widget.posterInDistance.posterModels.add(poster);
-                              refresh();
-                            });
-                          },
-                        )),
-              );
-            },
-            shape: CircleBorder(),
-            child: Text("Butto"),
-          )
-      ],
-      isMainFABMini: true,
-      mainMenuFloatingActionButton: MainMenuFloatingActionButton(
-          heroTag: "Add-Poster-FAB",
-          child: Icon(Icons.add, color: Colors.white),
-          tooltip: AppLocalizations.of(context)!.addPoster,
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () {
-            setState(() {
-              isShowSpeedDial = true;
-            });
-            if (lastPosterModels.length <= 0) {
-              // _addPoster();
-            } else {
-              if (!isShowSpeedDial)
+  _getAddPosterFab() {
+    return RadialMenu(
+      key: radialMenuKey,
+      length: lastPosterModels.length,
+      onStartAddPosterIndex: (int) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (context) =>
+            AddPoster(
+              apiToken: widget.apiToken,
+              campaignTags: widget.campaignTags,
+              posterTagsLists: widget.posterTagsLists,
+              location: widget.currentPosition,
+              centerLocation: mapController.center,
+              onAddPoster: (poster) {
                 setState(() {
-                  isShowSpeedDial = true;
+                  if (lastPosterModels.length >= 4) {
+                    lastPosterModels.remove(lastPosterModels.first);
+                  }
+                  lastPosterModels.add(poster);
+                  widget.posterInDistance.posterModels.add(poster);
+                  refresh();
                 });
-              else
-                setState(() {
-                  isShowSpeedDial = false;
-                  // _addPoster();
-                });
-            }
-          },
-          closeMenuChild: Icon(Icons.add, color: Colors.white)),
-      isSpeedDialFABsMini: true,
+              },
+            )));
+      },
+      onStartAddPoster: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AddPoster(
+                    apiToken: widget.apiToken,
+                    campaignTags: widget.campaignTags,
+                    posterTagsLists: widget.posterTagsLists,
+                    location: widget.currentPosition,
+                    centerLocation: mapController.center,
+                    onAddPoster: (poster) {
+                      setState(() {
+                        if (lastPosterModels.length >= 4) {
+                          lastPosterModels.remove(lastPosterModels.first);
+                        }
+                        lastPosterModels.add(poster);
+                        widget.posterInDistance.posterModels.add(poster);
+                        refresh();
+                      });
+                    },
+                  )),
+        );
+      },
     );
   }
 
@@ -438,7 +443,8 @@ class PosterMapViewState extends State<PosterMapView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AddPoster(
+            builder: (context) =>
+                AddPoster(
                   apiToken: widget.apiToken,
                   campaignTags: widget.campaignTags,
                   posterTagsLists: widget.posterTagsLists,
@@ -459,7 +465,9 @@ class PosterMapViewState extends State<PosterMapView> {
         heroTag: "Search-FAB",
         child: Icon(Icons.search, color: Colors.white),
         tooltip: AppLocalizations.of(context)!.addPoster,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme
+            .of(context)
+            .primaryColor,
         onPressed: () async {
           searching = true;
           _centerOnLocationUpdate = CenterOnLocationUpdate.never;

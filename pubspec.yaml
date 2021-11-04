@@ -80,8 +80,6 @@ dev_dependencies:
   pull_to_refresh: ^2.0.0
   # Design
   flutter_launcher_icons: ^0.9.0 #NS
-  # Poster
-  flutter_arc_speed_dial: ^2.0.0
 
 # App Icons
 flutter_icons:
