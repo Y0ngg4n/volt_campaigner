@@ -25,8 +25,18 @@
 
   <title>volt_campaigner</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="loader.css">
 </head>
 <body>
+  <div id="loading">
+    <div class="lds-ripple">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
@@ -37,6 +47,8 @@
       if (scriptLoaded) {
         return;
       }
+      var loading = document.getElementById("loading");
+      loading.remove();
       scriptLoaded = true;
       var scriptTag = document.createElement('script');
       scriptTag.src = 'main.dart.js';
@@ -47,6 +59,7 @@
     if ('serviceWorker' in navigator) {
       // Service workers are supported. Use them.
       window.addEventListener('load', function () {
+
         // Wait for registration to finish before dropping the <script> tag.
         // Otherwise, the browser will load the script multiple times,
         // potentially different versions.

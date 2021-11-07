@@ -84,7 +84,7 @@ class PosterMapViewState extends State<PosterMapView> {
   Map<Polyline, List<LatLng>> polylines = {};
   late CenterOnLocationUpdate _centerOnLocationUpdate;
   late StreamController<double> _userPositionStreamController;
-  late StreamSubscription<Position> _currentPositionStreamSubscription;
+  StreamSubscription<Position>? _currentPositionStreamSubscription;
   late SharedPreferences prefs;
   bool drawNearestPosterLine = false;
   bool showAreasOnMap = true;
@@ -104,7 +104,20 @@ class PosterMapViewState extends State<PosterMapView> {
   @override
   void dispose() {
     super.dispose();
-    _currentPositionStreamSubscription.cancel();
+    if (_currentPositionStreamSubscription != null)
+      _currentPositionStreamSubscription!.cancel();
+  }
+
+  _initPositionStream() {
+    if (_currentPositionStreamSubscription != null) return;
+    _currentPositionStreamSubscription =
+        Geolocator.getPositionStream().listen((position) {
+      setState(() {
+        if (!searching)
+          widget
+              .onLocationUpdate(LatLng(position.latitude, position.longitude));
+      });
+    });
   }
 
   @override
@@ -127,15 +140,7 @@ class PosterMapViewState extends State<PosterMapView> {
     });
     _centerOnLocationUpdate = CenterOnLocationUpdate.always;
     _userPositionStreamController = StreamController<double>();
-
-    _currentPositionStreamSubscription =
-        Geolocator.getPositionStream().listen((position) {
-      setState(() {
-        if (!searching)
-          widget
-              .onLocationUpdate(LatLng(position.latitude, position.longitude));
-      });
-    });
+    _initPositionStream();
     SharedPreferences.getInstance().then((value) => setState(() {
           prefs = value;
           drawNearestPosterLine =
@@ -153,6 +158,7 @@ class PosterMapViewState extends State<PosterMapView> {
 
   @override
   Widget build(BuildContext context) {
+    _initPositionStream();
     return Stack(children: [
       FlutterMap(
         mapController: mapController,
@@ -160,7 +166,8 @@ class PosterMapViewState extends State<PosterMapView> {
           MapSettings.getTileLayerWidget(),
           LocationMarkerLayerWidget(
             plugin: LocationMarkerPlugin(
-              centerCurrentLocationStream: _userPositionStreamController.stream,
+              centerCurrentLocationStream:
+                  _userPositionStreamController!.stream,
               centerOnLocationUpdate: _centerOnLocationUpdate,
             ),
           ),
@@ -200,7 +207,7 @@ class PosterMapViewState extends State<PosterMapView> {
           child: MapSettings.getZoomPlusButton(context, zoom, (zoom) {
             setState(() {
               this.zoom = zoom;
-              mapController.move(widget.currentPosition, zoom);
+              mapController.move(mapController.center, zoom);
             });
           })),
       Positioned(
@@ -209,7 +216,7 @@ class PosterMapViewState extends State<PosterMapView> {
           child: MapSettings.getZoomMinusButton(context, zoom, (zoom) {
             setState(() {
               this.zoom = zoom;
-              mapController.move(widget.currentPosition, zoom);
+              mapController.move(mapController.center, zoom);
             });
           })),
       Positioned(left: 20, bottom: 20, child: _getLimitFab()),
@@ -233,11 +240,11 @@ class PosterMapViewState extends State<PosterMapView> {
           children: [_getSearchFab()]),
       if (placeMarkerByHand)
         Positioned(
-            top: 0,
+            top: 40,
             left: 0,
             right: 0,
-            bottom: 40,
-            child: Icon(Icons.location_pin, size: 50))
+            bottom: 0,
+            child: Icon(Icons.location_pin, size: 50, color: Colors.deepPurple))
     ]);
   }
 

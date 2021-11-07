@@ -4,6 +4,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:volt_campaigner/auth/login.dart';
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -12,18 +13,20 @@ Future main() async {
 }
 
 class VoltCampaignerApp extends StatelessWidget {
-  var lightThemeData = new ThemeData(
-    brightness: Brightness.light,
-    primaryColor: Color.fromARGB(255, 80, 35, 121),
-  );
-
-  var darkThemeData = ThemeData(
-    brightness: Brightness.dark,
-    primaryColor: Color.fromARGB(255, 80, 35, 121),
-  );
 
   @override
   Widget build(BuildContext context) {
+    var lightThemeData = new ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Color.fromARGB(255, 80, 35, 121),
+        fontFamily: GoogleFonts.openSans().fontFamily
+    );
+
+    var darkThemeData = ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Color.fromARGB(255, 80, 35, 121),
+        fontFamily: GoogleFonts.openSans().fontFamily);
+
     return FeatureDiscovery(
       child: MaterialApp(
           title: "Volt Campaigner",
