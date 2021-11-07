@@ -34,7 +34,7 @@ class AddPoster extends StatefulWidget {
     required this.centerLocation,
     required this.campaignTags,
     required this.apiToken,
-    this.preset
+    this.preset,
     required this.placeMarkerByHand
   }) : super(key: key);
 
@@ -59,11 +59,6 @@ class _AddPosterState extends State<AddPoster> {
       selectedEnvironmentTypes = widget.preset!.posterTagsLists.posterEnvironment;
       selectedOtherTypes = widget.preset!.posterTagsLists.posterOther;
     }
-    SharedPreferences.getInstance().then((value) => setState(() {
-          prefs = value;
-          placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
-              placeMarkerByHand) as bool;
-        }));
   }
 
   @override
