@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -19,6 +20,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/utils/messenger.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 
 class Flyer extends StatefulWidget {
   LatLng currentPosition;
@@ -74,6 +76,15 @@ class FlyerState extends State<Flyer> {
   @override
   void initState() {
     super.initState();
+    SchedulerBinding.instance!.addPostFrameCallback((Duration duration) {
+      FeatureDiscovery.discoverFeatures(
+        context,
+        const <String>{
+          // Feature ids for every feature that you want to showcase in order.
+          'record-flyer',
+        },
+      );
+    });
     _centerOnLocationUpdate = CenterOnLocationUpdate.always;
     _userPositionStreamController = StreamController<double>();
     ownUUID = uuid.v4();
@@ -102,7 +113,8 @@ class FlyerState extends State<Flyer> {
               (centerOnLocationUpdate) => setState(() {
                     _centerOnLocationUpdate = centerOnLocationUpdate;
                   }),
-              widget.currentPosition, null),
+              widget.currentPosition,
+              null),
           layers: [
             PolylineLayerOptions(
               polylines: polylines,
@@ -206,21 +218,29 @@ class FlyerState extends State<Flyer> {
   }
 
   _getStartStopButton() {
-    return AbsorbPointer(
-      absorbing: freeze,
-      child: FloatingActionButton(
-        heroTag: "Start-Stop-FAB",
-        child:
-            Icon(running ? Icons.pause : Icons.play_arrow, color: Colors.white),
-        backgroundColor: Theme.of(context).primaryColor,
-        onPressed: () {
-          setState(() {
-            running ? _stopListener() : _startListener();
-            running = !running;
-          });
-        },
-      ),
-    );
+    return DescribedFeatureOverlay(
+        featureId: 'record-flyer',
+        tapTarget: Icon(Icons.play_arrow),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        targetColor: Theme.of(context).primaryColor,
+        title: Text(AppLocalizations.of(context)!.featureRecordFlyer),
+        description:
+            Text(AppLocalizations.of(context)!.featureRecordFlyerDescription),
+        child: AbsorbPointer(
+          absorbing: freeze,
+          child: FloatingActionButton(
+            heroTag: "Start-Stop-FAB",
+            child: Icon(running ? Icons.pause : Icons.play_arrow,
+                color: Colors.white),
+            backgroundColor: Theme.of(context).primaryColor,
+            onPressed: () {
+              setState(() {
+                running ? _stopListener() : _startListener();
+                running = !running;
+              });
+            },
+          ),
+        ));
   }
 
   _getSearchFab() {

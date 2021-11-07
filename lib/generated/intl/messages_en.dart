@@ -48,6 +48,26 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Could not Login into API"),
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export as "),
+        "featureAddPosterDescription": MessageLookupByLibrary.simpleMessage(
+            "Here you can add posters and give them tags so we can identify what posters are hanging where"),
+        "featureLimit": MessageLookupByLibrary.simpleMessage("Allowed Posters"),
+        "featureLimitDescription": MessageLookupByLibrary.simpleMessage(
+            "Here you see the limits of your current area, how many posters are hanging and how many are allowed"),
+        "featureRecordFlyer":
+            MessageLookupByLibrary.simpleMessage("Record route"),
+        "featureRecordFlyerDescription": MessageLookupByLibrary.simpleMessage(
+            "Here you can record your route while flyering. Through this others can see where you allready have been. Attention! Dont lock your Display, because then we dont have access to the GPS data! We recommend to darken your display and take a powerbank with you."),
+        "featureRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
+        "featureRefreshDescription": MessageLookupByLibrary.simpleMessage(
+            "Here can you refresh the data and teleport to your location on the map"),
+        "featureSearchDescription": MessageLookupByLibrary.simpleMessage(
+            "Here you can search for a city or a location"),
+        "featureZoomIn": MessageLookupByLibrary.simpleMessage("Zoom in"),
+        "featureZoomInDescription": MessageLookupByLibrary.simpleMessage(
+            "Here you can make the map bigger"),
+        "featureZoomOut": MessageLookupByLibrary.simpleMessage("Zoom out"),
+        "featureZoomOutDescription": MessageLookupByLibrary.simpleMessage(
+            "Here you can make the map smaller"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "flyerCustomDate": MessageLookupByLibrary.simpleMessage("Custom Date"),
         "flyerLoadAll": MessageLookupByLibrary.simpleMessage("Load all Flyers"),
