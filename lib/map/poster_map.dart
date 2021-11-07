@@ -437,7 +437,7 @@ class PosterMapViewState extends State<PosterMapView> {
                     widget.posterInDistance.posterModels.add(poster);
                     lastPosterModels.add(poster);
                     refresh();
-                  },
+                  }, placeMarkerByHand: placeMarkerByHand,
                 )));
   }
 
