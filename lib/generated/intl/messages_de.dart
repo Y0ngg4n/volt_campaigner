@@ -52,6 +52,29 @@ class MessageLookup extends MessageLookupByLibrary {
             "Konnte mich nicht mit der API verbinden"),
         "export": MessageLookupByLibrary.simpleMessage("Export"),
         "exportAs": MessageLookupByLibrary.simpleMessage("Export als "),
+        "featureAddPosterDescription": MessageLookupByLibrary.simpleMessage(
+            "Hier kannst du ein neues Plakat hinzufügen und verschiedene Tags vergeben um es uns einfacher zu machen zu wissen wo welches Plakat hängt."),
+        "featureLimit":
+            MessageLookupByLibrary.simpleMessage("Erlaubte Plakate"),
+        "featureLimitDescription": MessageLookupByLibrary.simpleMessage(
+            "Hier siehst du in welchem Bereich du dich gerade befindest, wieviele Plakate hier schon hängen und wieviele du maximal aufhängen darfst."),
+        "featureRecordFlyer":
+            MessageLookupByLibrary.simpleMessage("Route aufnehmen"),
+        "featureRecordFlyerDescription": MessageLookupByLibrary.simpleMessage(
+            "Hier kannst du eine Route aufnehmen während du gerade am Flyer verteilen bist. Dadurch können andere sehen wo du schon warst. Achtung! Hierfür darfst du deinen Bildschirm nicht ausschalten, da wir sonst keinen Zugriff auf deine GPS Daten haben! Wir empfehlen dir den Bildschirm abzudunkeln und eine Powerbank mitzunehmen."),
+        "featureRefresh": MessageLookupByLibrary.simpleMessage("Aktualisieren"),
+        "featureRefreshDescription": MessageLookupByLibrary.simpleMessage(
+            "Hier kannst du die Daten neu laden und du springst zu deinem aktuellen Standort zurück"),
+        "featureSearchDescription": MessageLookupByLibrary.simpleMessage(
+            "Hier kannst du nach einer Stadt oder nach einem Standort suchen."),
+        "featureZoomIn":
+            MessageLookupByLibrary.simpleMessage("Karte vergrößern"),
+        "featureZoomInDescription": MessageLookupByLibrary.simpleMessage(
+            "Hier kannst du den angezeigten Bereich auf der Karte vergrößern"),
+        "featureZoomOut":
+            MessageLookupByLibrary.simpleMessage("Karte verkleinern"),
+        "featureZoomOutDescription": MessageLookupByLibrary.simpleMessage(
+            "Hier kannst du den angezeigten Bereich auf der Karte verkleinern"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "flyerCustomDate":
             MessageLookupByLibrary.simpleMessage("Bentzerdefiniertes Datum"),
@@ -113,7 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "scanCodeVolunteer": MessageLookupByLibrary.simpleMessage(
             "Scanne einen Einladungs-Code von einem Mietglied"),
         "scanThisVolunteer": MessageLookupByLibrary.simpleMessage(
-            "Lass diesen QR Code von einem Volunteer scannen, sodass dieser sich auch für 24 Stunden anmelden kann."),
+            "Lass diesen QR Code von einem Volunteer scannen, sodass dieser sich auch anmelden kann."),
         "search": MessageLookupByLibrary.simpleMessage("Suche"),
         "settings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "showAreasOnMap": MessageLookupByLibrary.simpleMessage(

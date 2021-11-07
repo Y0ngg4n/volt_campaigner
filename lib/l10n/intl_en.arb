@@ -67,5 +67,17 @@
   "sureDelete": "Bist du dir sicher, dass du das löschen möchtest?",
   "max": "Maximum",
   "hanging": "Hanging",
-  "colorMarker": "Color marker by"
+  "colorMarker": "Color marker by",
+  "featureAddPosterDescription": "Here you can add posters and give them tags so we can identify what posters are hanging where",
+  "featureSearchDescription": "Here you can search for a city or a location",
+  "featureLimit": "Allowed Posters",
+  "featureLimitDescription": "Here you see the limits of your current area, how many posters are hanging and how many are allowed",
+  "featureRefresh": "Refresh",
+  "featureRefreshDescription": "Here can you refresh the data and teleport to your location on the map",
+  "featureZoomIn": "Zoom in",
+  "featureZoomInDescription": "Here you can make the map bigger",
+  "featureZoomOut": "Zoom out",
+  "featureZoomOutDescription": "Here you can make the map smaller",
+  "featureRecordFlyer": "Record route",
+  "featureRecordFlyerDescription": "Here you can record your route while flyering. Through this others can see where you allready have been. Attention! Dont lock your Display, because then we dont have access to the GPS data! We recommend to darken your display and take a powerbank with you."
 }

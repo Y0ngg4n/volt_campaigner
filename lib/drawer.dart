@@ -20,6 +20,7 @@ import 'package:volt_campaigner/utils/api/model/flyer.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/api/poster_tags.dart';
+import 'package:volt_campaigner/utils/tag_utils.dart';
 import 'package:volt_campaigner/volunteer/volunteer.dart';
 
 import 'areas/add_area_map.dart';
@@ -106,18 +107,22 @@ class _DrawerViewState extends State<DrawerView> {
 
   @override
   Widget build(BuildContext context) {
-    if (drawerSelection == DrawerSelection.POSTER ||
-        drawerSelection == DrawerSelection.FLYER) {
+    if (drawerSelection == DrawerSelection.POSTER
+    || drawerSelection == DrawerSelection.FLYER) {
       return Scaffold(
           key: scaffoldKey,
           body: SafeArea(child: _getBody()),
           drawer: _getDrawer());
     } else {
       return Scaffold(
-          key: scaffoldKey,
-          appBar: new AppBar(title: Text(_getAppbarString()), actions: [EasyDynamicThemeBtn()],),
-          body: SafeArea(child: _getBody()),
-          drawer: _getDrawer());
+        key: scaffoldKey,
+        appBar: new AppBar(
+          title: Text(_getAppbarString()),
+          actions: [EasyDynamicThemeBtn()],
+        ),
+        body: SafeArea(child: _getBody()),
+        drawer: _getDrawer(),
+      );
     }
   }
 
@@ -269,17 +274,17 @@ class _DrawerViewState extends State<DrawerView> {
       }
       setState(() {
         for (PosterModel posterModel in posterInDistance.posterModels) {
-          _fillMissingTagDetails(posterModel.posterTagsLists.posterType,
+          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterType,
               posterTagsLists.posterType);
-          _fillMissingTagDetails(posterModel.posterTagsLists.posterCampaign,
+          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterCampaign,
               posterTagsLists.posterCampaign);
-          _fillMissingTagDetails(posterModel.posterTagsLists.posterEnvironment,
+          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterEnvironment,
               posterTagsLists.posterEnvironment);
-          _fillMissingTagDetails(posterModel.posterTagsLists.posterTargetGroups,
+          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterTargetGroups,
               posterTagsLists.posterTargetGroups);
-          _fillMissingTagDetails(posterModel.posterTagsLists.posterOther,
+          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterOther,
               posterTagsLists.posterOther);
-          _fillMissingTagDetails(posterModel.posterTagsLists.posterMotive,
+          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterMotive,
               posterTagsLists.posterMotive);
         }
       });
@@ -485,17 +490,5 @@ class _DrawerViewState extends State<DrawerView> {
           environment.posterTags,
           other.posterTags);
     });
-  }
-
-  _fillMissingTagDetails(
-      List<PosterTag> posterTagList, List<PosterTag> tagList) {
-    for (PosterTag tag in tagList) {
-      for (PosterTag posterTag in posterTagList) {
-        if (tag.id == posterTag.id) {
-          if (posterTag.name.isEmpty) print("Filled missing");
-          posterTagList[posterTagList.indexOf(posterTag)] = tag;
-        }
-      }
-    }
   }
 }

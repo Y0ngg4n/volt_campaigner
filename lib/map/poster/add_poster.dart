@@ -23,6 +23,7 @@ class AddPoster extends StatefulWidget {
   LatLng centerLocation;
   PosterTags campaignTags;
   String apiToken;
+  PosterModel? preset;
   bool placeMarkerByHand;
 
   AddPoster({
@@ -33,6 +34,7 @@ class AddPoster extends StatefulWidget {
     required this.centerLocation,
     required this.campaignTags,
     required this.apiToken,
+    this.preset
     required this.placeMarkerByHand
   }) : super(key: key);
 
@@ -50,6 +52,18 @@ class _AddPosterState extends State<AddPoster> {
   @override
   void initState() {
     super.initState();
+    if(widget.preset != null){
+      selectedPosterTypes = widget.preset!.posterTagsLists.posterType;
+      selectedMotiveTypes = widget.preset!.posterTagsLists.posterMotive;
+      selectedTargetGroupTypes = widget.preset!.posterTagsLists.posterTargetGroups;
+      selectedEnvironmentTypes = widget.preset!.posterTagsLists.posterEnvironment;
+      selectedOtherTypes = widget.preset!.posterTagsLists.posterOther;
+    }
+    SharedPreferences.getInstance().then((value) => setState(() {
+          prefs = value;
+          placeMarkerByHand = (prefs.get(SharedPrefsSlugs.placeMarkerByHand) ??
+              placeMarkerByHand) as bool;
+        }));
   }
 
   @override

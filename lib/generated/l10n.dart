@@ -739,6 +739,126 @@ class S {
       args: [],
     );
   }
+
+  /// `Here you can add posters and give them tags so we can identify what posters are hanging where`
+  String get featureAddPosterDescription {
+    return Intl.message(
+      'Here you can add posters and give them tags so we can identify what posters are hanging where',
+      name: 'featureAddPosterDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here you can search for a city or a location`
+  String get featureSearchDescription {
+    return Intl.message(
+      'Here you can search for a city or a location',
+      name: 'featureSearchDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allowed Posters`
+  String get featureLimit {
+    return Intl.message(
+      'Allowed Posters',
+      name: 'featureLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here you see the limits of your current area, how many posters are hanging and how many are allowed`
+  String get featureLimitDescription {
+    return Intl.message(
+      'Here you see the limits of your current area, how many posters are hanging and how many are allowed',
+      name: 'featureLimitDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Refresh`
+  String get featureRefresh {
+    return Intl.message(
+      'Refresh',
+      name: 'featureRefresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here can you refresh the data and teleport to your location on the map`
+  String get featureRefreshDescription {
+    return Intl.message(
+      'Here can you refresh the data and teleport to your location on the map',
+      name: 'featureRefreshDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom in`
+  String get featureZoomIn {
+    return Intl.message(
+      'Zoom in',
+      name: 'featureZoomIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here you can make the map bigger`
+  String get featureZoomInDescription {
+    return Intl.message(
+      'Here you can make the map bigger',
+      name: 'featureZoomInDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom out`
+  String get featureZoomOut {
+    return Intl.message(
+      'Zoom out',
+      name: 'featureZoomOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here you can make the map smaller`
+  String get featureZoomOutDescription {
+    return Intl.message(
+      'Here you can make the map smaller',
+      name: 'featureZoomOutDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Record route`
+  String get featureRecordFlyer {
+    return Intl.message(
+      'Record route',
+      name: 'featureRecordFlyer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here you can record your route while flyering. Through this others can see where you allready have been. Attention! Dont lock your Display, because then we dont have access to the GPS data! We recommend to darken your display and take a powerbank with you.`
+  String get featureRecordFlyerDescription {
+    return Intl.message(
+      'Here you can record your route while flyering. Through this others can see where you allready have been. Attention! Dont lock your Display, because then we dont have access to the GPS data! We recommend to darken your display and take a powerbank with you.',
+      name: 'featureRecordFlyerDescription',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
