@@ -167,7 +167,7 @@ class PosterMapViewState extends State<PosterMapView> {
           LocationMarkerLayerWidget(
             plugin: LocationMarkerPlugin(
               centerCurrentLocationStream:
-                  _userPositionStreamController!.stream,
+                  _userPositionStreamController.stream,
               centerOnLocationUpdate: _centerOnLocationUpdate,
             ),
           ),

@@ -96,7 +96,7 @@ class _DrawerViewState extends State<DrawerView> {
           Future.delayed(Duration(seconds: 5), () => _refresh());
         }));
     refreshTimer =
-        Timer.periodic(Duration(seconds: 30), (Timer t) => _refresh());
+        Timer.periodic(Duration(seconds: 60), (Timer t) => _refresh());
   }
 
   @override
