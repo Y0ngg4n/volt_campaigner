@@ -95,6 +95,8 @@ class PosterMapViewState extends State<PosterMapView> {
   bool showHangingLimit = false;
   List<Areas> maxCountLimitedAreas = [];
   TagType colorTagType = TagType.TYPE;
+  TagTypeWithNone filterTagType = TagTypeWithNone.TYPE;
+  int filterTagIndex = 0;
   double zoom = 17;
   List<Polygon> polygons = [];
   Set<PosterModel> lastPosterModels = Set.identity();
@@ -152,6 +154,9 @@ class PosterMapViewState extends State<PosterMapView> {
               showAreasOnMap) as bool;
           colorTagType = TagType
               .values[(prefs.getInt(SharedPrefsSlugs.colorTagType) ?? 0)];
+          filterTagType = TagTypeWithNone
+              .values[(prefs.getInt(SharedPrefsSlugs.filterTagType) ?? 0)];
+          filterTagIndex = (prefs.getInt(SharedPrefsSlugs.filterTagIndex) ?? 0);
         }));
     widget.onRefresh();
   }
@@ -166,8 +171,7 @@ class PosterMapViewState extends State<PosterMapView> {
           MapSettings.getTileLayerWidget(),
           LocationMarkerLayerWidget(
             plugin: LocationMarkerPlugin(
-              centerCurrentLocationStream:
-                  _userPositionStreamController.stream,
+              centerCurrentLocationStream: _userPositionStreamController.stream,
               centerOnLocationUpdate: _centerOnLocationUpdate,
             ),
           ),
@@ -310,6 +314,18 @@ class PosterMapViewState extends State<PosterMapView> {
       for (PosterModel posterModel in widget.posterInDistance.posterModels) {
         Color markerColor =
             ScreenUtils.getColorTagType(posterModel, colorTagType);
+        if (filterTagType != TagTypeWithNone.NONE) {
+          List<PosterTag> tagList = TagUtils.getCorrespondingFilterPosterTags(
+              filterTagType, widget.posterTagsLists);
+          bool contains = false;
+          for (PosterTag posterTag in tagList) {
+            if (posterTag.id == tagList[filterTagIndex].id) {
+              contains = true;
+              break;
+            }
+          }
+          if (!contains) continue;
+        }
 
         Marker marker = Marker(
           anchorPos: AnchorPos.exactly(Anchor(25, 5)),
@@ -437,7 +453,8 @@ class PosterMapViewState extends State<PosterMapView> {
                     widget.posterInDistance.posterModels.add(poster);
                     lastPosterModels.add(poster);
                     refresh();
-                  }, placeMarkerByHand: placeMarkerByHand,
+                  },
+                  placeMarkerByHand: placeMarkerByHand,
                 )));
   }
 

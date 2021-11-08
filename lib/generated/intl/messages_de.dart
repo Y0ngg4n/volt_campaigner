@@ -75,6 +75,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Karte verkleinern"),
         "featureZoomOutDescription": MessageLookupByLibrary.simpleMessage(
             "Hier kannst du den angezeigten Bereich auf der Karte verkleinern"),
+        "filterMarker":
+            MessageLookupByLibrary.simpleMessage("Filtere Marker nach"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "flyerCustomDate":
             MessageLookupByLibrary.simpleMessage("Bentzerdefiniertes Datum"),

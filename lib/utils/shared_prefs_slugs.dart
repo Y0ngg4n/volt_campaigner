@@ -16,6 +16,8 @@ class SharedPrefsSlugs {
   static const drawNearestPosterLine = "draw-nearest-poster-line";
   static const placeMarkerByHand = "place-marker-by-hand";
   static const colorTagType = "color-tag-type";
+  static const filterTagType = "filter-tag-type";
+  static const filterTagIndex = "filter-tag-index";
   static const campaignTags = "campaign-tags";
   static const googleAccessTokenData = "google-access-token-data";
   static const googleAccessTokenType = "google-access-token-type";

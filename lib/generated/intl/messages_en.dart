@@ -68,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "featureZoomOut": MessageLookupByLibrary.simpleMessage("Zoom out"),
         "featureZoomOutDescription": MessageLookupByLibrary.simpleMessage(
             "Here you can make the map smaller"),
+        "filterMarker": MessageLookupByLibrary.simpleMessage("Fiter marker by"),
         "flyer": MessageLookupByLibrary.simpleMessage("Flyer"),
         "flyerCustomDate": MessageLookupByLibrary.simpleMessage("Custom Date"),
         "flyerLoadAll": MessageLookupByLibrary.simpleMessage("Load all Flyers"),

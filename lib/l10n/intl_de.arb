@@ -68,6 +68,7 @@
   "max": "Maximum",
   "hanging": "Hängend",
   "colorMarker": "Marker einfärben nach",
+  "filterMarker": "Filtere Marker nach",
   "featureAddPosterDescription": "Hier kannst du ein neues Plakat hinzufügen und verschiedene Tags vergeben um es uns einfacher zu machen zu wissen wo welches Plakat hängt.",
   "featureSearchDescription": "Hier kannst du nach einer Stadt oder nach einem Standort suchen.",
   "featureLimit": "Erlaubte Plakate",

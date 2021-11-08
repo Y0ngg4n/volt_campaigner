@@ -68,6 +68,7 @@
   "max": "Maximum",
   "hanging": "Hanging",
   "colorMarker": "Color marker by",
+  "filterMarker": "Fiter marker by",
   "featureAddPosterDescription": "Here you can add posters and give them tags so we can identify what posters are hanging where",
   "featureSearchDescription": "Here you can search for a city or a location",
   "featureLimit": "Allowed Posters",

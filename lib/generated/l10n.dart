@@ -740,6 +740,16 @@ class S {
     );
   }
 
+  /// `Fiter marker by`
+  String get filterMarker {
+    return Intl.message(
+      'Fiter marker by',
+      name: 'filterMarker',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Here you can add posters and give them tags so we can identify what posters are hanging where`
   String get featureAddPosterDescription {
     return Intl.message(
