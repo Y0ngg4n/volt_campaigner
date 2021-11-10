@@ -9,10 +9,20 @@ import 'package:volt_campaigner/utils/shared_prefs_slugs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:date_time_picker/date_time_picker.dart'
     show DateTimePicker, DateTimePickerType;
+import 'package:volt_campaigner/utils/tag_utils.dart';
 
 typedef OnCampaignSelected = Function(PosterTags);
 
 enum TagType { TYPE, MOTIVE, TARGET_GROUP, ENVIRONMENT, OTHER, CAMPAIGN }
+enum TagTypeWithNone {
+  NONE,
+  TYPE,
+  MOTIVE,
+  TARGET_GROUP,
+  ENVIRONMENT,
+  OTHER,
+  CAMPAIGN
+}
 
 class SettingsView extends StatefulWidget {
   PosterTagsLists posterTagsLists;
@@ -48,6 +58,8 @@ class _SettingsViewState extends State<SettingsView> {
   bool drawNearestPosterLine = false;
   bool placeMarkerByHand = false;
   TagType colorTagType = TagType.TYPE;
+  TagTypeWithNone filterTagType = TagTypeWithNone.NONE;
+  int filterTagIndex = 0;
   late SharedPreferences prefs;
   late List<bool> hangingSelected = [true, false, false];
 
@@ -102,6 +114,9 @@ class _SettingsViewState extends State<SettingsView> {
                   placeMarkerByHand);
           colorTagType = TagType
               .values[(prefs.getInt(SharedPrefsSlugs.colorTagType) ?? 0)];
+          filterTagType = TagTypeWithNone
+              .values[(prefs.getInt(SharedPrefsSlugs.filterTagType) ?? 0)];
+          filterTagIndex = (prefs.getInt(SharedPrefsSlugs.filterTagType) ?? 0);
 
           PosterTags campaigns = PosterTags.fromJsonAll(jsonDecode(
               (prefs.getString(SharedPrefsSlugs.campaignTags) ?? "[]")));
@@ -144,6 +159,17 @@ class _SettingsViewState extends State<SettingsView> {
       AppLocalizations.of(context)!.posterOther,
       AppLocalizations.of(context)!.posterCampaign
     ];
+
+    List<String> colorMarkerTextWithNone = [
+      "",
+      AppLocalizations.of(context)!.posterType,
+      AppLocalizations.of(context)!.posterMotive,
+      AppLocalizations.of(context)!.posterTargetGroups,
+      AppLocalizations.of(context)!.posterEnvironment,
+      AppLocalizations.of(context)!.posterOther,
+      AppLocalizations.of(context)!.posterCampaign
+    ];
+
     return Column(
       children: [
         Padding(
@@ -230,7 +256,6 @@ class _SettingsViewState extends State<SettingsView> {
             ],
           ),
         ),
-        Divider(),
         Visibility(
             visible: !posterLoadAll,
             child: Column(
@@ -281,7 +306,6 @@ class _SettingsViewState extends State<SettingsView> {
                 )
               ],
             )),
-        Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -320,13 +344,14 @@ class _SettingsViewState extends State<SettingsView> {
                 value: colorMarkerText[colorTagType.index],
                 onChanged: (value) {
                   setState(() {
-                    this.colorTagType =
-                    TagType.values[colorMarkerText.indexOf(value.toString())];
-                    prefs.setInt(SharedPrefsSlugs.colorTagType, colorTagType.index);
+                    this.colorTagType = TagType
+                        .values[colorMarkerText.indexOf(value.toString())];
+                    prefs.setInt(
+                        SharedPrefsSlugs.colorTagType, colorTagType.index);
                   });
                 },
-                items:
-                colorMarkerText.map<DropdownMenuItem<String>>((String value) {
+                items: colorMarkerText
+                    .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -334,7 +359,54 @@ class _SettingsViewState extends State<SettingsView> {
                 }).toList()),
           ],
         ),
-        Divider(),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(AppLocalizations.of(context)!.filterMarker),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                      value: colorMarkerTextWithNone[filterTagType.index],
+                      onChanged: (value) {
+                        setState(() {
+                          this.filterTagType = TagTypeWithNone.values[
+                              colorMarkerTextWithNone
+                                  .indexOf(value.toString())];
+                          prefs.setInt(SharedPrefsSlugs.filterTagType,
+                              filterTagType.index);
+                          this.filterTagIndex = 0;
+                          prefs.setInt(
+                              SharedPrefsSlugs.filterTagIndex, filterTagIndex);
+                        });
+                      },
+                      items: colorMarkerTextWithNone
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                      value: filterTagIndex,
+                      onChanged: (value) {
+                        setState(() {
+                          filterTagIndex = value as int;
+                          prefs.setInt(
+                              SharedPrefsSlugs.filterTagIndex, filterTagIndex);
+                        });
+                      },
+                      items: _getPosterTagsDropdownItems()),
+                )
+              ],
+            ),
+          ],
+        ),
         Text(AppLocalizations.of(context)!.posterCampaign,
             style: TextStyle(fontSize: secondardFontSize)),
         PosterSettings.getTags(
@@ -346,6 +418,20 @@ class _SettingsViewState extends State<SettingsView> {
         Divider(),
       ],
     );
+  }
+
+  _getPosterTagsDropdownItems() {
+    List<DropdownMenuItem<int>> items = [];
+    List<PosterTag> tags = TagUtils.getCorrespondingFilterPosterTags(
+        filterTagType, widget.posterTagsLists);
+    for (int i = 0; i < tags.length; i++) {
+      print(i);
+      items.add(DropdownMenuItem<int>(
+        value: i,
+        child: Text(tags[i].name),
+      ));
+    }
+    return items;
   }
 
   _getFlyerSettings() {
@@ -447,6 +533,7 @@ class _SettingsViewState extends State<SettingsView> {
               )
             ],
           )),
+      Divider()
     ]);
   }
 

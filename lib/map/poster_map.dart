@@ -26,12 +26,15 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/drawer.dart';
+import 'package:volt_campaigner/map/placemark/add_placemark.dart';
+import 'package:volt_campaigner/map/placemark/update_placemarker.dart';
 import 'package:volt_campaigner/map/poster/add_poster.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/update_poster.dart';
 import 'package:volt_campaigner/map/map_search.dart';
 import 'package:volt_campaigner/settings/settings.dart';
 import 'package:volt_campaigner/utils/api/model/area.dart';
+import 'package:volt_campaigner/utils/api/model/placemark.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:volt_campaigner/utils/api/nomatim.dart';
@@ -48,6 +51,7 @@ typedef OnRefresh = Function();
 
 class PosterMapView extends StatefulWidget {
   PosterModels posterInDistance;
+  PlacemarkModels placemarkModels;
   LatLng currentPosition;
   OnLocationUpdate onLocationUpdate;
   OnRefresh onRefresh;
@@ -62,6 +66,7 @@ class PosterMapView extends StatefulWidget {
   PosterMapView(
       {Key? key,
       required this.posterInDistance,
+      required this.placemarkModels,
       required this.currentPosition,
       required this.onLocationUpdate,
       required this.onRefresh,
@@ -80,7 +85,8 @@ class PosterMapView extends StatefulWidget {
 
 class PosterMapViewState extends State<PosterMapView> {
   // Set default location to Volt Headquarter
-  Map<Marker, PosterModel> markers = {};
+  Map<Marker, PosterModel> posterMarker = {};
+  Map<Marker, PlacemarkModel> placemarkMarker = {};
   Map<Polyline, List<LatLng>> polylines = {};
   late CenterOnLocationUpdate _centerOnLocationUpdate;
   late StreamController<double> _userPositionStreamController;
@@ -95,6 +101,8 @@ class PosterMapViewState extends State<PosterMapView> {
   bool showHangingLimit = false;
   List<Areas> maxCountLimitedAreas = [];
   TagType colorTagType = TagType.TYPE;
+  TagTypeWithNone filterTagType = TagTypeWithNone.TYPE;
+  int filterTagIndex = 0;
   double zoom = 17;
   List<Polygon> polygons = [];
   Set<PosterModel> lastPosterModels = Set.identity();
@@ -152,6 +160,9 @@ class PosterMapViewState extends State<PosterMapView> {
               showAreasOnMap) as bool;
           colorTagType = TagType
               .values[(prefs.getInt(SharedPrefsSlugs.colorTagType) ?? 0)];
+          filterTagType = TagTypeWithNone
+              .values[(prefs.getInt(SharedPrefsSlugs.filterTagType) ?? 0)];
+          filterTagIndex = (prefs.getInt(SharedPrefsSlugs.filterTagIndex) ?? 0);
         }));
     widget.onRefresh();
   }
@@ -166,8 +177,7 @@ class PosterMapViewState extends State<PosterMapView> {
           MapSettings.getTileLayerWidget(),
           LocationMarkerLayerWidget(
             plugin: LocationMarkerPlugin(
-              centerCurrentLocationStream:
-                  _userPositionStreamController!.stream,
+              centerCurrentLocationStream: _userPositionStreamController.stream,
               centerOnLocationUpdate: _centerOnLocationUpdate,
             ),
           ),
@@ -188,7 +198,7 @@ class PosterMapViewState extends State<PosterMapView> {
             polygons: polygons,
           ),
           MapSettings.getMarkerClusterLayerOptions(
-              (marker) => _onMarkerTap(marker), markers.keys.toList()),
+              (marker) => _onMarkerTap(marker), _getJoinedMarker()),
         ],
       ),
       Positioned(
@@ -220,6 +230,7 @@ class PosterMapViewState extends State<PosterMapView> {
             });
           })),
       Positioned(left: 20, bottom: 20, child: _getLimitFab()),
+      Positioned(left: 90, bottom: 20, child: _getAddPlacemark()),
       Positioned(right: 0, bottom: 0, child: _getAddPosterFab()),
       Positioned(right: 50, bottom: 50, child: _getFakeRadialMenu()),
       if (showHangingLimit)
@@ -306,10 +317,22 @@ class PosterMapViewState extends State<PosterMapView> {
 
   _addPosterMarker() {
     setState(() {
-      markers.clear();
+      posterMarker.clear();
       for (PosterModel posterModel in widget.posterInDistance.posterModels) {
         Color markerColor =
             ScreenUtils.getColorTagType(posterModel, colorTagType);
+        if (filterTagType != TagTypeWithNone.NONE) {
+          List<PosterTag> tagList = TagUtils.getCorrespondingFilterPosterTags(
+              filterTagType, widget.posterTagsLists);
+          bool contains = false;
+          for (PosterTag posterTag in tagList) {
+            if (posterTag.id == tagList[filterTagIndex].id) {
+              contains = true;
+              break;
+            }
+          }
+          if (!contains) continue;
+        }
 
         Marker marker = Marker(
           anchorPos: AnchorPos.exactly(Anchor(25, 5)),
@@ -325,9 +348,48 @@ class PosterMapViewState extends State<PosterMapView> {
             color: markerColor,
           ),
         );
-        markers[marker] = posterModel;
+        posterMarker[marker] = posterModel;
       }
     });
+  }
+
+  _addPlacemarkMarker() {
+    setState(() {
+      placemarkMarker.clear();
+      for (PlacemarkModel placemarkModel
+          in widget.placemarkModels.placemarkModels) {
+        IconData icon;
+        switch (placemarkModel.type) {
+          case 0:
+            icon = Icons.home;
+            break;
+          case 1:
+            icon = Icons.center_focus_strong;
+            break;
+          default:
+            icon = Icons.home;
+        }
+        Marker marker = Marker(
+          width: 50,
+          height: 50,
+          rotate: true,
+          point: placemarkModel.location,
+          builder: (ctx) => Icon(
+            Icons.home,
+            size: 50,
+            color: Colors.red,
+          ),
+        );
+        placemarkMarker[marker] = placemarkModel;
+      }
+    });
+  }
+
+  _getJoinedMarker() {
+    List<Marker> marker = [];
+    marker.addAll(posterMarker.keys);
+    marker.addAll(placemarkMarker.keys);
+    return marker;
   }
 
   _addPolylines() {
@@ -369,29 +431,47 @@ class PosterMapViewState extends State<PosterMapView> {
   }
 
   _onMarkerTap(Marker marker) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UpdatePoster(
-                  campaignTags: widget.campaignTags,
-                  selectedPoster: markers[marker]!,
-                  posterTagsLists: widget.posterTagsLists,
-                  location: widget.currentPosition,
-                  onUnhangPoster: (poster) {
-                    setState(() {
-                      markers.remove(marker);
-                    });
-                    refresh();
-                  },
-                  apiToken: widget.apiToken,
-                  onUpdatePoster: (poster) {
-                    setState(() {
-                      markers[marker] = poster;
-                    });
-                    refresh();
-                  },
-                  selectedMarker: marker,
-                )));
+    if (posterMarker.containsKey(marker)) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => UpdatePoster(
+                    campaignTags: widget.campaignTags,
+                    selectedPoster: posterMarker[marker]!,
+                    posterTagsLists: widget.posterTagsLists,
+                    location: widget.currentPosition,
+                    onUnhangPoster: (poster) {
+                      setState(() {
+                        posterMarker.remove(marker);
+                      });
+                      refresh();
+                    },
+                    apiToken: widget.apiToken,
+                    onUpdatePoster: (poster) {
+                      setState(() {
+                        posterMarker[marker] = poster;
+                      });
+                      refresh();
+                    },
+                    selectedMarker: marker,
+                  )));
+    } else if (placemarkMarker.containsKey(marker)) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => UpdatePlacemarker(
+                    location: widget.currentPosition,
+                    apiToken: widget.apiToken,
+                    onUpdatePlacemark: (placemark) {
+                      setState(() {
+                        placemarkMarker[marker] = placemark;
+                      });
+                      refresh();
+                    },
+                    selectedMarker: marker,
+                    selectedPlacemark: placemarkMarker[marker]!,
+                  )));
+    }
   }
 
   _getAddPosterFab() {
@@ -437,7 +517,8 @@ class PosterMapViewState extends State<PosterMapView> {
                     widget.posterInDistance.posterModels.add(poster);
                     lastPosterModels.add(poster);
                     refresh();
-                  }, placeMarkerByHand: placeMarkerByHand,
+                  },
+                  placeMarkerByHand: placeMarkerByHand,
                 )));
   }
 
@@ -482,6 +563,7 @@ class PosterMapViewState extends State<PosterMapView> {
   refresh() {
     Future.microtask(() {
       _addPosterMarker();
+      _addPlacemarkMarker();
       _addPolylines();
       _addPolygons();
       setState(() {
@@ -523,15 +605,22 @@ class PosterMapViewState extends State<PosterMapView> {
     );
   }
 
-  _getFakeDrawerFab() {
-    return DescribedFeatureOverlay(
-        featureId: 'drawer_menu',
-        tapTarget: Icon(Icons.menu),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        targetColor: Theme.of(context).primaryColor,
-        title: Text(AppLocalizations.of(context)!.addPoster),
-        description:
-            Text(AppLocalizations.of(context)!.featureAddPosterDescription),
-        child: Container());
+  _getAddPlacemark() {
+    return FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        heroTag: "add-placemark",
+        child: Icon(Icons.home, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddPlacemark(
+                        apiToken: widget.apiToken,
+                        location: widget.currentPosition,
+                        centerLocation: mapController.center,
+                        onAddPlacemark: (placemark) {},
+                        placeMarkerByHand: placeMarkerByHand,
+                      )));
+        });
   }
 }

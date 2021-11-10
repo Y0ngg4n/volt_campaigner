@@ -740,6 +740,16 @@ class S {
     );
   }
 
+  /// `Fiter marker by`
+  String get filterMarker {
+    return Intl.message(
+      'Fiter marker by',
+      name: 'filterMarker',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Here you can add posters and give them tags so we can identify what posters are hanging where`
   String get featureAddPosterDescription {
     return Intl.message(
@@ -855,6 +865,86 @@ class S {
     return Intl.message(
       'Here you can record your route while flyering. Through this others can see where you allready have been. Attention! Dont lock your Display, because then we dont have access to the GPS data! We recommend to darken your display and take a powerbank with you.',
       name: 'featureRecordFlyerDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Placemark`
+  String get addPlacemark {
+    return Intl.message(
+      'Add Placemark',
+      name: 'addPlacemark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Placemark`
+  String get updatePlacemark {
+    return Intl.message(
+      'Update Placemark',
+      name: 'updatePlacemark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Placemark`
+  String get deletePlacemark {
+    return Intl.message(
+      'Delete Placemark',
+      name: 'deletePlacemark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type`
+  String get placemarkType {
+    return Intl.message(
+      'Type',
+      name: 'placemarkType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titel`
+  String get title {
+    return Intl.message(
+      'Titel',
+      name: 'title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get description {
+    return Intl.message(
+      'Description',
+      name: 'description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Storage`
+  String get placemarkTypeStorage {
+    return Intl.message(
+      'Storage',
+      name: 'placemarkTypeStorage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Meetpoint`
+  String get placemarkTypeMeetpoint {
+    return Intl.message(
+      'Meetpoint',
+      name: 'placemarkTypeMeetpoint',
       desc: '',
       args: [],
     );
