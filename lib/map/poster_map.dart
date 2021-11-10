@@ -27,6 +27,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volt_campaigner/drawer.dart';
 import 'package:volt_campaigner/map/placemark/add_placemark.dart';
+import 'package:volt_campaigner/map/placemark/update_placemarker.dart';
 import 'package:volt_campaigner/map/poster/add_poster.dart';
 import 'package:volt_campaigner/map/poster/poster_tags.dart';
 import 'package:volt_campaigner/map/poster/update_poster.dart';
@@ -372,7 +373,7 @@ class PosterMapViewState extends State<PosterMapView> {
           width: 50,
           height: 50,
           rotate: true,
-          point: LatLng(0,0),
+          point: placemarkModel.location,
           builder: (ctx) => Icon(
             Icons.home,
             size: 50,
@@ -385,10 +386,10 @@ class PosterMapViewState extends State<PosterMapView> {
   }
 
   _getJoinedMarker() {
-      List<Marker> marker = [];
-      marker.addAll(posterMarker.keys);
-      marker.addAll(placemarkMarker.keys);
-      return marker;
+    List<Marker> marker = [];
+    marker.addAll(posterMarker.keys);
+    marker.addAll(placemarkMarker.keys);
+    return marker;
   }
 
   _addPolylines() {
@@ -430,29 +431,47 @@ class PosterMapViewState extends State<PosterMapView> {
   }
 
   _onMarkerTap(Marker marker) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UpdatePoster(
-                  campaignTags: widget.campaignTags,
-                  selectedPoster: posterMarker[marker]!,
-                  posterTagsLists: widget.posterTagsLists,
-                  location: widget.currentPosition,
-                  onUnhangPoster: (poster) {
-                    setState(() {
-                      posterMarker.remove(marker);
-                    });
-                    refresh();
-                  },
-                  apiToken: widget.apiToken,
-                  onUpdatePoster: (poster) {
-                    setState(() {
-                      posterMarker[marker] = poster;
-                    });
-                    refresh();
-                  },
-                  selectedMarker: marker,
-                )));
+    if (posterMarker.containsKey(marker)) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => UpdatePoster(
+                    campaignTags: widget.campaignTags,
+                    selectedPoster: posterMarker[marker]!,
+                    posterTagsLists: widget.posterTagsLists,
+                    location: widget.currentPosition,
+                    onUnhangPoster: (poster) {
+                      setState(() {
+                        posterMarker.remove(marker);
+                      });
+                      refresh();
+                    },
+                    apiToken: widget.apiToken,
+                    onUpdatePoster: (poster) {
+                      setState(() {
+                        posterMarker[marker] = poster;
+                      });
+                      refresh();
+                    },
+                    selectedMarker: marker,
+                  )));
+    } else if (placemarkMarker.containsKey(marker)) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => UpdatePlacemarker(
+                    location: widget.currentPosition,
+                    apiToken: widget.apiToken,
+                    onUpdatePlacemark: (placemark) {
+                      setState(() {
+                        placemarkMarker[marker] = placemark;
+                      });
+                      refresh();
+                    },
+                    selectedMarker: marker,
+                    selectedPlacemark: placemarkMarker[marker]!,
+                  )));
+    }
   }
 
   _getAddPosterFab() {

@@ -12,12 +12,9 @@ import '../http_utils.dart';
 import 'model/placemark.dart';
 
 class PlacemarkApiUtils {
-  static Future<PlacemarkModel?> getPlacemarksInDistance(
+  static Future<PlacemarkModels?> getPlacemarksInDistance(
       LatLng location,
       double distance,
-      String title,
-      String description,
-      String last_update,
       String apiToken) async {
     try {
       http.Response response = await http.get(
@@ -27,11 +24,10 @@ class PlacemarkApiUtils {
             "latitude": location.latitude.toString(),
             "longitude": location.longitude.toString(),
             "distance": distance.toString(),
-            "last_update": last_update,
             "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {
-        return PlacemarkModel.fromJson(jsonDecode(response.body));
+        return PlacemarkModels.fromJson(jsonDecode(response.body));
       } else {
         print("Could not refresh Placemarks");
         // Messenger.showError(context, AppLocalizations.of(context)!.errorAddPoster);

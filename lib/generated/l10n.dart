@@ -880,6 +880,26 @@ class S {
     );
   }
 
+  /// `Update Placemark`
+  String get updatePlacemark {
+    return Intl.message(
+      'Update Placemark',
+      name: 'updatePlacemark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Placemark`
+  String get deletePlacemark {
+    return Intl.message(
+      'Delete Placemark',
+      name: 'deletePlacemark',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Type`
   String get placemarkType {
     return Intl.message(

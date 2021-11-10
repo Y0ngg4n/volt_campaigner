@@ -85,6 +85,7 @@ class MapSettings {
   static getMarkerClusterLayerOptions(OnMarkerTap onMarkerTap,
       List<Marker> markers) {
     return MarkerClusterLayerOptions(
+      disableClusteringAtZoom: 15,
       onMarkerTap: (marker) => onMarkerTap(marker),
       size: Size(40, 40),
       fitBoundsOptions: FitBoundsOptions(

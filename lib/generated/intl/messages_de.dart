@@ -39,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copySuccess":
             MessageLookupByLibrary.simpleMessage("Text wurde kopiert"),
         "date": MessageLookupByLibrary.simpleMessage("Datum"),
+        "deletePlacemark": MessageLookupByLibrary.simpleMessage("Ort löschen"),
         "description": MessageLookupByLibrary.simpleMessage("Beschreibung"),
         "drawNearestPosterLine": MessageLookupByLibrary.simpleMessage(
             "Zeichne Linie zum nächsten Plakat"),
@@ -156,6 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Bist du dir sicher, dass du das löschen möchtest?"),
         "time": MessageLookupByLibrary.simpleMessage("Zeit"),
         "title": MessageLookupByLibrary.simpleMessage("Titel"),
+        "updatePlacemark": MessageLookupByLibrary.simpleMessage("Ort ändern"),
         "volunteer": MessageLookupByLibrary.simpleMessage("Volunteer einladen"),
         "volunteerCopy": MessageLookupByLibrary.simpleMessage(
             "Oder kopiere das und sende es an den Volunteer"),

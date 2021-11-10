@@ -318,9 +318,20 @@ class _DrawerViewState extends State<DrawerView> {
   }
 
   _refreshPlacemarks() async {
-    PlacemarkModels placemarkModels =
-        await PlacemarkApiUtils.getAllPlacemarks(widget.apiToken) ??
-            PlacemarkModels.empty();
+    double radius =
+    (prefs.get(SharedPrefsSlugs.posterRadius) ?? 100.0) as double;
+    bool loadAll = (prefs.get(SharedPrefsSlugs.posterLoadAll) ?? false) as bool;
+    PlacemarkModels placemarkModels;
+    if (loadAll) {
+      placemarkModels = await PlacemarkApiUtils.getAllPlacemarks(widget.apiToken) ??
+          PlacemarkModels.empty();
+    } else {
+      placemarkModels = await PlacemarkApiUtils.getPlacemarksInDistance(
+          currentPosition,
+          radius,
+          widget.apiToken) ??
+          PlacemarkModels.empty();
+    }
     setState(() {
       this.placemarkModels = placemarkModels;
     });

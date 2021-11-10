@@ -35,6 +35,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "colorMarker": MessageLookupByLibrary.simpleMessage("Color marker by"),
         "copySuccess": MessageLookupByLibrary.simpleMessage("Copied text"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
+        "deletePlacemark":
+            MessageLookupByLibrary.simpleMessage("Delete Placemark"),
         "description": MessageLookupByLibrary.simpleMessage("Description"),
         "drawNearestPosterLine":
             MessageLookupByLibrary.simpleMessage("Draw line to nearest Poster"),
@@ -143,6 +145,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Bist du dir sicher, dass du das löschen möchtest?"),
         "time": MessageLookupByLibrary.simpleMessage("Time"),
         "title": MessageLookupByLibrary.simpleMessage("Titel"),
+        "updatePlacemark":
+            MessageLookupByLibrary.simpleMessage("Update Placemark"),
         "volunteer": MessageLookupByLibrary.simpleMessage("Volunteer invite"),
         "volunteerCopy": MessageLookupByLibrary.simpleMessage(
             "Or copy this and send it to the Volunteer"),
