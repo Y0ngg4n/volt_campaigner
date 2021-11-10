@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:volt_campaigner/areas/areas_manager.dart';
 import 'package:volt_campaigner/auth/login.dart';
 import 'package:volt_campaigner/export/export.dart';
-import 'package:volt_campaigner/flyer/flyer.dart';
+import 'package:volt_campaigner/map/areas/areas_manager.dart';
+import 'package:volt_campaigner/map/flyer/flyer.dart';
 import 'package:volt_campaigner/map/poster_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,13 +17,14 @@ import 'package:volt_campaigner/utils/api/area.dart';
 import 'package:volt_campaigner/utils/api/flyer.dart';
 import 'package:volt_campaigner/utils/api/model/area.dart';
 import 'package:volt_campaigner/utils/api/model/flyer.dart';
+import 'package:volt_campaigner/utils/api/model/placemark.dart';
 import 'package:volt_campaigner/utils/api/model/poster.dart';
+import 'package:volt_campaigner/utils/api/placemark.dart';
 import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/api/poster_tags.dart';
 import 'package:volt_campaigner/utils/tag_utils.dart';
 import 'package:volt_campaigner/volunteer/volunteer.dart';
 
-import 'areas/add_area_map.dart';
 import 'map/poster/add_poster.dart';
 import 'map/poster/poster_tags.dart';
 import 'package:latlong2/latlong.dart';
@@ -64,6 +65,7 @@ class _DrawerViewState extends State<DrawerView> {
   DrawerSelection drawerSelection = DrawerSelection.POSTER;
 
   PosterModels posterInDistance = new PosterModels([]);
+  PlacemarkModels placemarkModels = new PlacemarkModels([]);
   Timer? refreshTimer;
 
   LatLng currentPosition = LatLng(0, 0);
@@ -107,8 +109,8 @@ class _DrawerViewState extends State<DrawerView> {
 
   @override
   Widget build(BuildContext context) {
-    if (drawerSelection == DrawerSelection.POSTER
-    || drawerSelection == DrawerSelection.FLYER) {
+    if (drawerSelection == DrawerSelection.POSTER ||
+        drawerSelection == DrawerSelection.FLYER) {
       return Scaffold(
           key: scaffoldKey,
           body: SafeArea(child: _getBody()),
@@ -268,6 +270,7 @@ class _DrawerViewState extends State<DrawerView> {
         posterMapWidgetState.currentState!.setRefreshIcon(true);
       await _refreshPosterTags();
       await _refreshPoster();
+      await _refreshPlacemarks();
       if (posterMapWidgetState.currentState != null) {
         posterMapWidgetState.currentState!.refresh();
         posterMapWidgetState.currentState!.setRefreshIcon(false);
@@ -276,15 +279,20 @@ class _DrawerViewState extends State<DrawerView> {
         for (PosterModel posterModel in posterInDistance.posterModels) {
           TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterType,
               posterTagsLists.posterType);
-          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterCampaign,
+          TagUtils.fillMissingTagDetails(
+              posterModel.posterTagsLists.posterCampaign,
               posterTagsLists.posterCampaign);
-          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterEnvironment,
+          TagUtils.fillMissingTagDetails(
+              posterModel.posterTagsLists.posterEnvironment,
               posterTagsLists.posterEnvironment);
-          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterTargetGroups,
+          TagUtils.fillMissingTagDetails(
+              posterModel.posterTagsLists.posterTargetGroups,
               posterTagsLists.posterTargetGroups);
-          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterOther,
+          TagUtils.fillMissingTagDetails(
+              posterModel.posterTagsLists.posterOther,
               posterTagsLists.posterOther);
-          TagUtils.fillMissingTagDetails(posterModel.posterTagsLists.posterMotive,
+          TagUtils.fillMissingTagDetails(
+              posterModel.posterTagsLists.posterMotive,
               posterTagsLists.posterMotive);
         }
       });
@@ -307,6 +315,15 @@ class _DrawerViewState extends State<DrawerView> {
       setState(() {
         this.areasContainsLimits = areasLimits;
       });
+  }
+
+  _refreshPlacemarks() async {
+    PlacemarkModels placemarkModels =
+        await PlacemarkApiUtils.getAllPlacemarks(widget.apiToken) ??
+            PlacemarkModels.empty();
+    setState(() {
+      this.placemarkModels = placemarkModels;
+    });
   }
 
   _refreshPoster() async {
@@ -439,6 +456,7 @@ class _DrawerViewState extends State<DrawerView> {
         if (scaffoldKey.currentState != null)
           scaffoldKey.currentState!.openDrawer();
       },
+      placemarkModels: placemarkModels,
     );
   }
 

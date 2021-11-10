@@ -80,5 +80,11 @@
   "featureZoomOut": "Karte verkleinern",
   "featureZoomOutDescription": "Hier kannst du den angezeigten Bereich auf der Karte verkleinern",
   "featureRecordFlyer": "Route aufnehmen",
-  "featureRecordFlyerDescription": "Hier kannst du eine Route aufnehmen während du gerade am Flyer verteilen bist. Dadurch können andere sehen wo du schon warst. Achtung! Hierfür darfst du deinen Bildschirm nicht ausschalten, da wir sonst keinen Zugriff auf deine GPS Daten haben! Wir empfehlen dir den Bildschirm abzudunkeln und eine Powerbank mitzunehmen."
+  "featureRecordFlyerDescription": "Hier kannst du eine Route aufnehmen während du gerade am Flyer verteilen bist. Dadurch können andere sehen wo du schon warst. Achtung! Hierfür darfst du deinen Bildschirm nicht ausschalten, da wir sonst keinen Zugriff auf deine GPS Daten haben! Wir empfehlen dir den Bildschirm abzudunkeln und eine Powerbank mitzunehmen.",
+  "addPlacemark": "Ort hinzufügen",
+  "placemarkType": "Typ",
+  "title": "Titel",
+  "description": "Beschreibung",
+  "placemarkTypeStorage": "Lager",
+  "placemarkTypeMeetpoint": "Treffpunkt"
 }

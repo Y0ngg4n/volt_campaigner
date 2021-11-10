@@ -869,6 +869,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Add Placemark`
+  String get addPlacemark {
+    return Intl.message(
+      'Add Placemark',
+      name: 'addPlacemark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type`
+  String get placemarkType {
+    return Intl.message(
+      'Type',
+      name: 'placemarkType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titel`
+  String get title {
+    return Intl.message(
+      'Titel',
+      name: 'title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get description {
+    return Intl.message(
+      'Description',
+      name: 'description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Storage`
+  String get placemarkTypeStorage {
+    return Intl.message(
+      'Storage',
+      name: 'placemarkTypeStorage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Meetpoint`
+  String get placemarkTypeMeetpoint {
+    return Intl.message(
+      'Meetpoint',
+      name: 'placemarkTypeMeetpoint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

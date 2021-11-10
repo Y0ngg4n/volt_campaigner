@@ -80,5 +80,11 @@
   "featureZoomOut": "Zoom out",
   "featureZoomOutDescription": "Here you can make the map smaller",
   "featureRecordFlyer": "Record route",
-  "featureRecordFlyerDescription": "Here you can record your route while flyering. Through this others can see where you allready have been. Attention! Dont lock your Display, because then we dont have access to the GPS data! We recommend to darken your display and take a powerbank with you."
+  "featureRecordFlyerDescription": "Here you can record your route while flyering. Through this others can see where you allready have been. Attention! Dont lock your Display, because then we dont have access to the GPS data! We recommend to darken your display and take a powerbank with you.",
+  "addPlacemark": "Add Placemark",
+  "placemarkType": "Type",
+  "title": "Titel",
+  "description": "Description",
+  "placemarkTypeStorage": "Storage",
+  "placemarkTypeMeetpoint": "Meetpoint"
 }

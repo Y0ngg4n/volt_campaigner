@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:volt_campaigner/areas/add_area.dart';
+import 'package:volt_campaigner/map/areas/add_area.dart';
 import 'package:volt_campaigner/utils/api/area.dart';
 import 'package:volt_campaigner/utils/api/model/area.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

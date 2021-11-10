@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "addArea": MessageLookupByLibrary.simpleMessage("Gegend speichern"),
+        "addPlacemark": MessageLookupByLibrary.simpleMessage("Ort hinzufügen"),
         "addPoster": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Volt Campaigner"),
         "areas": MessageLookupByLibrary.simpleMessage("Gegenden"),
@@ -38,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copySuccess":
             MessageLookupByLibrary.simpleMessage("Text wurde kopiert"),
         "date": MessageLookupByLibrary.simpleMessage("Datum"),
+        "description": MessageLookupByLibrary.simpleMessage("Beschreibung"),
         "drawNearestPosterLine": MessageLookupByLibrary.simpleMessage(
             "Zeichne Linie zum nächsten Plakat"),
         "errorAddArea": MessageLookupByLibrary.simpleMessage(
@@ -108,6 +110,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Text wurde eingefügt"),
         "placeMarkerByHand": MessageLookupByLibrary.simpleMessage(
             "Ermöglicht es Plakate von Hand zu plazieren"),
+        "placemarkType": MessageLookupByLibrary.simpleMessage("Typ"),
+        "placemarkTypeMeetpoint":
+            MessageLookupByLibrary.simpleMessage("Treffpunkt"),
+        "placemarkTypeStorage": MessageLookupByLibrary.simpleMessage("Lager"),
         "poster": MessageLookupByLibrary.simpleMessage("Plakate"),
         "posterAdd": MessageLookupByLibrary.simpleMessage("Plakat hinzufügen"),
         "posterCampaign": MessageLookupByLibrary.simpleMessage("Kampagne"),
@@ -149,6 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sureDelete": MessageLookupByLibrary.simpleMessage(
             "Bist du dir sicher, dass du das löschen möchtest?"),
         "time": MessageLookupByLibrary.simpleMessage("Zeit"),
+        "title": MessageLookupByLibrary.simpleMessage("Titel"),
         "volunteer": MessageLookupByLibrary.simpleMessage("Volunteer einladen"),
         "volunteerCopy": MessageLookupByLibrary.simpleMessage(
             "Oder kopiere das und sende es an den Volunteer"),
