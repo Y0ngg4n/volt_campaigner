@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:volt_campaigner/utils/api/model/poster.dart';
+import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/http_utils.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -76,6 +77,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context)!.posterEdit)),
       body: Stack(
@@ -139,8 +141,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                     child: OutlinedButton(
-                        onPressed: () =>
-                            _updatePoster(widget.selectedPoster, 2),
+                        onPressed: () => _onUpdatePoster(2),
                         child: Row(
                           children: [
                             Icon(Icons.repeat),
@@ -158,8 +159,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                     child: OutlinedButton(
-                        onPressed: () =>
-                            _updatePoster(widget.selectedPoster, 1),
+                        onPressed: () => _onUpdatePoster(1),
                         child: Row(
                           children: [
                             Icon(Icons.delete),
@@ -177,8 +177,7 @@ class _UpdatePosterState extends State<UpdatePoster> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                     child: ElevatedButton(
-                        onPressed: () =>
-                            _updatePoster(widget.selectedPoster, 0),
+                        onPressed: () => _onUpdatePoster(0),
                         child: Row(
                           children: [
                             Icon(Icons.save),
@@ -202,56 +201,28 @@ class _UpdatePosterState extends State<UpdatePoster> {
     );
   }
 
+  _onUpdatePoster(int hanging){
+    PosterTagsLists posterTagsLists = PosterTagsLists(
+        widget.campaignTags.posterTags,
+        selectedPosterTypes,
+        selectedMotiveTypes,
+        selectedTargetGroupTypes,
+        selectedEnvironmentTypes,
+        selectedOtherTypes);
+    PosterApiUtils.updatePoster(
+        widget.apiToken,
+        widget.selectedPoster,
+        posterTagsLists,
+        0,
+        context,
+            (poster) => widget.onUnhangPoster(poster),
+            (poster) => widget.onUpdatePoster(poster));
+  }
+
   _onTagSelected(
       PosterTag p, List<PosterTag> selectedPosterTags, bool multiple) {
     setState(() {
       PosterSettings.onTagSelected(p, selectedPosterTags, multiple);
     });
-  }
-
-  _updatePoster(PosterModel posterModel, int hanging) async {
-    try {
-      http.Response response = await http.post(
-          Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/update"),
-          headers: HttpUtils.createHeader(widget.apiToken),
-          body: jsonEncode({
-            'id': posterModel.id,
-            'campaign':
-                widget.campaignTags.posterTags.map((e) => e.id).toList(),
-            'hanging': hanging,
-            'latitude': widget.location.latitude,
-            'longitude': widget.location.longitude,
-            'poster_type': selectedPosterTypes.map((e) => e.id).toList(),
-            'motive': selectedMotiveTypes.map((e) => e.id).toList(),
-            'target_groups': selectedTargetGroupTypes.map((e) => e.id).toList(),
-            'environment': selectedEnvironmentTypes.map((e) => e.id).toList(),
-            'other': selectedOtherTypes.map((e) => e.id).toList()
-          }));
-      if (response.statusCode == 201) {
-        switch (hanging) {
-          case 0:
-            widget.onUpdatePoster(
-                PosterModel.fromJson(jsonDecode(response.body)));
-            break;
-          case 1:
-            widget.onUnhangPoster(
-                PosterModel.fromJson(jsonDecode(response.body)));
-            break;
-          case 2:
-            widget.onUnhangPoster(
-                PosterModel.fromJson(jsonDecode(response.body)));
-            break;
-        }
-        Navigator.pop(context);
-      } else {
-        print(response.body);
-        Messenger.showError(
-            context, AppLocalizations.of(context)!.errorEditPoster);
-      }
-    } catch (e) {
-      print(e);
-      Messenger.showError(
-          context, AppLocalizations.of(context)!.errorEditPoster);
-    }
   }
 }

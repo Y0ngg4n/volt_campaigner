@@ -25,7 +25,7 @@ class GoogleLoginManagerHtlm implements GoogleLoginManager {
     BrowserOAuth2Flow flow = await createImplicitBrowserFlow(
         ClientId(webClientId, webClientSecret), scopes);
     AccessCredentials accessCredentials =
-        await flow.obtainAccessCredentialsViaUserConsent();
+        await flow.obtainAccessCredentialsViaUserConsent(hostedDomain: "volteuropa.org");
     flow.close();
     return AccessedCredentials(
         AccessedToken(

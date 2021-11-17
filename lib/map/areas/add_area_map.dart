@@ -138,7 +138,7 @@ class _AddAreaMapState extends State<AddAreaMap> {
           body: jsonEncode({
             'id': widget.id,
             'name': widget.name,
-            'max_poster': widget.maxPosterCount,
+            'maxPoster': widget.maxPosterCount,
             'points': points,
           }));
       if (response.statusCode == 201) {

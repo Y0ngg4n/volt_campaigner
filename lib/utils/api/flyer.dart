@@ -18,7 +18,7 @@ class FlyerApiUtils {
             "latitude": location.latitude.toString(),
             "longitude": location.longitude.toString(),
             "distance": distance.toString(),
-            "last_update": last_update,
+            "lastupdate": last_update,
             "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {

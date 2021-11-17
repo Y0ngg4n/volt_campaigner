@@ -586,9 +586,6 @@ class PosterMapViewState extends State<PosterMapView> {
               posterModel.posterTagsLists.posterMotive,
               widget.posterTagsLists.posterMotive);
         }
-        if (widget.currentPosition == LatLng(0, 0)) {
-          placeMarkerByHand = true;
-        }
       });
     });
   }
