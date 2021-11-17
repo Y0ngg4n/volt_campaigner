@@ -19,7 +19,7 @@ class AreaApiUtils {
             "latitude": location.latitude.toString(),
             "longitude": location.longitude.toString(),
             "distance": distance.toString(),
-            "last_update": last_update,
+            "lastUpdate": last_update,
             "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {
@@ -43,7 +43,7 @@ class AreaApiUtils {
             "accept": "application/json",
             "latitude": location.latitude.toString(),
             "longitude": location.longitude.toString(),
-            "last_update": last_update,
+            "lastUpdate": last_update,
             "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {
@@ -87,7 +87,7 @@ class AreaApiUtils {
             "accept": "application/json",
             "latitude": location.latitude.toString(),
             "longitude": location.longitude.toString(),
-            "last_update": last_update,
+            "lastUpdate": last_update,
             "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {

@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:volt_campaigner/utils/api/model/poster.dart';
+import 'package:volt_campaigner/utils/api/poster.dart';
 import 'package:volt_campaigner/utils/http_utils.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,17 +27,17 @@ class AddPoster extends StatefulWidget {
   PosterModel? preset;
   bool placeMarkerByHand;
 
-  AddPoster({
-    Key? key,
-    required this.posterTagsLists,
-    required this.location,
-    required this.onAddPoster,
-    required this.centerLocation,
-    required this.campaignTags,
-    required this.apiToken,
-    this.preset,
-    required this.placeMarkerByHand
-  }) : super(key: key);
+  AddPoster(
+      {Key? key,
+      required this.posterTagsLists,
+      required this.location,
+      required this.onAddPoster,
+      required this.centerLocation,
+      required this.campaignTags,
+      required this.apiToken,
+      this.preset,
+      required this.placeMarkerByHand})
+      : super(key: key);
 
   @override
   _AddPosterState createState() => _AddPosterState();
@@ -52,11 +53,13 @@ class _AddPosterState extends State<AddPoster> {
   @override
   void initState() {
     super.initState();
-    if(widget.preset != null){
+    if (widget.preset != null) {
       selectedPosterTypes = widget.preset!.posterTagsLists.posterType;
       selectedMotiveTypes = widget.preset!.posterTagsLists.posterMotive;
-      selectedTargetGroupTypes = widget.preset!.posterTagsLists.posterTargetGroups;
-      selectedEnvironmentTypes = widget.preset!.posterTagsLists.posterEnvironment;
+      selectedTargetGroupTypes =
+          widget.preset!.posterTagsLists.posterTargetGroups;
+      selectedEnvironmentTypes =
+          widget.preset!.posterTagsLists.posterEnvironment;
       selectedOtherTypes = widget.preset!.posterTagsLists.posterOther;
     }
   }
@@ -124,7 +127,20 @@ class _AddPosterState extends State<AddPoster> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                 child: ElevatedButton(
-                    onPressed: _addPoster,
+                    onPressed: () => PosterApiUtils.addPoster(
+                        widget.apiToken,
+                        widget.placeMarkerByHand
+                            ? widget.centerLocation
+                            : widget.location,
+                        PosterTagsLists(
+                            widget.campaignTags.posterTags,
+                            selectedPosterTypes,
+                            selectedMotiveTypes,
+                            selectedTargetGroupTypes,
+                            selectedEnvironmentTypes,
+                            selectedOtherTypes),
+                        (poster) => widget.onAddPoster(poster),
+                        context),
                     child: Row(
                       children: [
                         Icon(Icons.save),
@@ -151,39 +167,5 @@ class _AddPosterState extends State<AddPoster> {
     setState(() {
       PosterSettings.onTagSelected(p, selectedPosterTags, multiple);
     });
-  }
-
-  _addPoster() async {
-    try {
-      http.Response response = await http.post(
-          Uri.parse((dotenv.env['REST_API_URL']!) + "/poster/create"),
-          headers: HttpUtils.createHeader(widget.apiToken),
-          body: jsonEncode({
-            'latitude': widget.placeMarkerByHand
-                ? widget.centerLocation.latitude
-                : widget.location.latitude,
-            'longitude': widget.placeMarkerByHand
-                ? widget.centerLocation.longitude
-                : widget.location.longitude,
-            'campaign':
-                widget.campaignTags.posterTags.map((e) => e.id).toList(),
-            'poster_type': selectedPosterTypes.map((e) => e.id).toList(),
-            'motive': selectedMotiveTypes.map((e) => e.id).toList(),
-            'target_groups': selectedTargetGroupTypes.map((e) => e.id).toList(),
-            'environment': selectedEnvironmentTypes.map((e) => e.id).toList(),
-            'other': selectedOtherTypes.map((e) => e.id).toList()
-          }));
-      if (response.statusCode == 201) {
-        widget.onAddPoster(PosterModel.fromJson(jsonDecode(response.body)));
-        Navigator.pop(context);
-      } else {
-        Messenger.showError(
-            context, AppLocalizations.of(context)!.errorAddPoster);
-      }
-    } catch (e) {
-      print(e);
-      Messenger.showError(
-          context, AppLocalizations.of(context)!.errorAddPoster);
-    }
   }
 }

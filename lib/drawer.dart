@@ -319,17 +319,16 @@ class _DrawerViewState extends State<DrawerView> {
 
   _refreshPlacemarks() async {
     double radius =
-    (prefs.get(SharedPrefsSlugs.posterRadius) ?? 100.0) as double;
+        (prefs.get(SharedPrefsSlugs.posterRadius) ?? 100.0) as double;
     bool loadAll = (prefs.get(SharedPrefsSlugs.posterLoadAll) ?? false) as bool;
     PlacemarkModels placemarkModels;
     if (loadAll) {
-      placemarkModels = await PlacemarkApiUtils.getAllPlacemarks(widget.apiToken) ??
-          PlacemarkModels.empty();
+      placemarkModels =
+          await PlacemarkApiUtils.getAllPlacemarks(widget.apiToken) ??
+              PlacemarkModels.empty();
     } else {
       placemarkModels = await PlacemarkApiUtils.getPlacemarksInDistance(
-          currentPosition,
-          radius,
-          widget.apiToken) ??
+              currentPosition, radius, widget.apiToken) ??
           PlacemarkModels.empty();
     }
     setState(() {
@@ -350,7 +349,7 @@ class _DrawerViewState extends State<DrawerView> {
 
     if (loadAll) {
       posterModels = await PosterApiUtils.getAllPosters(
-              radius, hanging, widget.apiToken) ??
+              radius, hanging, widget.apiToken, context) ??
           PosterModels.empty();
     } else {
       if (customDateSwitch) {
@@ -359,7 +358,8 @@ class _DrawerViewState extends State<DrawerView> {
                 radius,
                 hanging,
                 customDate,
-                widget.apiToken) ??
+                widget.apiToken,
+                context) ??
             PosterModels.empty();
       } else {
         posterModels = await PosterApiUtils.getPostersInDistance(
@@ -367,7 +367,8 @@ class _DrawerViewState extends State<DrawerView> {
                 radius,
                 hanging,
                 DateTime.fromMicrosecondsSinceEpoch(0).toString(),
-                widget.apiToken) ??
+                widget.apiToken,
+                context) ??
             PosterModels.empty();
       }
     }

@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:volt_campaigner/auth/login.dart';
 import 'package:volt_campaigner/drawer.dart';
 import 'package:volt_campaigner/map/map_search.dart';
 import 'package:volt_campaigner/map/map_settings.dart';
@@ -290,6 +291,9 @@ class FlyerState extends State<Flyer> {
           body: jsonEncode({"id": ownUUID, "polyline": points}));
       if (response.statusCode == 201) {
         print("Upserted Route");
+      }else if (response.statusCode == 403) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LoginView()));
       } else {
         print("Could not add route");
         print(response.body);
