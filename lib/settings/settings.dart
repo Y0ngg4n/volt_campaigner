@@ -207,7 +207,7 @@ class _SettingsViewState extends State<SettingsView> {
               Slider(
                   min: 100,
                   value: posterRadius,
-                  max: 10000,
+                  max: 50000,
                   divisions: 100,
                   onChanged: (double value) {
                     setState(() {
@@ -466,12 +466,12 @@ class _SettingsViewState extends State<SettingsView> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(AppLocalizations.of(context)!.flyerRadius +
-                  _getRadiusPosterText()),
+                  _getRadiusFlyerText()),
             ),
             Slider(
                 min: 100,
                 value: flyerRadius,
-                max: 10000,
+                max: 50000,
                 divisions: 100,
                 onChanged: (double value) {
                   setState(() {
@@ -584,12 +584,12 @@ class _SettingsViewState extends State<SettingsView> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(AppLocalizations.of(context)!.areasRadius +
-                  _getRadiusPosterText()),
+                  _getRadiusAreasText()),
             ),
             Slider(
                 min: 100,
                 value: areasRadius,
-                max: 10000,
+                max: 50000,
                 divisions: 100,
                 onChanged: (double value) {
                   setState(() {

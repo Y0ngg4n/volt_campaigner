@@ -30,7 +30,6 @@ class PosterApiUtils {
             "authorization": AuthApiUtils.getBearerToken(apiToken)
           });
       if (response.statusCode == 200) {
-        print(response.body);
         return PosterModels.fromJson(jsonDecode(response.body));
       }else if (response.statusCode == 403) {
         Navigator.of(context).pushReplacement(
