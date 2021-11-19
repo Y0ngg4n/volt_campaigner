@@ -1,16 +1,24 @@
 # volt_campaigner
 
-A new Flutter project.
+This is a Flutter based replacement of the [Volt Campaigner App](https://gitlab.com/VoltEuropa/data-analytics/data-analytics-europe/volt-campaigner).
+It is a complete rewrite with enhanced Features.
 
-## Getting Started
+# Features
+- [x] Create Posters
+- [x] Edit Posters
+- [x] Unhang and Recycle Posters
+- [x] Create Placement Markers (like Storage and Meetpoint)
+- [x] Search a location and jump to it to see the Posters there
+- [x] Poster Tags
+- [x] Filter Posters by Status, Date, ...
+- [x] Record your Flyer Route
+- [x] Create Areas with Poster Limits
 
-This project is a starting point for a Flutter application.
+# Getting Started
+Currently it can´t be pushed into the App Stores, because it uses the public OpenStreet-Map and Nomatim servers.
+But we are looking forward to change that soon.
 
-A few resources to get you started if this is your first Flutter project:
+You can checkout the [Releases](https://github.com/Y0ngg4n/volt_campaigner/releases) to test it.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Roadmap
+Checkout the current [Development](https://github.com/Y0ngg4n/volt_campaigner/projects/2)
