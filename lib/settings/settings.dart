@@ -14,6 +14,7 @@ import 'package:volt_campaigner/utils/tag_utils.dart';
 typedef OnCampaignSelected = Function(PosterTags);
 
 enum TagType { TYPE, MOTIVE, TARGET_GROUP, ENVIRONMENT, OTHER, CAMPAIGN }
+
 enum TagTypeWithNone {
   NONE,
   TYPE,
