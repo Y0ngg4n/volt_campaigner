@@ -256,31 +256,31 @@ jobs:
     runs-on: ubuntu-latest
     needs: [version, windows, linux, web, mac, android]
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: version
           path: version
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: volt_campaigner-windows
           path: windows/volt_campaigner-windows.zip
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: volt_campaigner-linux
           path: linux/volt_campaigner-linux.zip
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: volt_campaigner-web
           path: web/volt_campaigner-web.zip
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: volt_campaigner-android
           path: android/volt_campaigner-android.apk
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: volt_campaigner-mac
           path: mac/volt_campaigner-mac.zip
-#      - uses: actions/download-artifact@v2
+#      - uses: actions/download-artifact@v4.1.7
 #        with:
 #          name: release-ios
 #          path: ios/volt_campaigner-ios.zip
